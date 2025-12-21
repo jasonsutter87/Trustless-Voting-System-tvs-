@@ -1,2 +1,2 @@
 // @tvs/api - Main integration API
-export * from './server.js';
+export { fastify } from './server.js';
