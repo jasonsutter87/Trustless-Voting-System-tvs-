@@ -11,22 +11,82 @@
       background: #0f172a;
       color: #e2e8f0;
       min-height: 100vh;
-      padding: 2rem;
     }
-    .container { max-width: 1200px; margin: 0 auto; }
-    h1 { color: #38bdf8; margin-bottom: 2rem; }
-    h2 { color: #94a3b8; margin: 1.5rem 0 1rem; font-size: 1.2rem; }
+
+    /* Header */
+    .header {
+      background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid #334155;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo span { font-weight: normal; color: #64748b; -webkit-text-fill-color: #64748b; }
+    .header-nav {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .header-nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .header-nav a:hover { background: #334155; color: #e2e8f0; }
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+    }
+    .status-dot.connected { background: #22c55e; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+    /* Layout */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    h2 { color: #94a3b8; margin: 0 0 1rem; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
 
     .card {
       background: #1e293b;
       border-radius: 12px;
       padding: 1.5rem;
-      margin-bottom: 1rem;
       border: 1px solid #334155;
     }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .card-header h2 { margin: 0; }
 
+    /* Forms */
     .form-group { margin-bottom: 1rem; }
-    label { display: block; margin-bottom: 0.5rem; color: #94a3b8; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    label { display: block; margin-bottom: 0.5rem; color: #94a3b8; font-size: 0.875rem; }
     input, textarea, select {
       width: 100%;
       padding: 0.75rem;
@@ -35,159 +95,291 @@
       background: #0f172a;
       color: #e2e8f0;
       font-size: 1rem;
+      transition: border-color 0.2s;
     }
     input:focus, textarea:focus {
       outline: none;
       border-color: #38bdf8;
     }
 
+    /* Buttons */
     button {
-      background: #38bdf8;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
       color: #0f172a;
       border: none;
       padding: 0.75rem 1.5rem;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.9rem;
+      transition: all 0.2s;
     }
-    button:hover { background: #0ea5e9; }
-    button.secondary {
-      background: #334155;
-      color: #e2e8f0;
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+    button.secondary { background: #334155; color: #e2e8f0; }
+    button.secondary:hover { background: #475569; box-shadow: none; }
+    button.danger { background: #ef4444; }
+    button.danger:hover { background: #dc2626; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    button.small { padding: 0.5rem 1rem; font-size: 0.8rem; }
 
+    /* Status badges */
     .status {
       display: inline-block;
       padding: 0.25rem 0.75rem;
       border-radius: 999px;
-      font-size: 0.875rem;
-      font-weight: 500;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
     }
-    .status.draft { background: #334155; }
-    .status.registration { background: #3b82f6; }
-    .status.voting { background: #22c55e; }
-    .status.tallying { background: #f59e0b; }
-    .status.complete { background: #8b5cf6; }
+    .status.draft { background: #334155; color: #94a3b8; }
+    .status.registration { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .status.voting { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .status.tallying { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .status.complete { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
 
-    .election-list { display: grid; gap: 1rem; }
+    /* Election list */
+    .election-list { display: flex; flex-direction: column; gap: 0.75rem; }
     .election-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem;
+      background: #0f172a;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
     }
-    .election-info h3 { color: #f8fafc; margin-bottom: 0.25rem; }
+    .election-item:hover { border-color: #334155; }
+    .election-item.active { border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+    .election-info h3 { color: #f8fafc; margin-bottom: 0.25rem; font-size: 1rem; }
     .election-info p { color: #64748b; font-size: 0.875rem; }
 
-    .candidates-list {
-      list-style: none;
-      margin-top: 1rem;
-    }
-    .candidates-list li {
-      padding: 0.5rem;
-      background: #0f172a;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
+    /* Candidates */
+    #candidateInputs { display: flex; flex-direction: column; gap: 0.5rem; }
+    .candidate-input {
       display: flex;
-      justify-content: space-between;
+      gap: 0.5rem;
     }
+    .candidate-input input { flex: 1; }
 
-    .stats {
+    /* Stats */
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1rem;
+      margin-bottom: 1.5rem;
     }
     .stat-card {
       background: #0f172a;
-      padding: 1rem;
+      padding: 1.25rem;
       border-radius: 8px;
       text-align: center;
     }
     .stat-value {
       font-size: 2rem;
       font-weight: bold;
-      color: #38bdf8;
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .stat-label { color: #64748b; }
+    .stat-label { color: #64748b; font-size: 0.8rem; margin-top: 0.25rem; }
+
+    /* Candidates list */
+    .candidates-list { list-style: none; }
+    .candidates-list li {
+      padding: 0.75rem;
+      background: #0f172a;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .candidate-votes { font-weight: bold; color: #38bdf8; }
+
+    /* Results */
+    .results-bar {
+      background: #334155;
+      border-radius: 4px;
+      height: 24px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .results-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    .results-percent {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* Merkle root display */
+    .merkle-root {
+      background: #0f172a;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      word-break: break-all;
+      color: #38bdf8;
+      margin-top: 0.5rem;
+    }
 
     .hidden { display: none; }
-    .error { color: #ef4444; margin-top: 0.5rem; }
-    .success { color: #22c55e; margin-top: 0.5rem; }
+    .error { color: #ef4444; margin-top: 0.5rem; font-size: 0.875rem; }
+    .success { color: #22c55e; margin-top: 0.5rem; font-size: 0.875rem; }
 
-    #candidateInputs { margin-top: 1rem; }
-    .candidate-input {
+    /* Loading */
+    .loading {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: #64748b;
     }
-    .candidate-input input { flex: 1; }
-    .candidate-input button { padding: 0.5rem 1rem; }
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #334155;
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Timeline */
+    .timeline { margin: 1rem 0; }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.5rem 0;
+    }
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #334155;
+      margin-top: 0.25rem;
+      flex-shrink: 0;
+    }
+    .timeline-dot.active { background: #38bdf8; }
+    .timeline-dot.done { background: #22c55e; }
+    .timeline-content h4 { color: #f8fafc; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .timeline-content p { color: #64748b; font-size: 0.8rem; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>TVS Admin Dashboard</h1>
-
-    <!-- Create Election -->
-    <div class="card">
-      <h2>Create New Election</h2>
-      <form id="createElectionForm">
-        <div class="form-group">
-          <label>Election Name</label>
-          <input type="text" id="electionName" placeholder="Student Government 2025" required>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea id="electionDesc" rows="2" placeholder="Annual student government election"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Start Time</label>
-          <input type="datetime-local" id="startTime" required>
-        </div>
-        <div class="form-group">
-          <label>End Time</label>
-          <input type="datetime-local" id="endTime" required>
-        </div>
-        <div class="form-group">
-          <label>Candidates</label>
-          <div id="candidateInputs">
-            <div class="candidate-input">
-              <input type="text" placeholder="Candidate name" class="candidate-name">
-              <button type="button" onclick="removeCandidate(this)" class="secondary">-</button>
-            </div>
-            <div class="candidate-input">
-              <input type="text" placeholder="Candidate name" class="candidate-name">
-              <button type="button" onclick="removeCandidate(this)" class="secondary">-</button>
-            </div>
-          </div>
-          <button type="button" onclick="addCandidate()" class="secondary" style="margin-top: 0.5rem">+ Add Candidate</button>
-        </div>
-        <button type="submit">Create Election</button>
-        <div id="createResult"></div>
-      </form>
-    </div>
-
-    <!-- Elections List -->
-    <div class="card">
-      <h2>Elections</h2>
-      <div id="electionsList" class="election-list">
-        <p style="color: #64748b">Loading elections...</p>
+  <header class="header">
+    <div class="logo">TVS <span>Admin</span></div>
+    <div class="header-nav">
+      <a href="/voter/">Voter Portal</a>
+      <a href="/" target="_blank">Docs</a>
+      <div class="api-status">
+        <div class="status-dot" id="apiStatus"></div>
+        <span id="apiStatusText">Checking API...</span>
       </div>
     </div>
+  </header>
 
-    <!-- Selected Election Details -->
-    <div id="electionDetails" class="card hidden">
-      <h2>Election Details</h2>
-      <div id="detailsContent"></div>
+  <div class="container">
+    <div class="grid">
+      <!-- Left Column -->
+      <div>
+        <!-- Create Election -->
+        <div class="card" style="margin-bottom: 1.5rem">
+          <h2>Create Election</h2>
+          <form id="createElectionForm">
+            <div class="form-group">
+              <label>Election Name</label>
+              <input type="text" id="electionName" placeholder="Student Government 2025" required>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="electionDesc" rows="2" placeholder="Annual student government election"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Start Time</label>
+                <input type="datetime-local" id="startTime" required>
+              </div>
+              <div class="form-group">
+                <label>End Time</label>
+                <input type="datetime-local" id="endTime" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Candidates</label>
+              <div id="candidateInputs">
+                <div class="candidate-input">
+                  <input type="text" placeholder="Candidate name" class="candidate-name">
+                  <button type="button" onclick="removeCandidate(this)" class="secondary small">×</button>
+                </div>
+                <div class="candidate-input">
+                  <input type="text" placeholder="Candidate name" class="candidate-name">
+                  <button type="button" onclick="removeCandidate(this)" class="secondary small">×</button>
+                </div>
+              </div>
+              <button type="button" onclick="addCandidate()" class="secondary small" style="margin-top: 0.5rem">+ Add Candidate</button>
+            </div>
+            <button type="submit" style="width: 100%">Create Election</button>
+            <div id="createResult"></div>
+          </form>
+        </div>
+
+        <!-- Elections List -->
+        <div class="card">
+          <h2>Elections</h2>
+          <div id="electionsList" class="election-list">
+            <div class="loading"><div class="spinner"></div> Loading elections...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Election Details -->
+      <div>
+        <div id="electionDetails" class="card">
+          <div style="text-align: center; padding: 3rem 1rem; color: #64748b">
+            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 1rem">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <p>Select an election to view details</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     const API_URL = 'http://localhost:3000/api';
+    let selectedElectionId = null;
+
+    // Check API status
+    async function checkApiStatus() {
+      const dot = document.getElementById('apiStatus');
+      const text = document.getElementById('apiStatusText');
+      try {
+        const res = await fetch('http://localhost:3000/health');
+        if (res.ok) {
+          dot.classList.add('connected');
+          text.textContent = 'API Connected';
+        }
+      } catch {
+        dot.classList.remove('connected');
+        text.textContent = 'API Offline';
+      }
+    }
 
     // Add/remove candidate inputs
     function addCandidate() {
@@ -196,22 +388,21 @@
       div.className = 'candidate-input';
       div.innerHTML = `
         <input type="text" placeholder="Candidate name" class="candidate-name">
-        <button type="button" onclick="removeCandidate(this)" class="secondary">-</button>
+        <button type="button" onclick="removeCandidate(this)" class="secondary small">×</button>
       `;
       container.appendChild(div);
     }
 
     function removeCandidate(btn) {
       const inputs = document.querySelectorAll('.candidate-input');
-      if (inputs.length > 2) {
-        btn.parentElement.remove();
-      }
+      if (inputs.length > 2) btn.parentElement.remove();
     }
 
     // Create election
     document.getElementById('createElectionForm').onsubmit = async (e) => {
       e.preventDefault();
       const result = document.getElementById('createResult');
+      const btn = e.target.querySelector('button[type="submit"]');
 
       const candidates = Array.from(document.querySelectorAll('.candidate-name'))
         .map(input => ({ name: input.value.trim() }))
@@ -221,6 +412,9 @@
         result.innerHTML = '<p class="error">Need at least 2 candidates</p>';
         return;
       }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
 
       try {
         const res = await fetch(`${API_URL}/elections`, {
@@ -237,15 +431,19 @@
 
         const data = await res.json();
         if (res.ok) {
-          result.innerHTML = `<p class="success">Election created! ID: ${data.election.id}</p>`;
+          result.innerHTML = `<p class="success">Election created successfully!</p>`;
           loadElections();
           e.target.reset();
+          showElection(data.election.id);
         } else {
           result.innerHTML = `<p class="error">${data.error}</p>`;
         }
       } catch (err) {
         result.innerHTML = `<p class="error">Failed to connect to API</p>`;
       }
+
+      btn.disabled = false;
+      btn.textContent = 'Create Election';
     };
 
     // Load elections
@@ -256,12 +454,12 @@
         const { elections } = await res.json();
 
         if (elections.length === 0) {
-          list.innerHTML = '<p style="color: #64748b">No elections yet</p>';
+          list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 2rem">No elections yet. Create one above.</p>';
           return;
         }
 
         list.innerHTML = elections.map(e => `
-          <div class="election-item" onclick="showElection('${e.id}')">
+          <div class="election-item ${e.id === selectedElectionId ? 'active' : ''}" onclick="showElection('${e.id}')">
             <div class="election-info">
               <h3>${e.name}</h3>
               <p>${e.candidates.length} candidates</p>
@@ -270,15 +468,17 @@
           </div>
         `).join('');
       } catch (err) {
-        list.innerHTML = '<p class="error">Failed to load elections. Is the API running?</p>';
+        list.innerHTML = '<p class="error" style="text-align: center; padding: 2rem">Failed to load elections. Check API connection.</p>';
       }
     }
 
     // Show election details
     async function showElection(id) {
+      selectedElectionId = id;
+      loadElections(); // Refresh list to update active state
+
       const details = document.getElementById('electionDetails');
-      const content = document.getElementById('detailsContent');
-      details.classList.remove('hidden');
+      details.innerHTML = '<div class="loading"><div class="spinner"></div> Loading...</div>';
 
       try {
         const [electionRes, statsRes, regRes] = await Promise.all([
@@ -287,62 +487,117 @@
           fetch(`${API_URL}/register/stats/${id}`).catch(() => null),
         ]);
 
-        const { election, publicKey } = await electionRes.json();
+        const { election } = await electionRes.json();
         const stats = statsRes ? await statsRes.json() : { voteCount: 0 };
         const regStats = regRes ? await regRes.json() : { registeredCount: 0 };
 
-        const nextStatus = {
-          draft: 'registration',
-          registration: 'voting',
-          voting: 'tallying',
-          tallying: 'complete',
-        }[election.status];
+        const statusOrder = ['draft', 'registration', 'voting', 'tallying', 'complete'];
+        const currentIdx = statusOrder.indexOf(election.status);
+        const nextStatus = statusOrder[currentIdx + 1];
 
-        content.innerHTML = `
-          <h3 style="color: #f8fafc; margin-bottom: 1rem">${election.name}</h3>
-          <p style="color: #64748b; margin-bottom: 1rem">${election.description}</p>
+        // Get results if complete
+        let results = null;
+        if (election.status === 'complete') {
+          try {
+            const resultsRes = await fetch(`${API_URL}/elections/${id}/results`);
+            if (resultsRes.ok) {
+              results = await resultsRes.json();
+            }
+          } catch {}
+        }
 
-          <div class="stats">
+        const totalVotes = results ? results.results.reduce((sum, r) => sum + r.votes, 0) : 0;
+
+        details.innerHTML = `
+          <div class="card-header">
+            <h2 style="text-transform: none; font-size: 1.25rem; color: #f8fafc">${election.name}</h2>
+            <span class="status ${election.status}">${election.status}</span>
+          </div>
+          <p style="color: #64748b; margin-bottom: 1.5rem">${election.description || 'No description'}</p>
+
+          <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-value">${regStats.registeredCount}</div>
-              <div class="stat-label">Registered Voters</div>
+              <div class="stat-value">${regStats.registeredCount || 0}</div>
+              <div class="stat-label">Registered</div>
             </div>
             <div class="stat-card">
               <div class="stat-value">${stats.voteCount || 0}</div>
               <div class="stat-label">Votes Cast</div>
             </div>
             <div class="stat-card">
-              <div class="stat-value"><span class="status ${election.status}">${election.status}</span></div>
-              <div class="stat-label">Status</div>
+              <div class="stat-value">${election.candidates.length}</div>
+              <div class="stat-label">Candidates</div>
             </div>
           </div>
 
-          <h4 style="margin-top: 1.5rem; color: #94a3b8">Candidates</h4>
-          <ul class="candidates-list">
-            ${election.candidates.map((c, i) => `
-              <li><span>${i + 1}. ${c.name}</span></li>
+          <h2>Timeline</h2>
+          <div class="timeline">
+            ${statusOrder.map((s, i) => `
+              <div class="timeline-item">
+                <div class="timeline-dot ${i < currentIdx ? 'done' : i === currentIdx ? 'active' : ''}"></div>
+                <div class="timeline-content">
+                  <h4>${s.charAt(0).toUpperCase() + s.slice(1)}</h4>
+                  <p>${getStatusDescription(s)}</p>
+                </div>
+              </div>
             `).join('')}
-          </ul>
-
-          <h4 style="margin-top: 1.5rem; color: #94a3b8">Merkle Root</h4>
-          <code style="display: block; background: #0f172a; padding: 1rem; border-radius: 8px; word-break: break-all; color: #38bdf8">${stats.merkleRoot || 'No votes yet'}</code>
-
-          <div style="margin-top: 1.5rem">
-            ${nextStatus ? `
-              <button onclick="updateStatus('${id}', '${nextStatus}')">
-                Advance to ${nextStatus}
-              </button>
-            ` : '<p class="success">Election complete!</p>'}
           </div>
+
+          ${results ? `
+            <h2>Results</h2>
+            <ul class="candidates-list">
+              ${results.results.sort((a, b) => b.votes - a.votes).map((r, i) => `
+                <li>
+                  <div>
+                    <span style="color: ${i === 0 ? '#fbbf24' : '#f8fafc'}">${i === 0 ? '🏆 ' : ''}${r.candidate.name}</span>
+                  </div>
+                  <span class="candidate-votes">${r.votes} votes</span>
+                </li>
+                <div class="results-bar" style="margin: -0.25rem 0 0.5rem">
+                  <div class="results-fill" style="width: ${totalVotes ? (r.votes / totalVotes * 100) : 0}%"></div>
+                  <span class="results-percent">${totalVotes ? Math.round(r.votes / totalVotes * 100) : 0}%</span>
+                </div>
+              `).join('')}
+            </ul>
+          ` : `
+            <h2>Candidates</h2>
+            <ul class="candidates-list">
+              ${election.candidates.map((c, i) => `
+                <li><span>${i + 1}. ${c.name}</span></li>
+              `).join('')}
+            </ul>
+          `}
+
+          <h2>Merkle Root</h2>
+          <div class="merkle-root">${stats.merkleRoot || 'No votes yet'}</div>
+
+          ${nextStatus ? `
+            <div style="margin-top: 1.5rem">
+              <button onclick="updateStatus('${id}', '${nextStatus}')" style="width: 100%">
+                Advance to ${nextStatus.charAt(0).toUpperCase() + nextStatus.slice(1)}
+              </button>
+            </div>
+          ` : ''}
         `;
       } catch (err) {
-        content.innerHTML = '<p class="error">Failed to load election details</p>';
+        details.innerHTML = '<p class="error" style="padding: 2rem; text-align: center">Failed to load election details</p>';
       }
+    }
+
+    function getStatusDescription(status) {
+      const descriptions = {
+        draft: 'Election is being configured',
+        registration: 'Voters can register for credentials',
+        voting: 'Voting is open',
+        tallying: 'Votes are being counted',
+        complete: 'Results are final',
+      };
+      return descriptions[status] || '';
     }
 
     // Update election status
     async function updateStatus(id, newStatus) {
-      if (!confirm(`Advance election to ${newStatus}?`)) return;
+      if (!confirm(`Advance election to "${newStatus}"? This cannot be undone.`)) return;
 
       try {
         const res = await fetch(`${API_URL}/elections/${id}/status`, {
@@ -364,7 +619,9 @@
     }
 
     // Initial load
+    checkApiStatus();
     loadElections();
+    setInterval(checkApiStatus, 30000);
   </script>
 </body>
 </html>

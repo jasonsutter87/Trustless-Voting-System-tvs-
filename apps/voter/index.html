@@ -8,83 +8,163 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
       color: #e2e8f0;
       min-height: 100vh;
-      padding: 2rem;
     }
-    .container { max-width: 600px; margin: 0 auto; }
 
-    h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+    /* Header */
+    .header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-size: 1.75rem;
+      font-weight: bold;
       background: linear-gradient(90deg, #38bdf8, #8b5cf6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .subtitle {
-      text-align: center;
-      color: #64748b;
-      margin-bottom: 2rem;
+    .header-links {
+      display: flex;
+      gap: 1rem;
     }
+    .header-links a {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .header-links a:hover { color: #e2e8f0; }
 
+    .container { max-width: 500px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 2rem 0 3rem;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #f8fafc;
+    }
+    .hero p { color: #64748b; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 12px;
+      padding: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .tab {
+      flex: 1;
+      padding: 0.75rem;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+      color: #0f172a;
+    }
+    .tab:not(.active):hover { color: #e2e8f0; }
+
+    /* Cards */
     .card {
-      background: rgba(30, 41, 59, 0.8);
-      backdrop-filter: blur(10px);
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(20px);
       border-radius: 16px;
-      padding: 2rem;
+      padding: 1.75rem;
       margin-bottom: 1rem;
       border: 1px solid rgba(148, 163, 184, 0.1);
     }
     .card h2 {
       color: #f8fafc;
-      margin-bottom: 1rem;
-      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
     }
+    .card p { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; }
 
+    /* Step indicator */
     .step-indicator {
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       margin-bottom: 2rem;
     }
     .step {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #334155;
+      background: rgba(51, 65, 85, 0.5);
       color: #64748b;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 0.9rem;
+      position: relative;
+      transition: all 0.3s;
     }
-    .step.active { background: #38bdf8; color: #0f172a; }
-    .step.done { background: #22c55e; color: #0f172a; }
+    .step::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background: #334155;
+      left: 100%;
+    }
+    .step:last-child::after { display: none; }
+    .step.active {
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+      color: #0f172a;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .step.done {
+      background: #22c55e;
+      color: #0f172a;
+    }
+    .step.done::after { background: #22c55e; }
 
-    .form-group { margin-bottom: 1.5rem; }
+    /* Forms */
+    .form-group { margin-bottom: 1.25rem; }
     label {
       display: block;
       margin-bottom: 0.5rem;
       color: #94a3b8;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
+      font-weight: 500;
     }
     input, select {
       width: 100%;
-      padding: 1rem;
-      border: 1px solid #334155;
+      padding: 1rem 1.25rem;
+      border: 1px solid rgba(51, 65, 85, 0.8);
       border-radius: 12px;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.6);
       color: #e2e8f0;
       font-size: 1rem;
+      transition: all 0.2s;
     }
     input:focus, select:focus {
       outline: none;
       border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
+    input::placeholder { color: #475569; }
 
+    /* Buttons */
     button {
       width: 100%;
       background: linear-gradient(90deg, #38bdf8, #8b5cf6);
@@ -95,61 +175,118 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.2s;
     }
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.25);
     }
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
     button.secondary {
-      background: #334155;
+      background: rgba(51, 65, 85, 0.6);
       color: #e2e8f0;
     }
+    button.secondary:hover { background: rgba(71, 85, 105, 0.6); }
 
+    /* Candidate options */
     .candidate-option {
-      padding: 1rem;
-      border: 2px solid #334155;
+      padding: 1.25rem;
+      border: 2px solid rgba(51, 65, 85, 0.6);
       border-radius: 12px;
       margin-bottom: 0.75rem;
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
-    .candidate-option:hover { border-color: #64748b; }
+    .candidate-option:hover { border-color: #475569; background: rgba(51, 65, 85, 0.3); }
     .candidate-option.selected {
       border-color: #38bdf8;
       background: rgba(56, 189, 248, 0.1);
     }
-    .candidate-option h3 {
-      color: #f8fafc;
-      font-size: 1.1rem;
+    .candidate-radio {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #475569;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
+    .candidate-option.selected .candidate-radio {
+      border-color: #38bdf8;
+      background: #38bdf8;
+    }
+    .candidate-option.selected .candidate-radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #0f172a;
+      border-radius: 50%;
+    }
+    .candidate-name { color: #f8fafc; font-weight: 500; }
 
+    /* Success box */
     .success-box {
       background: rgba(34, 197, 94, 0.1);
-      border: 1px solid #22c55e;
-      border-radius: 12px;
-      padding: 1.5rem;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 16px;
+      padding: 2rem;
       text-align: center;
     }
-    .success-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 2rem;
+    }
     .confirmation-code {
-      font-family: monospace;
-      font-size: 1.5rem;
-      background: #0f172a;
-      padding: 1rem;
-      border-radius: 8px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 1.25rem;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
       margin: 1rem 0;
       color: #38bdf8;
+      letter-spacing: 0.05em;
     }
 
-    .error { color: #ef4444; margin-top: 0.5rem; }
-    .hidden { display: none; }
+    /* Credential display */
+    .credential-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .credential-box label { margin-bottom: 0.5rem; font-size: 0.75rem; color: #64748b; }
+    .credential-value {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.7rem;
+      color: #38bdf8;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+    .copy-btn {
+      width: auto;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+    }
 
+    /* Verify results */
     .verify-result {
       padding: 1.5rem;
       border-radius: 12px;
@@ -157,46 +294,111 @@
     }
     .verify-result.found {
       background: rgba(34, 197, 94, 0.1);
-      border: 1px solid #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
     }
     .verify-result.not-found {
       background: rgba(239, 68, 68, 0.1);
-      border: 1px solid #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
+    .verify-result h3 { margin-bottom: 0.5rem; }
+    .verify-result.found h3 { color: #4ade80; }
+    .verify-result.not-found h3 { color: #f87171; }
 
-    .tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
+    /* Merkle proof */
+    .merkle-proof {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
     }
-    .tab {
-      flex: 1;
-      padding: 0.75rem;
-      background: #334155;
-      border: none;
-      border-radius: 8px;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    .tab.active { background: #38bdf8; color: #0f172a; }
-
-    .credential-display {
-      background: #0f172a;
-      padding: 1rem;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.75rem;
+    .merkle-proof h4 { color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.5rem; }
+    .merkle-value {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.65rem;
+      color: #64748b;
       word-break: break-all;
-      max-height: 150px;
-      overflow: auto;
+      padding: 0.75rem;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 6px;
     }
+
+    /* Integrity card */
+    .integrity-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .integrity-stat {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .integrity-stat .value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .integrity-stat .label { font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; }
+
+    .hidden { display: none; }
+    .error { color: #f87171; margin-top: 0.75rem; font-size: 0.9rem; }
+    .success { color: #4ade80; margin-top: 0.75rem; font-size: 0.9rem; }
+
+    /* Saved credential notice */
+    .saved-credential {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .saved-credential span { color: #38bdf8; font-size: 0.9rem; }
+    .saved-credential button { width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: #475569;
+      font-size: 0.8rem;
+    }
+    .footer a { color: #64748b; text-decoration: none; }
+    .footer a:hover { color: #94a3b8; }
+
+    /* Loading */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+  <header class="header">
+    <div class="logo">TVS</div>
+    <div class="header-links">
+      <a href="/admin/">Admin</a>
+      <a href="/" target="_blank">About</a>
+    </div>
+  </header>
+
   <div class="container">
-    <h1>TVS</h1>
-    <p class="subtitle">Trustless Voting System</p>
+    <div class="hero">
+      <h1>Cast Your Vote</h1>
+      <p>Secure, verifiable, and anonymous voting</p>
+    </div>
 
     <!-- Tabs -->
     <div class="tabs">
@@ -227,8 +429,14 @@
 
       <!-- Step 2: Register -->
       <div id="section2" class="card hidden">
-        <h2>Register to Vote</h2>
-        <p style="color: #64748b; margin-bottom: 1rem">Enter your student ID to receive an anonymous voting credential.</p>
+        <h2 id="registerTitle">Register to Vote</h2>
+        <p id="registerDesc">Enter your student ID to receive an anonymous voting credential.</p>
+
+        <div id="savedCredentialNotice" class="saved-credential hidden">
+          <span>Credential saved for this election</span>
+          <button class="secondary" onclick="clearSavedCredential()">Clear</button>
+        </div>
+
         <div class="form-group">
           <label>Student ID</label>
           <input type="text" id="studentId" placeholder="Enter your student ID">
@@ -240,7 +448,7 @@
       <!-- Step 3: Vote -->
       <div id="section3" class="card hidden">
         <h2>Cast Your Vote</h2>
-        <p style="color: #64748b; margin-bottom: 1rem">Select your candidate. Your vote will be encrypted.</p>
+        <p style="margin-bottom: 1rem">Select your candidate. Your choice will be encrypted.</p>
         <div id="candidatesList"></div>
         <button onclick="submitVote()" id="voteBtn" disabled>Submit Vote</button>
         <div id="voteResult"></div>
@@ -249,12 +457,14 @@
       <!-- Step 4: Confirmation -->
       <div id="section4" class="card hidden">
         <div class="success-box">
-          <div class="icon">✓</div>
+          <div class="success-icon">✓</div>
           <h2>Vote Recorded!</h2>
-          <p>Your vote has been securely recorded in the ledger.</p>
-          <p style="margin-top: 1rem; color: #64748b">Save your confirmation code:</p>
+          <p>Your vote has been securely added to the ledger.</p>
           <div class="confirmation-code" id="confirmationCode"></div>
-          <p style="font-size: 0.875rem; color: #64748b">Use this code to verify your vote was counted.</p>
+          <p style="font-size: 0.85rem; color: #64748b">Use this to verify your vote anytime</p>
+          <button onclick="showTab('verify'); loadVerifyElections();" style="margin-top: 1rem">
+            Verify My Vote
+          </button>
         </div>
       </div>
     </div>
@@ -263,18 +473,18 @@
     <div id="verifyTab" class="hidden">
       <div class="card">
         <h2>Verify Your Vote</h2>
-        <p style="color: #64748b; margin-bottom: 1rem">Enter your credential nullifier to verify your vote was recorded.</p>
+        <p style="margin-bottom: 1rem">Confirm your vote was recorded in the ledger.</p>
 
         <div class="form-group">
           <label>Election</label>
-          <select id="verifyElectionSelect">
+          <select id="verifyElectionSelect" onchange="loadIntegrity(this.value)">
             <option value="">Choose an election...</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Credential Nullifier</label>
-          <input type="text" id="nullifierInput" placeholder="Your credential nullifier">
+          <label>Your Nullifier</label>
+          <input type="text" id="nullifierInput" placeholder="Paste your credential nullifier">
         </div>
 
         <button onclick="verifyVote()">Verify Vote</button>
@@ -284,11 +494,15 @@
       <div class="card">
         <h2>Election Integrity</h2>
         <div id="integrityInfo">
-          <p style="color: #64748b">Select an election to view integrity data.</p>
+          <p style="color: #64748b; text-align: center; padding: 1rem">Select an election to view integrity data</p>
         </div>
       </div>
     </div>
   </div>
+
+  <footer class="footer">
+    <p>Trustless Voting System &middot; <a href="/">Learn more</a></p>
+  </footer>
 
   <script>
     const API_URL = 'http://localhost:3000/api';
@@ -296,14 +510,34 @@
     let userCredential = null;
     let selectedCandidate = null;
 
+    // Credential persistence
+    function saveCredential(electionId, credential) {
+      const saved = JSON.parse(localStorage.getItem('tvs_credentials') || '{}');
+      saved[electionId] = credential;
+      localStorage.setItem('tvs_credentials', JSON.stringify(saved));
+    }
+
+    function getSavedCredential(electionId) {
+      const saved = JSON.parse(localStorage.getItem('tvs_credentials') || '{}');
+      return saved[electionId] || null;
+    }
+
+    function clearSavedCredential() {
+      if (!currentElection) return;
+      const saved = JSON.parse(localStorage.getItem('tvs_credentials') || '{}');
+      delete saved[currentElection.election.id];
+      localStorage.setItem('tvs_credentials', JSON.stringify(saved));
+      userCredential = null;
+      document.getElementById('savedCredentialNotice').classList.add('hidden');
+      document.getElementById('studentId').disabled = false;
+    }
+
     // Tab switching
     function showTab(tab) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('active');
-
       document.getElementById('voteTab').classList.toggle('hidden', tab !== 'vote');
       document.getElementById('verifyTab').classList.toggle('hidden', tab !== 'verify');
-
       if (tab === 'verify') loadVerifyElections();
     }
 
@@ -312,7 +546,6 @@
       try {
         const res = await fetch(`${API_URL}/elections`);
         const { elections } = await res.json();
-
         const select = document.getElementById('electionSelect');
         select.innerHTML = '<option value="">Choose an election...</option>' +
           elections
@@ -328,7 +561,6 @@
       try {
         const res = await fetch(`${API_URL}/elections`);
         const { elections } = await res.json();
-
         const select = document.getElementById('verifyElectionSelect');
         select.innerHTML = '<option value="">Choose an election...</option>' +
           elections.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
@@ -349,23 +581,36 @@
 
         const info = document.getElementById('electionInfo');
         info.innerHTML = `
-          <p style="color: #94a3b8">${data.election.description}</p>
-          <p style="margin-top: 0.5rem; color: #64748b">
-            ${data.election.candidates.length} candidates •
-            Status: ${data.election.status}
+          <p style="color: #94a3b8; margin-top: 1rem">${data.election.description}</p>
+          <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.85rem">
+            ${data.election.candidates.length} candidates &middot; Status: ${data.election.status}
           </p>
         `;
 
-        // Show next section based on status
+        // Check for saved credential
+        const saved = getSavedCredential(id);
+        if (saved) {
+          userCredential = saved;
+          document.getElementById('savedCredentialNotice').classList.remove('hidden');
+          document.getElementById('studentId').disabled = true;
+          document.getElementById('nullifierInput').value = saved.nullifier;
+        } else {
+          document.getElementById('savedCredentialNotice').classList.add('hidden');
+          document.getElementById('studentId').disabled = false;
+        }
+
+        // Update UI based on status
         if (data.election.status === 'registration') {
+          document.getElementById('registerTitle').textContent = 'Register to Vote';
+          document.getElementById('registerDesc').textContent = 'Enter your student ID to receive an anonymous voting credential.';
           showSection(2);
         } else if (data.election.status === 'voting') {
-          // Check if already registered (has credential)
-          if (userCredential && userCredential.electionId === id) {
+          if (userCredential) {
             showSection(3);
             renderCandidates();
           } else {
-            document.getElementById('section2').querySelector('h2').textContent = 'Enter Your Credential';
+            document.getElementById('registerTitle').textContent = 'Enter Credential';
+            document.getElementById('registerDesc').textContent = 'If you registered previously, enter your student ID to retrieve your credential.';
             showSection(2);
           }
         }
@@ -378,8 +623,10 @@
     function showSection(num) {
       for (let i = 1; i <= 4; i++) {
         document.getElementById(`section${i}`).classList.toggle('hidden', i > num);
-        document.getElementById(`step${i}`).classList.toggle('active', i === num);
-        document.getElementById(`step${i}`).classList.toggle('done', i < num);
+        const step = document.getElementById(`step${i}`);
+        step.classList.remove('active', 'done');
+        if (i < num) step.classList.add('done');
+        if (i === num) step.classList.add('active');
       }
     }
 
@@ -388,8 +635,15 @@
       const studentId = document.getElementById('studentId').value;
       const result = document.getElementById('registerResult');
 
-      if (!studentId) {
+      if (!studentId && !userCredential) {
         result.innerHTML = '<p class="error">Please enter your student ID</p>';
+        return;
+      }
+
+      // If already have credential, skip to vote
+      if (userCredential) {
+        showSection(3);
+        renderCandidates();
         return;
       }
 
@@ -407,24 +661,26 @@
 
         if (res.ok) {
           userCredential = data.credential;
+          saveCredential(currentElection.election.id, data.credential);
+
           result.innerHTML = `
-            <p style="color: #22c55e; margin-top: 1rem">✓ Credential received!</p>
-            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem">
-              Save your nullifier to verify your vote later:
-            </p>
-            <div class="credential-display">${data.credential.nullifier}</div>
+            <p class="success" style="margin-bottom: 1rem">Credential received!</p>
+            <div class="credential-box">
+              <label>Save this nullifier to verify your vote later:</label>
+              <div class="credential-value">${data.credential.nullifier}</div>
+              <button class="copy-btn secondary" onclick="copyNullifier('${data.credential.nullifier}')">Copy Nullifier</button>
+            </div>
           `;
 
-          // If voting is open, proceed to vote
           if (currentElection.election.status === 'voting') {
             setTimeout(() => {
               showSection(3);
               renderCandidates();
-            }, 1500);
+            }, 2000);
           } else {
             result.innerHTML += `
-              <p style="color: #f59e0b; margin-top: 1rem">
-                Voting is not open yet. Come back when voting begins.
+              <p style="color: #fbbf24; margin-top: 1rem; font-size: 0.9rem">
+                Voting is not open yet. Return when voting begins.
               </p>
             `;
           }
@@ -432,8 +688,14 @@
           result.innerHTML = `<p class="error">${data.error}</p>`;
         }
       } catch (err) {
-        result.innerHTML = '<p class="error">Failed to register. Is the API running?</p>';
+        result.innerHTML = '<p class="error">Failed to register. Check your connection.</p>';
       }
+    }
+
+    function copyNullifier(text) {
+      navigator.clipboard.writeText(text);
+      event.target.textContent = 'Copied!';
+      setTimeout(() => event.target.textContent = 'Copy Nullifier', 2000);
     }
 
     // Render candidates
@@ -441,7 +703,8 @@
       const list = document.getElementById('candidatesList');
       list.innerHTML = currentElection.election.candidates.map(c => `
         <div class="candidate-option" onclick="selectCandidate('${c.id}', this)">
-          <h3>${c.name}</h3>
+          <div class="candidate-radio"></div>
+          <span class="candidate-name">${c.name}</span>
         </div>
       `).join('');
     }
@@ -460,16 +723,14 @@
       const result = document.getElementById('voteResult');
       const btn = document.getElementById('voteBtn');
       btn.disabled = true;
-      btn.textContent = 'Submitting...';
+      btn.innerHTML = '<span class="spinner"></span>Submitting...';
 
       try {
-        // Create encrypted vote (simplified for MVP)
         const encryptedVote = btoa(JSON.stringify({
           candidateId: selectedCandidate,
           timestamp: Date.now(),
         }));
 
-        // Create commitment
         const commitment = await sha256(selectedCandidate + Date.now());
 
         const res = await fetch(`${API_URL}/vote`, {
@@ -480,14 +741,14 @@
             credential: userCredential,
             encryptedVote,
             commitment,
-            zkProof: 'placeholder', // Would be real ZK proof in production
+            zkProof: 'placeholder',
           }),
         });
 
         const data = await res.json();
 
         if (res.ok) {
-          document.getElementById('confirmationCode').textContent = data.confirmationCode;
+          document.getElementById('confirmationCode').textContent = userCredential.nullifier.substring(0, 16) + '...';
           showSection(4);
         } else {
           result.innerHTML = `<p class="error">${data.error}</p>`;
@@ -519,49 +780,63 @@
         if (data.exists) {
           result.innerHTML = `
             <div class="verify-result found">
-              <h3 style="color: #22c55e">✓ Vote Found!</h3>
-              <p style="margin-top: 0.5rem">Your vote is recorded at position ${data.position}</p>
-              <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.875rem">
-                Timestamp: ${new Date(data.timestamp).toLocaleString()}
+              <h3>Vote Found</h3>
+              <p>Your vote is recorded at position <strong>${data.position}</strong></p>
+              <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.5rem">
+                ${new Date(data.timestamp).toLocaleString()}
               </p>
+              ${data.merkleProof ? `
+                <div class="merkle-proof">
+                  <h4>Merkle Proof</h4>
+                  <div class="merkle-value">Root: ${data.merkleProof.root}</div>
+                </div>
+              ` : ''}
             </div>
           `;
         } else {
           result.innerHTML = `
             <div class="verify-result not-found">
-              <h3 style="color: #ef4444">Vote Not Found</h3>
-              <p style="margin-top: 0.5rem">${data.message}</p>
+              <h3>Not Found</h3>
+              <p>${data.message}</p>
             </div>
           `;
         }
-
-        // Load integrity info
-        loadIntegrity(electionId);
       } catch (err) {
         result.innerHTML = '<p class="error">Failed to verify</p>';
       }
     }
 
     async function loadIntegrity(electionId) {
+      if (!electionId) {
+        document.getElementById('integrityInfo').innerHTML = '<p style="color: #64748b; text-align: center; padding: 1rem">Select an election</p>';
+        return;
+      }
+
       try {
         const res = await fetch(`${API_URL}/verify/integrity/${electionId}`);
         const data = await res.json();
 
         document.getElementById('integrityInfo').innerHTML = `
-          <p><strong>Election:</strong> ${data.election.name}</p>
-          <p><strong>Status:</strong> ${data.election.status}</p>
-          <p><strong>Total Votes:</strong> ${data.integrity.voteCount}</p>
-          <p style="margin-top: 1rem"><strong>Merkle Root:</strong></p>
-          <code style="display: block; background: #0f172a; padding: 0.5rem; border-radius: 4px; word-break: break-all; font-size: 0.75rem; color: #38bdf8">
-            ${data.integrity.merkleRoot || 'No votes yet'}
-          </code>
+          <div class="integrity-stats">
+            <div class="integrity-stat">
+              <div class="value">${data.integrity.voteCount}</div>
+              <div class="label">Total Votes</div>
+            </div>
+            <div class="integrity-stat">
+              <div class="value">${data.election.status}</div>
+              <div class="label">Status</div>
+            </div>
+          </div>
+          <div style="margin-top: 1rem">
+            <label style="font-size: 0.75rem; color: #64748b">Merkle Root</label>
+            <div class="merkle-value" style="margin-top: 0.5rem">${data.integrity.merkleRoot || 'No votes yet'}</div>
+          </div>
         `;
       } catch (err) {
         console.error('Failed to load integrity');
       }
     }
 
-    // Simple SHA256 for commitment
     async function sha256(message) {
       const msgBuffer = new TextEncoder().encode(message);
       const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
