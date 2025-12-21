@@ -5,10 +5,19 @@
   "description": "Trustless Voting System - End-to-end verifiable elections",
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm -r --parallel dev",
+    "dev": "./scripts/dev.sh",
+    "dev:api": "cd packages/tvs-api && pnpm dev",
+    "dev:ui": "cd apps && python3 -m http.server 8080",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
-    "clean": "pnpm -r clean"
+    "clean": "pnpm -r clean",
+    "db:start": "docker compose -f docker/docker-compose.yml up -d",
+    "db:stop": "docker compose -f docker/docker-compose.yml down",
+    "db:reset": "docker compose -f docker/docker-compose.yml down -v && docker compose -f docker/docker-compose.yml up -d",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "keywords": [
     "voting",

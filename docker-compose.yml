@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # TVS API
+  api:
+    build: .
+    container_name: tvs-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgres://tvs:${DB_PASSWORD:-tvs_secure_password}@postgres:5432/tvs
+      - USE_DATABASE=true
+      - VEILFORMS_API_URL=${VEILFORMS_API_URL:-https://api.veilforms.com}
+      - VEILFORMS_API_KEY=${VEILFORMS_API_KEY:-}
+      - MASTER_KEY=${MASTER_KEY:-replace-with-secure-key}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: tvs-postgres
+    environment:
+      POSTGRES_USER: tvs
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-tvs_secure_password}
+      POSTGRES_DB: tvs
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tvs"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Static file server for UIs
+  nginx:
+    image: nginx:alpine
+    container_name: tvs-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./apps:/usr/share/nginx/html:ro
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
