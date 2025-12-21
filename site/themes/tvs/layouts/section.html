@@ -1,0 +1,26 @@
+{{ define "main" }}
+<section class="hero" style="padding: 5rem 0 3rem;">
+  <div class="container">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p>{{ . }}</p>{{ end }}
+  </div>
+</section>
+
+<section class="section" style="padding-top: 2rem;">
+  <div class="container-narrow">
+    {{ .Content }}
+
+    <div class="post-list">
+      {{ range .Pages }}
+      <a href="{{ .RelPermalink }}" class="post-card">
+        <div class="card">
+          <h2>{{ .Title }}</h2>
+          <div class="post-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.author }} · {{ . }}{{ end }}</div>
+          <p class="post-excerpt">{{ .Summary | truncate 200 }}</p>
+        </div>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}

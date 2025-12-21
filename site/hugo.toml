@@ -1,0 +1,44 @@
+baseURL = 'https://tvs.vote/'
+languageCode = 'en-us'
+title = 'TVS - Trustless Voting System'
+theme = 'tvs'
+
+[params]
+  description = "End-to-end verifiable elections powered by cryptography"
+  tagline = "Democracy verified by math, not trust"
+  github = "https://github.com/your-org/tvs"
+
+[params.hero]
+  title = "Trustless Voting"
+  subtitle = "Every vote cryptographically verified. Zero trust required."
+  cta = "Learn More"
+  ctaLink = "/how-it-works/"
+
+[menu]
+  [[menu.main]]
+    name = "How It Works"
+    url = "/how-it-works/"
+    weight = 1
+  [[menu.main]]
+    name = "For Universities"
+    url = "/universities/"
+    weight = 2
+  [[menu.main]]
+    name = "Blog"
+    url = "/blog/"
+    weight = 3
+  [[menu.main]]
+    name = "Docs"
+    url = "/docs/"
+    weight = 4
+  [[menu.main]]
+    name = "Vote Now"
+    url = "/vote/"
+    weight = 5
+
+[markup]
+  [markup.highlight]
+    style = "dracula"
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
