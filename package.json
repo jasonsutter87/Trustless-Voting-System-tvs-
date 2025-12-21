@@ -1,0 +1,22 @@
+{
+  "name": "tvs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Trustless Voting System - End-to-end verifiable elections",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean"
+  },
+  "keywords": [
+    "voting",
+    "cryptography",
+    "zero-knowledge",
+    "blind-signatures",
+    "merkle-tree"
+  ],
+  "author": "TVS",
+  "license": "AGPL-3.0"
+}

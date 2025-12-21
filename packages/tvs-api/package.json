@@ -1,0 +1,31 @@
+{
+  "name": "@tvs/api",
+  "version": "0.1.0",
+  "description": "Main TVS API integrating all services",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "test": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tvs/core": "workspace:*",
+    "@tvs/veilsign": "workspace:*",
+    "@tvs/veilchain": "workspace:*",
+    "@tvs/veilproof": "workspace:*",
+    "fastify": "^4.24.0",
+    "@fastify/cors": "^8.4.0",
+    "postgres": "^3.4.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "tsx": "^4.6.0",
+    "vitest": "^1.0.0"
+  }
+}
