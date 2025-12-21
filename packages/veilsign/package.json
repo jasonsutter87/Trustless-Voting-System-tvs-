@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@tvs/core": "workspace:*",
-    "node-forge": "^1.3.1"
+    "blind-signatures": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

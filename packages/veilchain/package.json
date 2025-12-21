@@ -18,7 +18,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@tvs/core": "workspace:*"
+    "@tvs/core": "workspace:*",
+    "merkletreejs": "^0.6.0",
+    "crypto-js": "^4.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
