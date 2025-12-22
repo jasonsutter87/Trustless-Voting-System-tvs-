@@ -17,6 +17,7 @@
     "@tvs/veilsign": "workspace:*",
     "@tvs/veilchain": "workspace:*",
     "@tvs/veilproof": "workspace:*",
+    "@tvs/veilforms": "workspace:*",
     "fastify": "^4.24.0",
     "@fastify/cors": "^8.4.0",
     "postgres": "^3.4.0",

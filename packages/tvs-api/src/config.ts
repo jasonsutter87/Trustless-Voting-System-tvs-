@@ -13,6 +13,7 @@ export const config = {
   // VeilForms
   veilformsApiUrl: process.env['VEILFORMS_API_URL'] || 'https://api.veilforms.com',
   veilformsApiKey: process.env['VEILFORMS_API_KEY'] || '',
+  veilformsFormId: process.env['VEILFORMS_FORM_ID'] || '',
 
   // Encryption (for storing private keys)
   masterKey: process.env['MASTER_KEY'] || 'dev-key-replace-in-production',
