@@ -1,10 +1,16 @@
 /**
- * VeilProof - Zero-Knowledge Proof Generation
+ * @tvs/veilproof - TVS Wrapper for VeilProof
  *
  * Generates proofs that a vote is valid without revealing the vote.
+ * Uses @veilproof/core for the underlying proof generation.
  */
 
-import * as snarkjs from 'snarkjs';
+import {
+  generateProof as veilproofGenerate,
+  serializeProof,
+  type Proof,
+  type ProofResult,
+} from '@veilproof/core';
 import { sha256 } from '@tvs/core';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,7 +26,7 @@ export interface VoteInput {
 }
 
 export interface ProofOutput {
-  proof: object;
+  proof: Proof;
   publicSignals: string[];
   nullifier: string;
   commitment: string;
@@ -48,7 +54,7 @@ function poseidonHash(...inputs: bigint[]): bigint {
 }
 
 /**
- * Generate a ZK proof for a vote
+ * Generate a ZK proof for a vote using @veilproof/core
  */
 export async function generateVoteProof(input: VoteInput): Promise<ProofOutput> {
   const voteSalt = generateSalt();
@@ -74,16 +80,14 @@ export async function generateVoteProof(input: VoteInput): Promise<ProofOutput> 
   const wasmPath = path.join(CIRCUIT_DIR, 'vote_js', 'vote.wasm');
   const zkeyPath = path.join(CIRCUIT_DIR, 'vote_final.zkey');
 
-  // Generate proof
-  const { proof, publicSignals } = await snarkjs.groth16.fullProve(
-    circuitInput,
-    wasmPath,
-    zkeyPath
-  );
+  // Generate proof using @veilproof/core
+  const result: ProofResult = await veilproofGenerate(wasmPath, zkeyPath, circuitInput, {
+    logger: () => {}, // Silent
+  });
 
   return {
-    proof,
-    publicSignals,
+    proof: result.proof,
+    publicSignals: result.publicSignals,
     nullifier: nullifier.toString(),
     commitment: commitment.toString(),
   };
@@ -93,9 +97,13 @@ export async function generateVoteProof(input: VoteInput): Promise<ProofOutput> 
  * Export proof for verification (converts to format suitable for on-chain or API verification)
  */
 export function exportProof(proofOutput: ProofOutput): string {
+  // Use @veilproof/core's serializeProof for the base serialization
+  const baseProof = serializeProof(proofOutput.proof, proofOutput.publicSignals);
+  const parsed = JSON.parse(baseProof);
+
+  // Add TVS-specific fields
   return JSON.stringify({
-    proof: proofOutput.proof,
-    publicSignals: proofOutput.publicSignals,
+    ...parsed,
     nullifier: proofOutput.nullifier,
     commitment: proofOutput.commitment,
   });

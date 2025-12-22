@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@tvs/core": "workspace:*",
-    "snarkjs": "^0.7.0"
+    "@veilproof/core": "file:../../../VeilProof"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

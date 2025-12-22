@@ -19,8 +19,7 @@
   },
   "dependencies": {
     "@tvs/core": "workspace:*",
-    "merkletreejs": "^0.6.0",
-    "crypto-js": "^4.2.0"
+    "@veilchain/core": "file:../../../VeilChain"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

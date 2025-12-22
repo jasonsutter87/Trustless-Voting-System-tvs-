@@ -1,18 +1,28 @@
 /**
- * VeilProof - Zero-Knowledge Proof Verification
+ * @tvs/veilproof - TVS Wrapper for VeilProof
  *
- * Verifies proofs that votes are valid without learning the vote.
+ * Provides a simplified API for the Trustless Voting System.
+ * Uses @veilproof/core for the underlying ZK proof operations.
  */
 
-import * as snarkjs from 'snarkjs';
+import {
+  verifyProof as veilproofVerify,
+  loadVerificationKey,
+  validatePublicSignals,
+  type VerificationKey,
+  type Proof,
+} from '@veilproof/core';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { readFileSync } from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CIRCUIT_DIR = path.join(__dirname, '..', 'build');
 
-export interface VerificationResult {
+// ============================================================================
+// Types
+// ============================================================================
+
+export interface TVSVerificationResult {
   valid: boolean;
   nullifier: string;
   commitment: string;
@@ -20,39 +30,42 @@ export interface VerificationResult {
   numCandidates: string;
 }
 
-/**
- * Load verification key from file
- */
-let verificationKey: object | null = null;
+// ============================================================================
+// Verification Key Management
+// ============================================================================
 
-async function getVerificationKey(): Promise<object> {
+let verificationKey: VerificationKey | null = null;
+
+async function getVerificationKey(): Promise<VerificationKey> {
   if (verificationKey) return verificationKey;
 
   const vkeyPath = path.join(CIRCUIT_DIR, 'verification_key.json');
-  const vkeyJson = readFileSync(vkeyPath, 'utf-8');
-  verificationKey = JSON.parse(vkeyJson);
-  return verificationKey!;
+  verificationKey = await loadVerificationKey(vkeyPath);
+  return verificationKey;
 }
 
+// ============================================================================
+// Proof Verification
+// ============================================================================
+
 /**
- * Verify a vote proof
+ * Verify a vote proof using @veilproof/core
  */
 export async function verifyVoteProof(
-  proof: object,
+  proof: Proof,
   publicSignals: string[]
-): Promise<VerificationResult> {
+): Promise<TVSVerificationResult> {
   const vkey = await getVerificationKey();
 
-  // Verify the proof
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const valid = await snarkjs.groth16.verify(vkey as any, publicSignals, proof as any);
+  // Verify the proof using VeilProof
+  const result = await veilproofVerify(vkey, publicSignals, proof);
 
   // Parse public signals
   // Order: electionId, nullifier, commitment, numCandidates
   const [electionId, nullifier, commitment, numCandidates] = publicSignals;
 
   return {
-    valid,
+    valid: result.valid,
     nullifier: nullifier!,
     commitment: commitment!,
     electionId: electionId!,
@@ -63,7 +76,7 @@ export async function verifyVoteProof(
 /**
  * Verify a serialized proof (from API)
  */
-export async function verifySerializedProof(proofJson: string): Promise<VerificationResult> {
+export async function verifySerializedProof(proofJson: string): Promise<TVSVerificationResult> {
   const { proof, publicSignals } = JSON.parse(proofJson);
   return verifyVoteProof(proof, publicSignals);
 }

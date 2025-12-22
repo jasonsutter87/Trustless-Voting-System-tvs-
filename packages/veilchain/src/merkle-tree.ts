@@ -1,15 +1,19 @@
 /**
- * VeilChain - Merkle Tree Ledger
+ * @tvs/veilchain - TVS Wrapper for VeilChain
  *
- * Append-only ledger with cryptographic proofs of inclusion.
- * Uses merkletreejs for the heavy lifting.
+ * Provides a simplified API for the Trustless Voting System.
+ * Uses @veilchain/core for the underlying Merkle tree implementation.
  */
 
-import { MerkleTree } from 'merkletreejs';
-import CryptoJS from 'crypto-js';
-import { sha256 } from '@tvs/core';
+import {
+  MerkleTree,
+  sha256 as veilchainSha256,
+  type MerkleProof as VeilChainProof,
+} from '@veilchain/core';
 
-const SHA256 = CryptoJS.SHA256;
+// ============================================================================
+// Types - TVS-specific
+// ============================================================================
 
 export interface VoteEntry {
   id: string;
@@ -33,41 +37,34 @@ export interface LedgerSnapshot {
   timestamp: number;
 }
 
+// ============================================================================
+// VoteLedger - TVS wrapper around @veilchain/core MerkleTree
+// ============================================================================
+
 /**
  * Vote Ledger - append-only Merkle tree for vote storage
+ * Wraps @veilchain/core for TVS-specific functionality
  */
 export class VoteLedger {
   private entries: VoteEntry[] = [];
-  private tree: MerkleTree | null = null;
+  private tree: MerkleTree;
   private electionId: string;
 
   constructor(electionId: string) {
     this.electionId = electionId;
+    this.tree = new MerkleTree();
   }
 
   /**
    * Hash a vote entry for the Merkle tree
    */
   private hashEntry(entry: VoteEntry): string {
-    return sha256(JSON.stringify({
+    return veilchainSha256(JSON.stringify({
       id: entry.id,
       encryptedVote: entry.encryptedVote,
       commitment: entry.commitment,
       nullifier: entry.nullifier,
     }));
-  }
-
-  /**
-   * Rebuild the Merkle tree from entries
-   */
-  private rebuildTree(): void {
-    if (this.entries.length === 0) {
-      this.tree = null;
-      return;
-    }
-
-    const leaves = this.entries.map(e => this.hashEntry(e));
-    this.tree = new MerkleTree(leaves, SHA256, { sortPairs: true });
   }
 
   /**
@@ -82,10 +79,10 @@ export class VoteLedger {
 
     // Append entry
     this.entries.push(entry);
-    const position = this.entries.length - 1;
 
-    // Rebuild tree
-    this.rebuildTree();
+    // Hash and add to tree
+    const hash = this.hashEntry(entry);
+    const position = this.tree.append(hash);
 
     // Generate proof
     const proof = this.getProof(position);
@@ -101,19 +98,13 @@ export class VoteLedger {
       throw new Error('Invalid position');
     }
 
-    if (!this.tree) {
-      throw new Error('Ledger is empty');
-    }
-
-    const entry = this.entries[position]!;
-    const leaf = this.hashEntry(entry);
-    const proof = this.tree.getProof(leaf);
+    const veilchainProof = this.tree.getProof(position);
 
     return {
-      leaf,
-      proof: proof.map(p => p.data.toString('hex')),
-      positions: proof.map(p => p.position),
-      root: this.getRoot(),
+      leaf: veilchainProof.leaf,
+      proof: veilchainProof.proof,
+      positions: veilchainProof.directions,
+      root: veilchainProof.root,
     };
   }
 
@@ -121,35 +112,23 @@ export class VoteLedger {
    * Get current Merkle root
    */
   getRoot(): string {
-    if (!this.tree) {
-      return sha256('empty');
-    }
-    return this.tree.getRoot().toString('hex');
+    return this.tree.root;
   }
 
   /**
    * Verify an inclusion proof
    */
   static verify(proof: MerkleProof): boolean {
-    const leaves = [proof.leaf];
-    const proofData = proof.proof.map((p, i) => ({
-      data: Buffer.from(p, 'hex'),
-      position: proof.positions[i]!,
-    }));
+    // Convert to VeilChain proof format
+    const veilchainProof: VeilChainProof = {
+      leaf: proof.leaf,
+      index: 0, // Not used in verification
+      proof: proof.proof,
+      directions: proof.positions,
+      root: proof.root,
+    };
 
-    // Reconstruct root from proof
-    let hash = proof.leaf;
-    for (let i = 0; i < proofData.length; i++) {
-      const node = proofData[i]!;
-      const sibling = node.data.toString('hex');
-      if (node.position === 'left') {
-        hash = SHA256(sibling + hash).toString();
-      } else {
-        hash = SHA256(hash + sibling).toString();
-      }
-    }
-
-    return hash === proof.root;
+    return MerkleTree.verify(veilchainProof);
   }
 
   /**
@@ -197,7 +176,13 @@ export class VoteLedger {
    * Import entries (for loading from database)
    */
   import(entries: VoteEntry[]): void {
-    this.entries = [...entries];
-    this.rebuildTree();
+    this.entries = [];
+    this.tree = new MerkleTree();
+
+    for (const entry of entries) {
+      this.entries.push(entry);
+      const hash = this.hashEntry(entry);
+      this.tree.append(hash);
+    }
   }
 }
