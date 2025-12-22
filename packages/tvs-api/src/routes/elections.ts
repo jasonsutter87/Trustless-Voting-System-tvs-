@@ -45,8 +45,8 @@ export async function electionRoutes(fastify: FastifyInstance) {
 
     const id = uuid();
 
-    // Generate signing keys for this election
-    const keys = generateAuthorityKeys(2048);
+    // Generate signing keys for this election (use 1024 for faster key gen in dev)
+    const keys = generateAuthorityKeys(1024);
     electionKeys.set(id, keys);
 
     const election: Election = {

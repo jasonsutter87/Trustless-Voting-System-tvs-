@@ -6,8 +6,10 @@
  */
 
 import { MerkleTree } from 'merkletreejs';
-import SHA256 from 'crypto-js/sha256.js';
+import CryptoJS from 'crypto-js';
 import { sha256 } from '@tvs/core';
+
+const SHA256 = CryptoJS.SHA256;
 
 export interface VoteEntry {
   id: string;

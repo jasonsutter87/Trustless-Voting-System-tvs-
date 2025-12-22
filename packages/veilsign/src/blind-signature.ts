@@ -1,64 +1,136 @@
 /**
- * VeilSign - Anonymous Credential Service
+ * VeilSign - Chaum Blind Signatures
  *
- * Wraps the blind-signatures library to provide anonymous voter credentials.
- * Authority signs credentials without seeing the content.
+ * Implemented from scratch using Node.js native crypto.
+ * No external dependencies for the core cryptography.
  */
 
-import BlindSignature from 'blind-signatures';
+import * as crypto from 'crypto';
 import { sha256, randomBytesHex } from '@tvs/core';
 
 export interface AuthorityKeys {
+  keyId: string;
   publicKey: {
-    n: string;  // Modulus
-    e: string;  // Exponent
+    n: string;  // Modulus (hex)
+    e: string;  // Public exponent (hex)
   };
   privateKey: {
     n: string;
     e: string;
-    d: string;  // Private exponent
-    p: string;
-    q: string;
+    d: string;  // Private exponent (hex)
   };
 }
 
 export interface Credential {
   electionId: string;
-  nullifier: string;         // Unique per credential, used to prevent double-voting
-  message: string;           // The credential message that gets signed
+  nullifier: string;
+  message: string;
 }
 
-export interface BlindedCredential {
-  blinded: string;           // Blinded message to send to authority
-  blindingFactor: string;    // Keep secret - needed to unblind
+export interface BlindedData {
+  blinded: string;      // Blinded message (hex)
+  r: string;            // Blinding factor (hex) - keep secret
 }
 
 export interface SignedCredential extends Credential {
   signature: string;
 }
 
+// Modular arithmetic helpers using native BigInt
+function modPow(base: bigint, exp: bigint, mod: bigint): bigint {
+  let result = 1n;
+  base = base % mod;
+  while (exp > 0n) {
+    if (exp % 2n === 1n) {
+      result = (result * base) % mod;
+    }
+    exp = exp / 2n;
+    base = (base * base) % mod;
+  }
+  return result;
+}
+
+function modInverse(a: bigint, m: bigint): bigint {
+  const m0 = m;
+  let x0 = 0n;
+  let x1 = 1n;
+
+  if (m === 1n) return 0n;
+
+  while (a > 1n) {
+    const q = a / m;
+    let t = m;
+    m = a % m;
+    a = t;
+    t = x0;
+    x0 = x1 - q * x0;
+    x1 = t;
+  }
+
+  if (x1 < 0n) x1 += m0;
+  return x1;
+}
+
+function gcd(a: bigint, b: bigint): bigint {
+  while (b !== 0n) {
+    const t = b;
+    b = a % b;
+    a = t;
+  }
+  return a;
+}
+
+function randomBigInt(bits: number): bigint {
+  const bytes = Math.ceil(bits / 8);
+  const buf = crypto.randomBytes(bytes);
+  return BigInt('0x' + buf.toString('hex'));
+}
+
+function hexToBigInt(hex: string): bigint {
+  return BigInt('0x' + hex);
+}
+
+function bigIntToHex(n: bigint): string {
+  return n.toString(16);
+}
+
 /**
- * Generate authority keypair for signing credentials
+ * Generate RSA keypair for blind signatures
  */
 export function generateAuthorityKeys(bits: number = 2048): AuthorityKeys {
-  const key = BlindSignature.keyGeneration({ b: bits });
+  // Generate RSA keypair using Node.js crypto
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+    modulusLength: bits,
+    publicExponent: 65537,
+  });
+
+  // Export keys to get the raw components
+  const pubKeyDer = publicKey.export({ type: 'pkcs1', format: 'der' });
+  const privKeyDer = privateKey.export({ type: 'pkcs1', format: 'der' });
+
+  // Parse the DER to extract n, e, d
+  // For simplicity, use JWK export which gives us the values directly
+  const pubJwk = publicKey.export({ format: 'jwk' });
+  const privJwk = privateKey.export({ format: 'jwk' });
+
+  // Convert base64url to hex
+  const b64ToHex = (b64: string) => Buffer.from(b64, 'base64url').toString('hex');
+
+  const n = b64ToHex(pubJwk.n!);
+  const e = b64ToHex(pubJwk.e!);
+  const d = b64ToHex(privJwk.d!);
+
+  const keyId = randomBytesHex(16);
+
   return {
-    publicKey: {
-      n: key.keyPair.n.toString(),
-      e: key.keyPair.e.toString(),
-    },
-    privateKey: {
-      n: key.keyPair.n.toString(),
-      e: key.keyPair.e.toString(),
-      d: key.keyPair.d.toString(),
-      p: key.keyPair.p.toString(),
-      q: key.keyPair.q.toString(),
-    },
+    keyId,
+    publicKey: { n, e },
+    privateKey: { n, e, d },
   };
 }
 
 /**
- * Create a new credential for a voter
+ * Create a credential for a voter
  */
 export function createCredential(electionId: string): Credential {
   const nullifier = randomBytesHex(32);
@@ -72,110 +144,130 @@ export function createCredential(electionId: string): Credential {
 }
 
 /**
- * Voter: Blind the credential before sending to authority
+ * Blind a message before sending to authority
+ *
+ * blinded = message * r^e mod n
  */
-export function blindCredential(
-  credential: Credential,
-  authorityPublicKey: AuthorityKeys['publicKey']
-): BlindedCredential {
-  const { blinded, r } = BlindSignature.blind({
-    message: credential.message,
-    N: authorityPublicKey.n,
-    E: authorityPublicKey.e,
-  });
+export function blindMessage(
+  message: string,
+  publicKey: AuthorityKeys['publicKey']
+): BlindedData {
+  const n = hexToBigInt(publicKey.n);
+  const e = hexToBigInt(publicKey.e);
+  const m = hexToBigInt(message);
+
+  // Generate random blinding factor r where gcd(r, n) = 1
+  let r: bigint;
+  do {
+    r = randomBigInt(256) % n;
+  } while (r <= 1n || gcd(r, n) !== 1n);
+
+  // blinded = m * r^e mod n
+  const rE = modPow(r, e, n);
+  const blinded = (m * rE) % n;
 
   return {
-    blinded: blinded.toString(),
-    blindingFactor: r.toString(),
+    blinded: bigIntToHex(blinded),
+    r: bigIntToHex(r),
   };
 }
 
 /**
- * Authority: Sign a blinded credential (cannot see the actual content)
+ * Authority signs blinded message (cannot see original)
+ *
+ * signed = blinded^d mod n
  */
-export function signBlindedCredential(
-  blindedMessage: string,
-  authorityPrivateKey: AuthorityKeys['privateKey']
+export function signBlinded(
+  blinded: string,
+  privateKey: AuthorityKeys['privateKey']
 ): string {
-  const signed = BlindSignature.sign({
-    blinded: blindedMessage,
-    key: {
-      n: authorityPrivateKey.n,
-      e: authorityPrivateKey.e,
-      d: authorityPrivateKey.d,
-      p: authorityPrivateKey.p,
-      q: authorityPrivateKey.q,
-    },
-  });
+  const n = hexToBigInt(privateKey.n);
+  const d = hexToBigInt(privateKey.d);
+  const b = hexToBigInt(blinded);
 
-  return signed.toString();
+  const signed = modPow(b, d, n);
+  return bigIntToHex(signed);
 }
 
 /**
- * Voter: Unblind the signature to get a valid credential
+ * Unblind the signature
+ *
+ * signature = signed * r^(-1) mod n
  */
 export function unblindSignature(
-  blindedSignature: string,
-  blindingFactor: string,
-  authorityPublicKey: AuthorityKeys['publicKey']
+  signed: string,
+  r: string,
+  publicKey: AuthorityKeys['publicKey']
 ): string {
-  const unblinded = BlindSignature.unblind({
-    signed: blindedSignature,
-    r: blindingFactor,
-    N: authorityPublicKey.n,
-  });
+  const n = hexToBigInt(publicKey.n);
+  const s = hexToBigInt(signed);
+  const rBig = hexToBigInt(r);
 
-  return unblinded.toString();
+  const rInv = modInverse(rBig, n);
+  const signature = (s * rInv) % n;
+  return bigIntToHex(signature);
 }
 
 /**
- * Anyone: Verify a signed credential
+ * Verify a signature
+ *
+ * valid if: signature^e mod n == message
  */
-export function verifyCredential(
-  credential: SignedCredential,
-  authorityPublicKey: AuthorityKeys['publicKey']
+export function verifySignature(
+  message: string,
+  signature: string,
+  publicKey: AuthorityKeys['publicKey']
 ): boolean {
-  const result = BlindSignature.verify({
-    unblinded: credential.signature,
-    message: credential.message,
-    N: authorityPublicKey.n,
-    E: authorityPublicKey.e,
-  });
+  const n = hexToBigInt(publicKey.n);
+  const e = hexToBigInt(publicKey.e);
+  const sig = hexToBigInt(signature);
+  const m = hexToBigInt(message);
 
-  return result;
+  const verified = modPow(sig, e, n);
+  return verified === m;
 }
 
 /**
- * Complete flow: Issue a credential (for testing/demo)
+ * Complete credential issuance flow
  */
 export function issueCredential(
   electionId: string,
-  authorityKeys: AuthorityKeys
+  keys: AuthorityKeys
 ): SignedCredential {
   // 1. Create credential
   const credential = createCredential(electionId);
 
-  // 2. Blind it
-  const { blinded, blindingFactor } = blindCredential(
-    credential,
-    authorityKeys.publicKey
-  );
+  // 2. Blind the message
+  const { blinded, r } = blindMessage(credential.message, keys.publicKey);
 
-  // 3. Authority signs (never sees original)
-  const blindedSignature = signBlindedCredential(
-    blinded,
-    authorityKeys.privateKey
-  );
+  // 3. Authority signs (cannot see original message)
+  const signedBlinded = signBlinded(blinded, keys.privateKey);
 
-  // 4. Voter unblinds
-  const signature = unblindSignature(
-    blindedSignature,
-    blindingFactor,
-    authorityKeys.publicKey
-  );
+  // 4. Unblind to get final signature
+  const signature = unblindSignature(signedBlinded, r, keys.publicKey);
 
   return {
     ...credential,
     signature,
   };
+}
+
+/**
+ * Verify a signed credential
+ */
+export function verifyCredential(
+  credential: SignedCredential,
+  publicKey: AuthorityKeys['publicKey']
+): boolean {
+  return verifySignature(credential.message, credential.signature, publicKey);
+}
+
+// Legacy exports for API compatibility
+export function blindCredential(credential: Credential, publicKey: AuthorityKeys['publicKey']) {
+  const { blinded, r } = blindMessage(credential.message, publicKey);
+  return { blinded, blindingFactor: r };
+}
+
+export function signBlindedCredential(blinded: string, privateKey: AuthorityKeys['privateKey']): string {
+  return signBlinded(blinded, privateKey);
 }

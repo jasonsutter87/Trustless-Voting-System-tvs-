@@ -44,7 +44,8 @@ export async function verifyVoteProof(
   const vkey = await getVerificationKey();
 
   // Verify the proof
-  const valid = await snarkjs.groth16.verify(vkey, publicSignals, proof);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const valid = await snarkjs.groth16.verify(vkey as any, publicSignals, proof as any);
 
   // Parse public signals
   // Order: electionId, nullifier, commitment, numCandidates
