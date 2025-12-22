@@ -1,6 +1,6 @@
 # TVS: A Trustless Voting System
 
-**Version 1.0 — December 2024**
+**Version 1.0 — December 2025**
 
 ---
 
@@ -537,7 +537,7 @@ Merkle Proof            │   ✓    │   ✓    │    ✓     │   ✓    �
 {
   "candidateId": "uuid-alice-johnson",
   "timestamp": 1703241600000,
-  "electionId": "uuid-election-2024"
+  "electionId": "uuid-election-2025"
 }
 ```
 *This data exists ONLY in the voter's browser. Never transmitted.*
@@ -692,7 +692,7 @@ FOR EACH ROW EXECUTE FUNCTION prevent_modification();
     "protocol": "groth16"
   },
   "merkle_position": 42,
-  "created_at": "2024-12-22T10:30:00Z"
+  "created_at": "2025-12-22T10:30:00Z"
 }
 ```
 
@@ -909,5 +909,5 @@ The database, server, and all administrators are effectively "blind" to the actu
 ---
 
 *Document version: 1.0*
-*Last updated: December 2024*
+*Last updated: December 2025*
 *Authors: TVS Development Team*
