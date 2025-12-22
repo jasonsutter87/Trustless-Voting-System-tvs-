@@ -7,10 +7,20 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@tvs/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@tvs/veilforms':
+        specifier: workspace:*
+        version: link:packages/veilforms
     devDependencies:
       '@types/crypto-js':
         specifier: ^4.2.2
         version: 4.2.2
+      tsx:
+        specifier: ^4.6.0
+        version: 4.21.0
 
   packages/core:
     dependencies:

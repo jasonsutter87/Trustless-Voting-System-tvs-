@@ -9,6 +9,7 @@
     "dev:api": "cd packages/tvs-api && pnpm dev",
     "dev:ui": "cd apps && python3 -m http.server 8080",
     "test": "pnpm -r test",
+    "test:e2e": "tsx scripts/test-30-voters.ts",
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean",
     "db:start": "docker compose -f docker/docker-compose.yml up -d",
@@ -29,6 +30,11 @@
   "author": "TVS",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2"
+    "@types/crypto-js": "^4.2.2",
+    "tsx": "^4.6.0"
+  },
+  "dependencies": {
+    "@tvs/veilforms": "workspace:*",
+    "@tvs/core": "workspace:*"
   }
 }
