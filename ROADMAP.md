@@ -15,14 +15,14 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 │                           TVS PRODUCT ECOSYSTEM                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  LAYER 4: THE SUPER APP                                                      │
+│  LAYER 5: THE SUPER APP                                                      │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
 │  │                    TRUSTLESS VOTING SYSTEM (TVS)                     │    │
 │  │         Combines all products for government-grade elections         │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
 │                                     ▲                                        │
 │                                     │                                        │
-│  LAYER 3: VERIFICATION LAYER                                                 │
+│  LAYER 4: VERIFICATION LAYER                                                 │
 │  ┌───────────────────────────────────────────────────────────────┐          │
 │  │                         VEILPROOF                              │          │
 │  │            Zero-Knowledge Proofs as a Service                  │          │
@@ -30,12 +30,20 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 │  └───────────────────────────────────────────────────────────────┘          │
 │                                     ▲                                        │
 │                                     │                                        │
-│  LAYER 2: STORAGE & IDENTITY                                                 │
+│  LAYER 3: STORAGE & IDENTITY                                                 │
 │  ┌────────────────────────────┐    ┌────────────────────────────┐           │
 │  │         VEILCHAIN          │    │         VEILSIGN           │           │
 │  │   Merkle Tree Ledger       │    │   Blind Signatures         │           │
 │  │   "Immutable vote record"  │    │   "Anonymous credentials"  │           │
 │  └────────────────────────────┘    └────────────────────────────┘           │
+│                                     ▲                                        │
+│                                     │                                        │
+│  LAYER 2: KEY MANAGEMENT (CRITICAL FOR GOVERNMENT)                          │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                          VEILKEY 🔑                                  │    │
+│  │           Threshold Cryptography — Distributed Key Management        │    │
+│  │         "No single party ever holds the complete private key"        │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                     ▲                                        │
 │                                     │                                        │
 │  LAYER 1: INPUT LAYER (COMPLETE)                                             │
@@ -55,11 +63,12 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 | Phase | Product | Purpose in TVS | Status |
 |-------|---------|----------------|--------|
 | 1 | VeilForms | Encrypted vote input | ✅ COMPLETE |
-| 2 | VeilChain | Immutable vote ledger | 🔲 BUILD NEXT |
-| 3 | VeilSign | Anonymous voter credentials | 🔲 PLANNED |
-| 4 | VeilProof | Vote validity proofs | 🔲 PLANNED |
-| 5 | GhostBeat | Infrastructure monitoring | 🔲 INTEGRATE |
-| 6 | TVS | Combined voting system | 🔲 FINAL GOAL |
+| 2 | VeilChain | Immutable vote ledger | ✅ COMPLETE |
+| 3 | VeilSign | Anonymous voter credentials | ✅ COMPLETE |
+| 4 | VeilProof | Vote validity proofs | ✅ COMPLETE |
+| 5 | **VeilKey** | **Threshold key management** | 🔲 **BUILD NEXT** |
+| 6 | GhostBeat | Infrastructure monitoring | 🔲 INTEGRATE |
+| 7 | TVS | Combined voting system | 🔲 FINAL GOAL |
 
 ---
 
@@ -183,7 +192,82 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 
 ---
 
-### PHASE 5: TVS Integration (Q4 2025)
+### PHASE 5: VeilKey (Q3-Q4 2025) 🔑
+**What it provides to TVS**: Distributed key management so no single party ever holds complete private keys
+
+**Why this is CRITICAL for government elections:**
+- Election encryption keys held by 3-of-5 trustees
+- No single trustee can decrypt votes alone
+- Key ceremonies with public verification
+- Proactive key refresh without changing public key
+- HSM integration for hardware security
+
+#### Milestones
+- [ ] **M1: Core Threshold Cryptography**
+  - Shamir Secret Sharing over GF(2^256)
+  - Feldman Verifiable Secret Sharing
+  - Configurable t-of-n parameters
+  - Share verification without reconstruction
+
+- [ ] **M2: Threshold RSA (Shoup Protocol)**
+  - Distributed key generation
+  - Partial signature generation
+  - Signature combination
+  - ZK proof of partial correctness
+  - Standard RSA output (compatible with existing systems)
+
+- [ ] **M3: Threshold ECDSA (GG20)**
+  - Distributed Key Generation (DKG)
+  - Presigning protocol (offline phase)
+  - Online signing
+  - secp256k1 support (Bitcoin/Ethereum compatible)
+  - P-256 support
+
+- [ ] **M4: Threshold BLS Signatures**
+  - BLS12-381 curve implementation
+  - Threshold key generation
+  - Signature aggregation
+  - Batch verification
+
+- [ ] **M5: Key Ceremony Tools**
+  - Web UI for multi-party key generation
+  - Participant management
+  - Commitment collection and verification
+  - Share distribution (encrypted)
+  - Complete audit log with cryptographic proofs
+
+- [ ] **M6: Proactive Security**
+  - Share refresh protocol
+  - Automatic refresh scheduling
+  - Refresh without changing public key
+  - Lost share recovery (with threshold)
+  - Share refresh audit trail
+
+- [ ] **M7: Enterprise & HSM Integration**
+  - PKCS#11 interface
+  - AWS CloudHSM support
+  - Azure Dedicated HSM support
+  - YubiHSM support
+  - Share storage in HSM
+
+- [ ] **M8: API Service & SDK**
+  - REST API for key group management
+  - Signing operations API
+  - TypeScript/JavaScript SDK
+  - Python SDK
+  - Comprehensive documentation
+
+#### VeilKey Integration Points in TVS
+| Integration | Description |
+|-------------|-------------|
+| Election Keys | 3-of-5 trustees hold election encryption key |
+| VeilSign Authority | Distributed signing authority for blind signatures |
+| Key Ceremony | Public, verifiable key generation for each election |
+| Decryption | Threshold decryption for vote tallying |
+
+---
+
+### PHASE 6: TVS Integration (Q4 2025 - Q1 2026)
 **Goal**: Combine all products into election-ready voting system
 
 #### Milestones
@@ -218,13 +302,12 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 
 ## Go-To-Market Strategy
 
-### Year 1: Build & Prove (2025)
-| Quarter | Focus |
-|---------|-------|
-| Q1 | Launch VeilChain, beta customers |
-| Q2 | Launch VeilSign, integrate with VeilChain |
-| Q3 | Launch VeilProof, complete product suite |
-| Q4 | TVS alpha with select pilot partners |
+### Year 1: Build Foundation (2025) — CURRENT
+| Quarter | Focus | Status |
+|---------|-------|--------|
+| Q1-Q2 | VeilChain, VeilSign, VeilProof core libraries | ✅ COMPLETE |
+| Q3-Q4 | **VeilKey** — Threshold cryptography | 🔲 BUILD NEXT |
+| Q4 | TVS MVP integration with all 5 products | 🔲 PLANNED |
 
 ### Year 2: Pilot & Certify (2026)
 - University student government elections
@@ -253,18 +336,22 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 - [ ] 99.99% uptime during elections
 - [ ] Sub-second vote submission
 - [ ] 100% voter verification rate achievable
+- [ ] VeilKey: Key ceremonies complete in < 30 minutes
+- [ ] VeilKey: Threshold signatures in < 100ms
 
 ### Business
 - [ ] Each product profitable standalone
 - [ ] 1000+ paying customers across products
 - [ ] 3+ security audits passed
 - [ ] EAC certification achieved
+- [ ] VeilKey: 100+ key groups managed (crypto wallets, enterprises)
 
 ### Adoption
 - [ ] 10+ pilot elections completed
 - [ ] 1+ state certification
 - [ ] 100,000+ votes processed
 - [ ] Academic paper published
+- [ ] VeilKey used by 3+ non-TVS customers (standalone validation)
 
 ---
 
@@ -277,6 +364,10 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 | Market resistance | Start with non-government elections, build trust |
 | Technical complexity | Modular approach, battle-test each component |
 | Funding | Each product generates revenue independently |
+| VeilKey: Threshold crypto bugs | Extensive test vectors, formal verification of protocols |
+| VeilKey: HSM compatibility | Multi-vendor testing (AWS, Azure, Yubi) |
+| VeilKey: Key ceremony failures | Rehearsals, rollback procedures, multi-party backup |
+| Single trustee coercion | t-of-n threshold requires collusion of multiple parties |
 
 ---
 
@@ -286,25 +377,34 @@ Build the world's first **truly trustless voting infrastructure** by creating a 
 trustless_voting_sytem_(tvs)/
 ├── BRAINSTORM.md           # Original brainstorm document
 ├── ROADMAP.md              # This file
-├── VeilForms/              # (Symlink to existing repo)
+├── VeilForms/              # ✅ Zero-trust encrypted forms
 │   └── ...                 # veilforms.com source
-├── VeilChain/
+├── VeilChain/              # ✅ Merkle tree ledger
 │   ├── OVERVIEW.md
 │   ├── ROADMAP.md
-│   ├── src/                # Core engine + API
-│   └── site/               # Hugo marketing site
-├── VeilSign/
-│   ├── OVERVIEW.md         # Product vision & positioning
-│   └── ROADMAP.md          # Detailed build plan
-├── VeilProof/
+│   └── src/
+├── VeilSign/               # ✅ Blind signatures
 │   ├── OVERVIEW.md
-│   └── ROADMAP.md
+│   ├── ROADMAP.md
+│   └── src/
+├── VeilProof/              # ✅ Zero-knowledge proofs
+│   ├── OVERVIEW.md
+│   ├── ROADMAP.md
+│   └── circuits/
+├── VeilKey/                # 🔑 Threshold cryptography (BUILD NEXT)
+│   ├── README.md           # Product overview & standalone use cases
+│   ├── docs/
+│   │   ├── SPEC.md         # Technical specification
+│   │   └── ROADMAP.md      # Development roadmap
+│   └── src/                # (Future implementation)
 ├── GhostBeat/              # ZK infrastructure monitoring
 │   ├── OVERVIEW.md
 │   └── ROADMAP.md
-└── TVS-Core/               # (Future: integration layer)
-    ├── OVERVIEW.md
-    └── ROADMAP.md
+└── TVS/                    # Integration wrapper
+    ├── packages/           # @tvs/* workspace packages
+    ├── apps/               # Admin & voter portals
+    └── docs/
+        └── TVS-WHITEPAPER.md
 ```
 
 ---
