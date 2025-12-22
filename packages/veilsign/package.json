@@ -18,7 +18,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@tvs/core": "workspace:*"
+    "@tvs/core": "workspace:*",
+    "@veilsign/core": "file:../../../VeilSign"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
