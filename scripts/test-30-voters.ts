@@ -3,15 +3,19 @@
  * Test script: 30 Voters Simulation
  *
  * Simulates a complete election with 30 voters:
- * 1. Create election with candidates
- * 2. Register 30 voters
- * 3. Cast 30 votes (encrypted via VeilForms)
- * 4. Display results
+ * 1. Create election with threshold key ceremony
+ * 2. Register trustees and complete ceremony
+ * 3. Register 30 voters
+ * 4. Cast 30 votes (encrypted via VeilForms)
+ * 5. Display results
  */
 
 import { createCipheriv, randomBytes, createHash } from 'crypto';
 
 const API_URL = 'http://localhost:3000';
+
+// VeilKey will be loaded dynamically
+let feldmanSplit: any;
 
 // ============================================================================
 // VeilForms Encryption (inline from @tvs/veilforms)
@@ -107,6 +111,10 @@ async function main() {
   console.log('║       TVS - 30 Voters Simulation Test                      ║');
   console.log('╚════════════════════════════════════════════════════════════╝\n');
 
+  // Load VeilKey dynamically
+  const veilkey = await import('../../VeilKey/dist/index.js');
+  feldmanSplit = veilkey.feldmanSplit;
+
   // Check API health
   console.log('🔍 Checking API health...');
   try {
@@ -118,9 +126,9 @@ async function main() {
   }
 
   // ==========================================================================
-  // Step 1: Create Election
+  // Step 1: Create Election with Threshold Key Ceremony
   // ==========================================================================
-  console.log('📋 Step 1: Creating election...');
+  console.log('📋 Step 1: Creating election with 2-of-3 threshold...');
 
   const now = new Date();
   const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
@@ -132,6 +140,8 @@ async function main() {
       description: 'Annual election for student body president',
       startTime: now.toISOString(),
       endTime: endTime.toISOString(),
+      threshold: 2,
+      totalTrustees: 3,
       candidates: [
         { name: 'Alice Johnson' },
         { name: 'Bob Smith' },
@@ -145,12 +155,62 @@ async function main() {
   const candidates = electionData.election.candidates;
 
   console.log(`   ✓ Election created: ${electionId}`);
+  console.log(`   ✓ Threshold: 2-of-3 trustees`);
   console.log(`   ✓ Candidates: ${candidates.map((c: any) => c.name).join(', ')}\n`);
 
   // ==========================================================================
-  // Step 2: Open Registration
+  // Step 2: Register Trustees and Complete Key Ceremony
   // ==========================================================================
-  console.log('📝 Step 2: Opening registration...');
+  console.log('🔐 Step 2: Key ceremony - registering 3 trustees...');
+
+  const trusteeNames = ['Trustee-Alice', 'Trustee-Bob', 'Trustee-Carol'];
+  const trustees: any[] = [];
+
+  for (const name of trusteeNames) {
+    const result = await api(`/api/elections/${electionId}/trustees`, {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        publicKey: randomBytes(32).toString('hex'), // Simulated public key
+      }),
+    });
+    trustees.push(result.trustee);
+    console.log(`   ✓ Registered: ${name}`);
+  }
+
+  // Submit commitments from each trustee
+  console.log('   Submitting Feldman commitments...');
+
+  for (const trustee of trustees) {
+    // Generate valid Feldman commitments using VeilKey
+    const secret = BigInt('0x' + randomBytes(32).toString('hex'));
+    const feldmanResult = feldmanSplit(secret, 2, 3); // threshold=2, total=3
+
+    // Convert bigint curve points to strings for JSON
+    const feldmanCommitments = feldmanResult.commitments.map(pt => ({
+      x: pt.x.toString(),
+      y: pt.y.toString(),
+    }));
+
+    const result = await api(`/api/elections/${electionId}/trustees/${trustee.id}/commitment`, {
+      method: 'POST',
+      body: JSON.stringify({
+        commitmentHash: sha256(JSON.stringify(feldmanCommitments)),
+        feldmanCommitments,
+      }),
+    });
+
+    if (result.status === 'finalized') {
+      console.log(`   ✓ Ceremony finalized! Public key generated.`);
+    }
+  }
+
+  console.log('   ✓ Key ceremony complete\n');
+
+  // ==========================================================================
+  // Step 3: Open Registration
+  // ==========================================================================
+  console.log('📝 Step 3: Opening voter registration...');
 
   await api(`/api/elections/${electionId}/status`, {
     method: 'PATCH',
@@ -160,9 +220,9 @@ async function main() {
   console.log('   ✓ Registration is now open\n');
 
   // ==========================================================================
-  // Step 3: Register 30 Voters
+  // Step 4: Register 30 Voters
   // ==========================================================================
-  console.log('👥 Step 3: Registering 30 voters...');
+  console.log('👥 Step 4: Registering 30 voters...');
 
   const voters: Voter[] = [];
 
@@ -192,9 +252,9 @@ async function main() {
   console.log(`   ✓ Registration stats: ${regStats.registeredCount} voters\n`);
 
   // ==========================================================================
-  // Step 4: Open Voting
+  // Step 5: Open Voting
   // ==========================================================================
-  console.log('🗳️  Step 4: Opening voting...');
+  console.log('🗳️  Step 5: Opening voting...');
 
   await api(`/api/elections/${electionId}/status`, {
     method: 'PATCH',
@@ -204,9 +264,9 @@ async function main() {
   console.log('   ✓ Voting is now open\n');
 
   // ==========================================================================
-  // Step 5: Cast 30 Votes
+  // Step 6: Cast 30 Votes
   // ==========================================================================
-  console.log('🗳️  Step 5: Casting 30 votes...');
+  console.log('🗳️  Step 6: Casting 30 votes...');
 
   // Distribute votes somewhat randomly but with a clear winner
   // Alice: 12 votes, Bob: 9 votes, Carol: 6 votes, David: 3 votes
@@ -276,9 +336,9 @@ async function main() {
   console.log('   ✓ All 30 votes cast                   \n');
 
   // ==========================================================================
-  // Step 6: Display Results
+  // Step 7: Display Results
   // ==========================================================================
-  console.log('📊 Step 6: Final Statistics\n');
+  console.log('📊 Step 7: Final Statistics\n');
 
   // Get vote stats
   const voteStats = await api(`/api/vote/stats/${electionId}`);

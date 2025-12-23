@@ -73,7 +73,10 @@ export async function trusteeRoutes(fastify: FastifyInstance) {
     const { electionId, trusteeId } = request.params as { electionId: string; trusteeId: string };
     const body = z.object({
       commitmentHash: z.string().min(1),
-      feldmanCommitments: z.any(), // FeldmanCommitments type
+      feldmanCommitments: z.array(z.object({
+        x: z.string(),
+        y: z.string(),
+      })),
     }).parse(request.body);
 
     const ceremony = keyCeremonies.get(electionId);
@@ -86,8 +89,14 @@ export async function trusteeRoutes(fastify: FastifyInstance) {
       ceremony.startCommitmentPhase();
     }
 
+    // Convert string coordinates to bigint (JSON doesn't support bigint)
+    const feldmanCommitments = body.feldmanCommitments.map(pt => ({
+      x: BigInt(pt.x),
+      y: BigInt(pt.y),
+    }));
+
     // Submit the commitment
-    ceremony.submitCommitment(trusteeId, body.commitmentHash, body.feldmanCommitments);
+    ceremony.submitCommitment(trusteeId, body.commitmentHash, feldmanCommitments);
 
     // Update trustee status
     const electionTrustees = trustees.get(electionId) || [];
@@ -110,10 +119,13 @@ export async function trusteeRoutes(fastify: FastifyInstance) {
         elections.set(electionId, election);
       }
 
+      // Convert BigInt values to strings for JSON serialization
       return {
         status: 'finalized',
         publicKey: result.publicKey,
-        ceremonyResult: result,
+        threshold: result.threshold,
+        totalParticipants: result.totalParticipants,
+        completedAt: result.completedAt.toISOString(),
       };
     }
 
