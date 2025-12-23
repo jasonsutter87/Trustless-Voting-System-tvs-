@@ -15,6 +15,7 @@
   "dependencies": {
     "@tvs/core": "workspace:*",
     "@tvs/veilsign": "workspace:*",
+    "@veilkey/core": "workspace:*",
     "@tvs/veilchain": "workspace:*",
     "@tvs/veilproof": "workspace:*",
     "@tvs/veilforms": "workspace:*",
