@@ -8,6 +8,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { electionRoutes } from './routes/elections.js';
+import { trusteeRoutes } from './routes/trustees.js';
 import { registrationRoutes } from './routes/registration.js';
 import { votingRoutes } from './routes/voting.js';
 import { verifyRoutes } from './routes/verify.js';
@@ -28,6 +29,7 @@ fastify.get('/health', async () => {
 
 // Register routes
 await fastify.register(electionRoutes, { prefix: '/api/elections' });
+await fastify.register(trusteeRoutes, { prefix: '/api/elections' }); // Mounted under elections for /elections/:id/trustees
 await fastify.register(registrationRoutes, { prefix: '/api/register' });
 await fastify.register(votingRoutes, { prefix: '/api/vote' });
 await fastify.register(verifyRoutes, { prefix: '/api/verify' });
