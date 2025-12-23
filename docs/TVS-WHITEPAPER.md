@@ -1512,6 +1512,20 @@ Together, these five components create a system where mathematical proof replace
 
 ---
 
+## Appendix C: Project Repositories
+
+All TVS components are open source and available on GitHub:
+
+| Repository | Description | Link |
+|------------|-------------|------|
+| **TVS** | Main voting system | [github.com/jasonsutter87/Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-) |
+| **VeilKey** | Threshold cryptography | [github.com/jasonsutter87/VeilKey](https://github.com/jasonsutter87/VeilKey) |
+| **VeilSign** | Blind signatures | [github.com/jasonsutter87/VeilSign](https://github.com/jasonsutter87/VeilSign) |
+| **VeilForms** | Client-side encryption | [github.com/jasonsutter87/veilforms](https://github.com/jasonsutter87/veilforms) |
+| **VeilChain** | Merkle tree ledger | [github.com/jasonsutter87/veilchain](https://github.com/jasonsutter87/veilchain) |
+
+---
+
 *Document version: 1.2*
 *Last updated: December 2025*
 *Authors: TVS Development Team*
