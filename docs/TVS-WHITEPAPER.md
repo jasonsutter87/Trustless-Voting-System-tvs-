@@ -1,6 +1,8 @@
 # TVS: A Trustless Voting System
 
-**Version 1.0 — December 2025**
+**Version 1.2 — December 2025**
+
+> **GitHub**: [github.com/jasonsutter87/Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-)
 
 ---
 
@@ -16,14 +18,15 @@ We propose a cryptographic voting system that achieves voter privacy, vote integ
 2. [Problem Statement](#2-problem-statement)
 3. [System Overview](#3-system-overview)
 4. [Cryptographic Primitives](#4-cryptographic-primitives)
-5. [Threshold Key Management (VeilKey)](#5-threshold-key-management-veilkey)
-6. [Protocol Specification](#6-protocol-specification)
-7. [Data Flow and Transformations](#7-data-flow-and-transformations)
-8. [Security Model](#8-security-model)
-9. [What the Database Sees](#9-what-the-database-sees)
-10. [Verification and Auditability](#10-verification-and-auditability)
-11. [Threat Analysis](#11-threat-analysis)
-12. [Conclusion](#12-conclusion)
+5. [The Veil Product Suite](#5-the-veil-product-suite)
+6. [Threshold Key Management (VeilKey)](#6-threshold-key-management-veilkey)
+7. [Protocol Specification](#7-protocol-specification)
+8. [Data Flow and Transformations](#8-data-flow-and-transformations)
+9. [Security Model](#9-security-model)
+10. [What the Database Sees](#10-what-the-database-sees)
+11. [Verification and Auditability](#11-verification-and-auditability)
+12. [Threat Analysis](#12-threat-analysis)
+13. [Conclusion](#13-conclusion)
 
 ---
 
@@ -248,9 +251,296 @@ template VoteProof() {
 
 ---
 
-## 5. Threshold Key Management (VeilKey)
+## 5. The Veil Product Suite
 
-### 5.1 The Single Point of Failure Problem
+TVS is powered by a suite of specialized cryptographic libraries, each solving a critical component of the trustless voting problem. These libraries are designed to be modular, auditable, and reusable in other privacy-preserving applications.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         THE VEIL PRODUCT SUITE                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────┐                                                           │
+│  │   VeilKey    │ ─── Threshold Cryptography                                │
+│  │              │     "No single point of key failure"                      │
+│  └──────────────┘                                                           │
+│         │                                                                    │
+│         ▼                                                                    │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐                 │
+│  │   VeilSign   │     │  VeilForms   │     │  VeilChain   │                 │
+│  │              │     │              │     │              │                 │
+│  │    Blind     │     │   Client     │     │   Merkle     │                 │
+│  │  Signatures  │     │  Encryption  │     │    Tree      │                 │
+│  └──────────────┘     └──────────────┘     └──────────────┘                 │
+│         │                    │                    │                          │
+│         └────────────────────┴────────────────────┘                          │
+│                              │                                               │
+│                              ▼                                               │
+│                    ┌──────────────────┐                                     │
+│                    │     TVS API      │                                     │
+│                    │   Orchestrates   │                                     │
+│                    │   all Veil libs  │                                     │
+│                    └──────────────────┘                                     │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 5.1 VeilKey — Threshold Cryptography
+
+> **GitHub**: [github.com/jasonsutter87/VeilKey](https://github.com/jasonsutter87/VeilKey)
+
+**The Problem VeilKey Solves:**
+
+In traditional voting systems, a single election authority holds the private key that can decrypt all votes. This creates:
+- A single point of compromise (steal one key, read all votes)
+- A coercion target (threaten one person, reveal the election)
+- An insider threat (one malicious admin can break privacy)
+
+**VeilKey's Solution:**
+
+VeilKey implements threshold cryptography ensuring the election private key **never exists in any single location**. Instead, the key is mathematically split among multiple trustees at creation time.
+
+| Feature | Description |
+|---------|-------------|
+| **Shamir Secret Sharing** | Split secrets into n shares where any t can reconstruct |
+| **Feldman VSS** | Verifiable secret sharing with public commitments |
+| **Threshold RSA** | Distributed decryption without reconstructing the key |
+| **Proactive Refresh** | Regenerate shares without changing the public key |
+| **DKG Ceremonies** | Distributed key generation with no trusted dealer |
+
+**How TVS Uses VeilKey:**
+
+```
+Election Setup:
+┌─────────────────────────────────────────────────────┐
+│  VeilKey.createCeremony(threshold=3, trustees=5)    │
+│                                                     │
+│  Result:                                            │
+│  • Public key → Published for vote encryption       │
+│  • Share 1 → Trustee A (University)                 │
+│  • Share 2 → Trustee B (Government)                 │
+│  • Share 3 → Trustee C (NGO)                        │
+│  • Share 4 → Trustee D (Opposition Party)           │
+│  • Share 5 → Trustee E (Independent Auditor)        │
+│                                                     │
+│  Private key → NEVER EXISTS                         │
+└─────────────────────────────────────────────────────┘
+
+Tallying:
+┌─────────────────────────────────────────────────────┐
+│  Any 3 trustees provide partial decryptions         │
+│  VeilKey.combinePartials([partial1, partial2, ...]) │
+│                                                     │
+│  Result: Votes decrypted                            │
+│  Private key: Still never reconstructed             │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+### 5.2 VeilSign — Blind Signature Credentials
+
+> **GitHub**: [github.com/jasonsutter87/VeilSign](https://github.com/jasonsutter87/VeilSign)
+
+**The Problem VeilSign Solves:**
+
+How do you prove someone is eligible to vote without revealing their identity when they vote? Traditional systems either:
+- Link votes to identities (privacy violation)
+- Allow anyone to vote (eligibility violation)
+
+**VeilSign's Solution:**
+
+VeilSign implements Chaum's blind signature protocol, allowing the authority to sign a credential without seeing its contents.
+
+| Feature | Description |
+|---------|-------------|
+| **RSA Blind Signatures** | Sign messages without seeing them |
+| **Unlinkability** | Signature cannot be linked to signing session |
+| **Threshold Signing** | Integration with VeilKey for distributed signing authority |
+| **Batch Verification** | Efficient verification of multiple credentials |
+
+**How TVS Uses VeilSign:**
+
+```
+Registration (Identity Verified):
+┌─────────────────────────────────────────────────────┐
+│  Voter                          Authority           │
+│  ──────                          ─────────          │
+│                                                     │
+│  credential = random()                              │
+│  blinded = VeilSign.blind(credential)               │
+│                                                     │
+│  ─── blinded ───────────────────►                   │
+│                                  (can't see cred)   │
+│                                  signed_blind =     │
+│                                    sign(blinded)    │
+│  ◄─────────────────── signed_blind ───              │
+│                                                     │
+│  signature = VeilSign.unblind(signed_blind)         │
+│                                                     │
+│  // Voter now has valid credential                  │
+│  // Authority cannot link it to voter              │
+└─────────────────────────────────────────────────────┘
+
+Voting (Anonymous):
+┌─────────────────────────────────────────────────────┐
+│  Voter presents:                                    │
+│  • credential (never seen by authority)             │
+│  • signature (verifiable with public key)           │
+│  • encrypted vote                                   │
+│                                                     │
+│  Authority verifies signature is valid              │
+│  Authority CANNOT link to registration              │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+### 5.3 VeilForms — Client-Side Vote Encryption
+
+> **GitHub**: [github.com/jasonsutter87/veilforms](https://github.com/jasonsutter87/veilforms)
+
+**The Problem VeilForms Solves:**
+
+Even with HTTPS, the server receives plaintext form data. In voting, this means the server sees every vote—a critical privacy violation.
+
+**VeilForms's Solution:**
+
+VeilForms encrypts votes in the voter's browser before transmission. The server only ever sees ciphertext it cannot decrypt.
+
+| Feature | Description |
+|---------|-------------|
+| **AES-256-GCM** | Authenticated encryption for vote content |
+| **Hybrid Encryption** | RSA-OAEP for key encapsulation |
+| **Browser-Native** | Uses WebCrypto API, no external dependencies |
+| **Form Integration** | Drop-in replacement for standard form submission |
+| **Zero Server Trust** | Server cannot decrypt without election key |
+
+**How TVS Uses VeilForms:**
+
+```
+In Voter's Browser:
+┌─────────────────────────────────────────────────────┐
+│  vote = { candidateId: "alice", timestamp: now() }  │
+│                                                     │
+│  // Generate random AES key                         │
+│  aesKey = VeilForms.generateKey()                   │
+│                                                     │
+│  // Encrypt vote with AES                           │
+│  ciphertext = VeilForms.encrypt(vote, aesKey)       │
+│                                                     │
+│  // Encrypt AES key with election public key        │
+│  encryptedKey = VeilForms.wrapKey(aesKey, pk)       │
+│                                                     │
+│  // Send to server                                  │
+│  send({ ciphertext, encryptedKey, iv, tag })        │
+└─────────────────────────────────────────────────────┘
+
+On Server:
+┌─────────────────────────────────────────────────────┐
+│  // Server receives:                                │
+│  {                                                  │
+│    ciphertext: "7f3a9c2e8b1d4f7a2c9e3b8d...",      │
+│    encryptedKey: "a7f2c9e1b4d8f3a2c7e9b1...",      │
+│    iv: "3b8c2f9a1e7d4c6b",                         │
+│    tag: "f2e1d4c7b9a3f8e2d1c4b7a9..."              │
+│  }                                                  │
+│                                                     │
+│  // Server CANNOT decrypt                           │
+│  // Decryption requires threshold trustees          │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+### 5.4 VeilChain — Immutable Vote Ledger
+
+> **GitHub**: [github.com/jasonsutter87/veilchain](https://github.com/jasonsutter87/veilchain)
+
+**The Problem VeilChain Solves:**
+
+How do you prove votes haven't been modified, deleted, or added after the election? Traditional databases allow administrators to silently alter records.
+
+**VeilChain's Solution:**
+
+VeilChain implements a Merkle tree data structure that makes any modification cryptographically detectable.
+
+| Feature | Description |
+|---------|-------------|
+| **SHA-256 Merkle Tree** | Tamper-evident data structure |
+| **Inclusion Proofs** | Prove a vote exists in the tree |
+| **Append-Only** | No modifications or deletions |
+| **Root Anchoring** | Publish root to external systems |
+| **Merkle Mountain Range** | Efficient updates at scale |
+
+**How TVS Uses VeilChain:**
+
+```
+Vote Storage:
+┌─────────────────────────────────────────────────────┐
+│                    Root Hash                        │
+│                   (published)                       │
+│                   /         \                       │
+│                  /           \                      │
+│            Hash(0,1)        Hash(2,3)               │
+│            /      \         /      \                │
+│           /        \       /        \               │
+│      Hash(V₀)  Hash(V₁) Hash(V₂)  Hash(V₃)         │
+│         │         │        │         │              │
+│        V₀        V₁       V₂        V₃              │
+│   (enc vote) (enc vote) (enc vote) (enc vote)       │
+└─────────────────────────────────────────────────────┘
+
+Voter Verification:
+┌─────────────────────────────────────────────────────┐
+│  After voting, voter receives:                      │
+│  • Merkle position (e.g., 42)                       │
+│  • Merkle proof (sibling hashes)                    │
+│  • Current root hash                                │
+│                                                     │
+│  Later, voter can verify:                           │
+│  VeilChain.verifyInclusion(                         │
+│    myVoteHash,                                      │
+│    merkleProof,                                     │
+│    publishedRoot                                    │
+│  ) → true/false                                     │
+│                                                     │
+│  If root changed, votes were tampered!              │
+└─────────────────────────────────────────────────────┘
+
+External Anchoring:
+┌─────────────────────────────────────────────────────┐
+│  Root hash anchored to:                             │
+│  • Bitcoin (OP_RETURN)                              │
+│  • Ethereum (smart contract)                        │
+│  • Multiple newspapers                              │
+│  • Government archives                              │
+│                                                     │
+│  Tampering now requires modifying ALL anchors       │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+### 5.5 Product Integration Summary
+
+| Product | TVS Function | Problem Solved |
+|---------|--------------|----------------|
+| **VeilKey** | Key ceremony, threshold decryption | No single point of key failure |
+| **VeilSign** | Anonymous credential issuance | Eligible voting without identity linkage |
+| **VeilForms** | Client-side vote encryption | Server never sees plaintext votes |
+| **VeilChain** | Immutable vote storage | Tamper-evident, verifiable ledger |
+| **VeilProof** | Zero-knowledge vote validity | Prove validity without revealing vote |
+
+Together, these products ensure that **mathematical proof replaces institutional trust**.
+
+---
+
+## 6. Threshold Key Management (VeilKey)
+
+### 6.1 The Single Point of Failure Problem
 
 In traditional voting systems, the election private key presents a critical vulnerability:
 
@@ -275,7 +565,7 @@ If any single party holds the complete private key, they can:
 - Be coerced by governments or attackers
 - Act as a single point of compromise
 
-### 5.2 Threshold Cryptography Solution
+### 6.2 Threshold Cryptography Solution
 
 VeilKey solves this by ensuring the complete private key **never exists**:
 
@@ -299,7 +589,7 @@ VeilKey Threshold Key Management (3-of-5):
                     └───────────────┘
 ```
 
-### 5.3 Shamir Secret Sharing
+### 6.3 Shamir Secret Sharing
 
 VeilKey uses Shamir's Secret Sharing to split secrets into shares where any `t` of `n` can reconstruct, but `t-1` learn nothing.
 
@@ -320,7 +610,7 @@ Reconstruction via Lagrange interpolation:
 
 **Security Property:** Any subset of `t-1` shares reveals no information about `s` (information-theoretic security).
 
-### 5.4 Feldman Verifiable Secret Sharing
+### 6.4 Feldman Verifiable Secret Sharing
 
 To prevent malicious dealers from distributing invalid shares, VeilKey uses Feldman VSS which allows share verification without reconstruction:
 
@@ -334,7 +624,7 @@ Each shareholder i verifies their share (i, yᵢ):
 If verification fails, shareholder can prove dealer cheated.
 ```
 
-### 5.5 Threshold RSA for Election Keys
+### 6.5 Threshold RSA for Election Keys
 
 VeilKey implements threshold RSA (Shoup protocol) for election encryption/decryption:
 
@@ -379,7 +669,7 @@ ThresholdDecrypt(ciphertext, shares[]):
     return plaintext
 ```
 
-### 5.6 Key Ceremony Protocol
+### 6.6 Key Ceremony Protocol
 
 Before each election, a public key ceremony establishes threshold keys:
 
@@ -417,7 +707,7 @@ Before each election, a public key ceremony establishes threshold keys:
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 5.7 Proactive Share Refresh
+### 6.7 Proactive Share Refresh
 
 VeilKey supports share refresh to protect against long-term compromise:
 
@@ -444,7 +734,7 @@ Share Refresh Protocol:
 
 **Security Property:** An attacker who compromises shares before AND after refresh cannot combine them—they are cryptographically independent.
 
-### 5.8 VeilKey Integration in TVS
+### 6.8 VeilKey Integration in TVS
 
 ```
 Election Lifecycle with VeilKey:
@@ -478,9 +768,9 @@ Election Lifecycle with VeilKey:
 
 ---
 
-## 6. Protocol Specification
+## 7. Protocol Specification
 
-### 6.1 Election Setup (with VeilKey)
+### 7.1 Election Setup (with VeilKey)
 
 ```
 ElectionSetup(name, candidates, startTime, endTime, trustees[5]):
@@ -532,7 +822,7 @@ ElectionSetup(name, candidates, startTime, endTime, trustees[5]):
     return election
 ```
 
-### 6.2 Voter Registration
+### 7.2 Voter Registration
 
 ```
 Register(voter_id, election_id):
@@ -590,7 +880,7 @@ Register(voter_id, election_id):
 - The server does NOT have: the credential nullifier or signature
 - The voter has: a valid credential that cannot be linked to their identity
 
-### 6.3 Vote Casting
+### 7.3 Vote Casting
 
 ```
 CastVote(election_id, candidate_id, credential):
@@ -681,7 +971,7 @@ CastVote(election_id, candidate_id, credential):
     }
 ```
 
-### 6.4 Tallying (with VeilKey Threshold Decryption)
+### 7.4 Tallying (with VeilKey Threshold Decryption)
 
 ```
 Tally(election_id, trustee_shares[]):
@@ -745,9 +1035,9 @@ Tally(election_id, trustee_shares[]):
 
 ---
 
-## 7. Data Flow and Transformations
+## 8. Data Flow and Transformations
 
-### 7.1 Complete Data Lifecycle
+### 8.1 Complete Data Lifecycle
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -812,7 +1102,7 @@ Merkle Root             │   ✓    │   ✓    │    ✓     │   ✓    �
 Merkle Proof            │   ✓    │   ✓    │    ✓     │   ✓    │
 ```
 
-### 7.2 Pre-Encryption vs Post-Encryption
+### 8.2 Pre-Encryption vs Post-Encryption
 
 **BEFORE VeilForms Encryption (Client-Side Only):**
 ```json
@@ -835,7 +1125,7 @@ Merkle Proof            │   ✓    │   ✓    │    ✓     │   ✓    �
 ```
 *This is what the server receives. It's computationally infeasible to decrypt without the election private key.*
 
-### 7.3 Nullifier Unlinkability
+### 8.3 Nullifier Unlinkability
 
 The nullifier provides double-voting prevention while maintaining unlinkability:
 
@@ -864,9 +1154,9 @@ to the nullifier used during voting.
 
 ---
 
-## 8. Security Model
+## 9. Security Model
 
-### 8.1 Adversary Capabilities
+### 9.1 Adversary Capabilities
 
 We consider adversaries who can:
 
@@ -877,7 +1167,7 @@ We consider adversaries who can:
 | Network eavesdropping | A_N | Can observe all network traffic |
 | Corrupt voters | A_V | Can control some voters' actions |
 
-### 8.2 Security Guarantees
+### 9.2 Security Guarantees
 
 **Theorem 1 (Vote Privacy):** Even if A_S ∧ A_D ∧ A_N, the adversary cannot determine how an honest voter voted.
 
@@ -911,7 +1201,7 @@ We consider adversaries who can:
 - Root hash published/anchored to external systems
 - Voter receives Merkle proof at vote time
 
-### 8.3 Trust Assumptions (with VeilKey)
+### 9.3 Trust Assumptions (with VeilKey)
 
 TVS requires trust in:
 
@@ -941,9 +1231,9 @@ TVS does NOT require trust in:
 
 ---
 
-## 9. What the Database Sees
+## 10. What the Database Sees
 
-### 9.1 Database Schema
+### 10.1 Database Schema
 
 ```sql
 -- What's stored (all public information)
@@ -964,7 +1254,7 @@ BEFORE UPDATE OR DELETE ON votes
 FOR EACH ROW EXECUTE FUNCTION prevent_modification();
 ```
 
-### 9.2 Sample Database Record
+### 10.2 Sample Database Record
 
 ```json
 {
@@ -989,7 +1279,7 @@ FOR EACH ROW EXECUTE FUNCTION prevent_modification();
 }
 ```
 
-### 9.3 What Database Operators Can Learn
+### 10.3 What Database Operators Can Learn
 
 | Data Field | Can DB Admin Determine? | Explanation |
 |------------|------------------------|-------------|
@@ -1000,7 +1290,7 @@ FOR EACH ROW EXECUTE FUNCTION prevent_modification();
 | Vote order? | ✅ YES | Merkle position visible |
 | Valid votes? | ✅ YES | ZK proof can be verified |
 
-### 9.4 Attack Scenarios
+### 10.4 Attack Scenarios
 
 **Scenario: Malicious DBA tries to determine votes**
 
@@ -1035,9 +1325,9 @@ Impact: Published root hash won't match
 
 ---
 
-## 10. Verification and Auditability
+## 11. Verification and Auditability
 
-### 10.1 Individual Verification
+### 11.1 Individual Verification
 
 Each voter can verify their vote was included:
 
@@ -1065,7 +1355,7 @@ VerifyMyVote(confirmation_code, merkle_proof, public_root):
     return SUCCESS("Vote verified in the ledger")
 ```
 
-### 10.2 Universal Verification
+### 11.2 Universal Verification
 
 Anyone can verify election integrity:
 
@@ -1103,7 +1393,7 @@ VerifyElection(election_id, published_results, published_root):
     return SUCCESS("Election integrity verified")
 ```
 
-### 10.3 Merkle Root Anchoring
+### 11.3 Merkle Root Anchoring
 
 For additional tamper-evidence, the Merkle root can be anchored to external systems:
 
@@ -1122,9 +1412,9 @@ Once anchored, any modification to votes would require:
 
 ---
 
-## 11. Threat Analysis
+## 12. Threat Analysis
 
-### 11.1 Threat Matrix
+### 12.1 Threat Matrix
 
 | Threat | Mitigation | Residual Risk |
 |--------|-----------|---------------|
@@ -1140,7 +1430,7 @@ Once anchored, any modification to votes would require:
 | **Key theft** | **VeilKey: key never exists in one place** | **No complete key to steal** |
 | **Insider attack** | **VeilKey: 1-2 malicious trustees insufficient** | **Threshold security** |
 
-### 11.2 Comparison with Other Systems
+### 12.2 Comparison with Other Systems
 
 | Property | Paper Ballot | Basic E-Voting | Blockchain Voting | TVS |
 |----------|-------------|----------------|-------------------|-----|
@@ -1154,7 +1444,7 @@ Once anchored, any modification to votes would require:
 
 ---
 
-## 12. Conclusion
+## 13. Conclusion
 
 TVS demonstrates that it is possible to build an electronic voting system that:
 
@@ -1222,7 +1512,7 @@ Together, these five components create a system where mathematical proof replace
 
 ---
 
-*Document version: 1.1*
+*Document version: 1.2*
 *Last updated: December 2025*
 *Authors: TVS Development Team*
 
@@ -1230,5 +1520,6 @@ Together, these five components create a system where mathematical proof replace
 
 ## Changelog
 
-- **v1.1** (December 2025): Added VeilKey threshold cryptography (Section 5), updated all protocols to use distributed key management, added key ceremony specification
+- **v1.2** (December 2025): Added comprehensive Veil Product Suite section (Section 5) with GitHub links, detailed each product's problem/solution
+- **v1.1** (December 2025): Added VeilKey threshold cryptography (Section 6), updated all protocols to use distributed key management, added key ceremony specification
 - **v1.0** (December 2025): Initial release
