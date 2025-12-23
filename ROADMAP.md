@@ -1,423 +1,270 @@
-# Trustless Voting System (TVS) — Master Roadmap
+# TVS Development Roadmap
 
-## The Grand Vision
+**Last Updated: December 2025**
 
-Build the world's first **truly trustless voting infrastructure** by creating a suite of standalone cryptographic products that combine into an end-to-end verifiable election system.
-
-**End State**: Replace Dominion as the default US voting system with open-source, mathematically verifiable technology.
+> Building a trustless voting system through modular cryptographic components.
 
 ---
 
-## The Product Stack
+## Vision
+
+TVS aims to become the gold standard for secure, verifiable, and private electronic voting. Our approach: build each cryptographic component as a standalone, auditable library, then integrate them into a complete voting system.
+
+---
+
+## The Veil Product Suite
+
+| Product | Repository | Status | Description |
+|---------|------------|--------|-------------|
+| **VeilKey** | [github.com/jasonsutter87/VeilKey](https://github.com/jasonsutter87/VeilKey) | ✅ Complete | Threshold cryptography (Shamir, Feldman VSS, DKG) |
+| **VeilSign** | [github.com/jasonsutter87/VeilSign](https://github.com/jasonsutter87/VeilSign) | 🔄 In Progress | Blind signatures for anonymous credentials |
+| **VeilForms** | [github.com/jasonsutter87/veilforms](https://github.com/jasonsutter87/veilforms) | 🔄 In Progress | Client-side vote encryption |
+| **VeilChain** | [github.com/jasonsutter87/veilchain](https://github.com/jasonsutter87/veilchain) | 🔄 In Progress | Merkle tree vote ledger |
+| **VeilProof** | TBD | 📋 Planned | Zero-knowledge vote validity proofs |
+| **TVS** | [github.com/jasonsutter87/Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-) | 🔄 In Progress | Complete voting system integration |
+
+---
+
+## Development Phases
+
+### Phase 1: Core Cryptography ✅
+
+**Status: Complete**
+
+Build the foundational threshold cryptography library.
+
+- [x] Shamir Secret Sharing
+- [x] Feldman Verifiable Secret Sharing
+- [x] Ceremony Coordinator for key generation
+- [x] Threshold share verification
+- [x] Proactive share refresh
+- [x] Comprehensive test suite
+
+**Deliverable**: [@veilkey/core](https://github.com/jasonsutter87/VeilKey)
+
+---
+
+### Phase 2: TVS API Integration ✅
+
+**Status: Complete**
+
+Integrate VeilKey into TVS for threshold key ceremonies.
+
+- [x] Add VeilKey dependency to TVS API
+- [x] Trustee registration routes
+- [x] Feldman commitment submission
+- [x] Key ceremony finalization
+- [x] Election creation with threshold config
+- [x] 30, 300, 3000 voter E2E tests passing
+
+**Deliverables**:
+- Trustee management API (`/api/elections/:id/trustees`)
+- Key ceremony workflow
+- Threshold decryption routes
+
+---
+
+### Phase 3: Blind Signatures 🔄
+
+**Status: In Progress**
+
+Implement anonymous credential issuance via VeilSign.
+
+- [ ] RSA blind signature scheme
+- [ ] Threshold signing integration (with VeilKey)
+- [ ] Credential issuance protocol
+- [ ] Batch signature verification
+- [ ] Integration with TVS registration flow
+
+**Deliverable**: [@veilsign/core](https://github.com/jasonsutter87/VeilSign)
+
+---
+
+### Phase 4: Client-Side Encryption 🔄
+
+**Status: In Progress**
+
+Ensure votes are encrypted in the browser, never seen by server.
+
+- [ ] AES-256-GCM vote encryption
+- [ ] Hybrid encryption with election public key
+- [ ] WebCrypto API integration
+- [ ] React/Vue component library
+- [ ] Form replacement drop-in
+
+**Deliverable**: [@veilforms/core](https://github.com/jasonsutter87/veilforms)
+
+---
+
+### Phase 5: Immutable Vote Ledger 🔄
+
+**Status: In Progress**
+
+Build tamper-evident vote storage.
+
+- [ ] SHA-256 Merkle tree implementation
+- [ ] Append-only ledger
+- [ ] Inclusion proof generation
+- [ ] Root hash anchoring (Bitcoin, Ethereum)
+- [ ] Merkle Mountain Range for scale
+
+**Deliverable**: [@veilchain/core](https://github.com/jasonsutter87/veilchain)
+
+---
+
+### Phase 6: Zero-Knowledge Proofs 📋
+
+**Status: Planned**
+
+Prove vote validity without revealing the vote.
+
+- [ ] Vote validity circuit (Circom)
+- [ ] Groth16 proof generation
+- [ ] Nullifier computation
+- [ ] Commitment verification
+- [ ] Browser-based proof generation
+
+**Deliverable**: @veilproof/core
+
+---
+
+### Phase 7: Production Scaling 📋
+
+**Status: Planned**
+
+Scale to handle 350+ million votes.
+
+**Target Specifications:**
+| Metric | Target |
+|--------|--------|
+| Voters | 350,000,000 |
+| Throughput | 100,000 votes/sec |
+| Voting Window | 12-24 hours |
+| Availability | 99.99% |
+
+**Architecture Changes:**
+- [ ] PostgreSQL Citus (sharded database)
+- [ ] Kafka message queue
+- [ ] Redis caching layer
+- [ ] Kubernetes horizontal scaling
+- [ ] Merkle Mountain Range optimization
+- [ ] Load testing at 10K, 50K, 100K votes/sec
+
+**Reference**: [architecture-350m-scale.md](./architecture-350m-scale.md)
+
+---
+
+### Phase 8: Security Audit 📋
+
+**Status: Planned**
+
+External cryptographic audit and hardening.
+
+- [ ] Third-party code audit
+- [ ] Formal verification of critical paths
+- [ ] Penetration testing
+- [ ] Bug bounty program
+- [ ] Security documentation
+
+---
+
+### Phase 9: Pilot Deployment 📋
+
+**Status: Planned**
+
+Real-world testing with small elections.
+
+- [ ] University student government elections
+- [ ] Club/organization voting
+- [ ] Corporate board elections
+- [ ] Performance monitoring
+- [ ] User feedback integration
+
+---
+
+## Current Performance
+
+| Test | Voters | Throughput | Status |
+|------|--------|------------|--------|
+| Unit Tests | - | - | ✅ Passing |
+| 30 Voter E2E | 30 | ~300 votes/sec | ✅ Passing |
+| 300 Voter E2E | 300 | ~2,000 votes/sec | ✅ Passing |
+| 3,000 Voter E2E | 3,000 | ~800 votes/sec | ✅ Passing |
+| 350M Voter | 350,000,000 | 100,000 votes/sec | 📋 Planned |
+
+---
+
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           TVS PRODUCT ECOSYSTEM                              │
+│                              TVS ARCHITECTURE                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  LAYER 5: THE SUPER APP                                                      │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    TRUSTLESS VOTING SYSTEM (TVS)                     │    │
-│  │         Combines all products for government-grade elections         │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                     ▲                                        │
-│                                     │                                        │
-│  LAYER 4: VERIFICATION LAYER                                                 │
-│  ┌───────────────────────────────────────────────────────────────┐          │
-│  │                         VEILPROOF                              │          │
-│  │            Zero-Knowledge Proofs as a Service                  │          │
-│  │     "Prove vote is valid without revealing the choice"         │          │
-│  └───────────────────────────────────────────────────────────────┘          │
-│                                     ▲                                        │
-│                                     │                                        │
-│  LAYER 3: STORAGE & IDENTITY                                                 │
-│  ┌────────────────────────────┐    ┌────────────────────────────┐           │
-│  │         VEILCHAIN          │    │         VEILSIGN           │           │
-│  │   Merkle Tree Ledger       │    │   Blind Signatures         │           │
-│  │   "Immutable vote record"  │    │   "Anonymous credentials"  │           │
-│  └────────────────────────────┘    └────────────────────────────┘           │
-│                                     ▲                                        │
-│                                     │                                        │
-│  LAYER 2: KEY MANAGEMENT (CRITICAL FOR GOVERNMENT)                          │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                          VEILKEY 🔑                                  │    │
-│  │           Threshold Cryptography — Distributed Key Management        │    │
-│  │         "No single party ever holds the complete private key"        │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                     ▲                                        │
-│                                     │                                        │
-│  LAYER 1: INPUT LAYER (COMPLETE)                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                         VEILFORMS ✅                                 │    │
-│  │              Zero Trust Forms — Client-side encryption               │    │
-│  │                    veilforms.com (LIVE)                              │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │                         VOTER BROWSER                                 │   │
+│  │                                                                       │   │
+│  │   VeilForms ──► Encrypt vote with election public key                │   │
+│  │   VeilProof ──► Generate ZK proof of vote validity                   │   │
+│  │                                                                       │   │
+│  └───────────────────────────────┬──────────────────────────────────────┘   │
+│                                  │                                          │
+│                                  ▼                                          │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │                          TVS API                                      │   │
+│  │                                                                       │   │
+│  │   VeilSign ──► Issue anonymous credentials (blind signatures)        │   │
+│  │   VeilChain ─► Store encrypted votes in Merkle tree                  │   │
+│  │   VeilKey ───► Manage threshold key ceremonies                       │   │
+│  │                                                                       │   │
+│  └───────────────────────────────┬──────────────────────────────────────┘   │
+│                                  │                                          │
+│                                  ▼                                          │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │                         TRUSTEES (5)                                  │   │
+│  │                                                                       │   │
+│  │   VeilKey ──► Hold key shares, provide partial decryptions           │   │
+│  │               No single trustee can decrypt                          │   │
+│  │                                                                       │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Phase Overview
+## Security Properties
 
-| Phase | Product | Purpose in TVS | Status |
-|-------|---------|----------------|--------|
-| 1 | VeilForms | Encrypted vote input | ✅ COMPLETE |
-| 2 | VeilChain | Immutable vote ledger | ✅ COMPLETE |
-| 3 | VeilSign | Anonymous voter credentials | ✅ COMPLETE |
-| 4 | VeilProof | Vote validity proofs | ✅ COMPLETE |
-| 5 | **VeilKey** | **Threshold key management** | 🔲 **BUILD NEXT** |
-| 6 | GhostBeat | Infrastructure monitoring | 🔲 INTEGRATE |
-| 7 | TVS | Combined voting system | 🔲 FINAL GOAL |
-
----
-
-## Detailed Roadmap
-
-### PHASE 1: VeilForms ✅ (COMPLETE)
-**What it provides to TVS**: Secure, encrypted vote submission from the client
-
-- [x] Client-side RSA-2048 + AES-256-GCM encryption
-- [x] Zero-knowledge storage (server never sees plaintext)
-- [x] PII detection and stripping
-- [x] Anonymous submission IDs
-- [x] Docker self-hosting capability
-- [x] Rate limiting and idempotency
-- [x] Production deployment at veilforms.com
+| Property | How Achieved |
+|----------|--------------|
+| **Vote Privacy** | VeilForms encrypts in browser; server never sees plaintext |
+| **Voter Anonymity** | VeilSign blind signatures unlink identity from vote |
+| **Vote Integrity** | VeilChain Merkle tree makes tampering detectable |
+| **No Single Point of Failure** | VeilKey threshold (3-of-5) splits key among trustees |
+| **Vote Validity** | VeilProof ZK proofs ensure only valid votes counted |
+| **Coercion Resistance** | Secret ballot; voter can't prove how they voted |
 
 ---
 
-### PHASE 2: VeilChain (Q1 2025)
-**What it provides to TVS**: Tamper-proof, publicly verifiable vote storage
+## Contributing
 
-#### Milestones
-- [ ] **M1: Core Merkle Tree Engine**
-  - Implement sparse Merkle tree
-  - SHA-256 leaf hashing
-  - Efficient proof generation
-  - Append-only enforcement
+Each Veil product is independently developed and tested:
 
-- [ ] **M2: Storage Backend**
-  - PostgreSQL with append-only triggers
-  - MinIO for blob storage (self-hosted)
-  - Netlify Blobs integration (cloud)
+1. **VeilKey**: Threshold cryptography primitives
+2. **VeilSign**: Blind signature protocols
+3. **VeilForms**: Browser encryption library
+4. **VeilChain**: Merkle tree implementation
+5. **VeilProof**: Zero-knowledge circuits
 
-- [ ] **M3: Public Verification API**
-  - GET /root — current tree root
-  - GET /proof/:entryId — inclusion proof
-  - POST /verify — validate proof
-  - WebSocket for root updates
-
-- [ ] **M4: Anchoring System**
-  - Bitcoin OP_RETURN anchoring
-  - Ethereum anchoring (optional)
-  - Public transparency log
-  - Timestamp authority integration
-
-- [ ] **M5: SDK & Documentation**
-  - JavaScript/TypeScript SDK
-  - Python SDK
-  - API documentation
-  - Integration guides
-
-- [ ] **M6: Security Hardening**
-  - Penetration testing
-  - Formal verification of tree operations
-  - Rate limiting and abuse prevention
-  - Audit by security firm
+Contributions welcome at each repository. See individual repos for contribution guidelines.
 
 ---
 
-### PHASE 3: VeilSign (Q2 2025)
-**What it provides to TVS**: Anonymous voter credentials (prove eligibility without revealing identity)
+## Contact
 
-#### Milestones
-- [ ] **M1: Blind Signature Core**
-  - Chaum blind signature implementation
-  - RSA-based blinding/unblinding
-  - Credential format specification
-
-- [ ] **M2: Authority Service**
-  - Credential issuance API
-  - Multi-authority support
-  - Key ceremony procedures
-
-- [ ] **M3: Verifier SDK**
-  - Credential verification
-  - Revocation checking
-  - Offline verification support
-
-- [ ] **M4: Credential Wallet**
-  - Browser extension
-  - Mobile app (React Native)
-  - Secure storage (encrypted)
-
-- [ ] **M5: Production Hardening**
-  - HSM integration for authority keys
-  - Threshold signing (k-of-n)
-  - Security audit
+- **GitHub**: [github.com/jasonsutter87](https://github.com/jasonsutter87)
+- **TVS Main Repo**: [Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-)
 
 ---
 
-### PHASE 4: VeilProof (Q3 2025)
-**What it provides to TVS**: Zero-knowledge proofs that vote is valid without revealing choice
-
-#### Milestones
-- [ ] **M1: Circuit Development**
-  - Vote validity circuit (Circom/Noir)
-  - Credential ownership proof
-  - Range proofs for ballot options
-
-- [ ] **M2: Proof Generation Service**
-  - WASM prover for browser
-  - Server-side proving (heavy workloads)
-  - Proof caching and optimization
-
-- [ ] **M3: Verification Infrastructure**
-  - On-chain verifier (Ethereum)
-  - Off-chain verification API
-  - Batch verification
-
-- [ ] **M4: Pre-built Circuits Library**
-  - Age verification
-  - Income threshold
-  - Membership proof
-  - Location proof
-
-- [ ] **M5: Security & Performance**
-  - Trusted setup ceremony (if Groth16)
-  - Or PLONK for no trusted setup
-  - Proof size optimization
-  - Verification time optimization
-
----
-
-### PHASE 5: VeilKey (Q3-Q4 2025) 🔑
-**What it provides to TVS**: Distributed key management so no single party ever holds complete private keys
-
-**Why this is CRITICAL for government elections:**
-- Election encryption keys held by 3-of-5 trustees
-- No single trustee can decrypt votes alone
-- Key ceremonies with public verification
-- Proactive key refresh without changing public key
-- HSM integration for hardware security
-
-#### Milestones
-- [ ] **M1: Core Threshold Cryptography**
-  - Shamir Secret Sharing over GF(2^256)
-  - Feldman Verifiable Secret Sharing
-  - Configurable t-of-n parameters
-  - Share verification without reconstruction
-
-- [ ] **M2: Threshold RSA (Shoup Protocol)**
-  - Distributed key generation
-  - Partial signature generation
-  - Signature combination
-  - ZK proof of partial correctness
-  - Standard RSA output (compatible with existing systems)
-
-- [ ] **M3: Threshold ECDSA (GG20)**
-  - Distributed Key Generation (DKG)
-  - Presigning protocol (offline phase)
-  - Online signing
-  - secp256k1 support (Bitcoin/Ethereum compatible)
-  - P-256 support
-
-- [ ] **M4: Threshold BLS Signatures**
-  - BLS12-381 curve implementation
-  - Threshold key generation
-  - Signature aggregation
-  - Batch verification
-
-- [ ] **M5: Key Ceremony Tools**
-  - Web UI for multi-party key generation
-  - Participant management
-  - Commitment collection and verification
-  - Share distribution (encrypted)
-  - Complete audit log with cryptographic proofs
-
-- [ ] **M6: Proactive Security**
-  - Share refresh protocol
-  - Automatic refresh scheduling
-  - Refresh without changing public key
-  - Lost share recovery (with threshold)
-  - Share refresh audit trail
-
-- [ ] **M7: Enterprise & HSM Integration**
-  - PKCS#11 interface
-  - AWS CloudHSM support
-  - Azure Dedicated HSM support
-  - YubiHSM support
-  - Share storage in HSM
-
-- [ ] **M8: API Service & SDK**
-  - REST API for key group management
-  - Signing operations API
-  - TypeScript/JavaScript SDK
-  - Python SDK
-  - Comprehensive documentation
-
-#### VeilKey Integration Points in TVS
-| Integration | Description |
-|-------------|-------------|
-| Election Keys | 3-of-5 trustees hold election encryption key |
-| VeilSign Authority | Distributed signing authority for blind signatures |
-| Key Ceremony | Public, verifiable key generation for each election |
-| Decryption | Threshold decryption for vote tallying |
-
----
-
-### PHASE 6: TVS Integration (Q4 2025 - Q1 2026)
-**Goal**: Combine all products into election-ready voting system
-
-#### Milestones
-- [ ] **M1: Integration Layer**
-  - Unified API gateway
-  - Cross-product authentication
-  - Event bus for components
-
-- [ ] **M2: Voter Journey**
-  - Registration flow (identity → VeilSign credential)
-  - Voting flow (VeilForms → VeilChain)
-  - Verification flow (VeilProof → confirmation site)
-
-- [ ] **M3: Election Administration**
-  - Ballot configuration
-  - Precinct management
-  - Results tallying (homomorphic)
-  - Risk-limiting audit integration
-
-- [ ] **M4: Hardware Reference Design**
-  - Raspberry Pi precinct box
-  - Intel NUC high-volume station
-  - TPM key storage
-  - Air-gap voting mode
-
-- [ ] **M5: Certification Prep**
-  - VVSG 2.0 compliance review
-  - EAC certification documentation
-  - State-by-state requirements matrix
-
----
-
-## Go-To-Market Strategy
-
-### Year 1: Build Foundation (2025) — CURRENT
-| Quarter | Focus | Status |
-|---------|-------|--------|
-| Q1-Q2 | VeilChain, VeilSign, VeilProof core libraries | ✅ COMPLETE |
-| Q3-Q4 | **VeilKey** — Threshold cryptography | 🔲 BUILD NEXT |
-| Q4 | TVS MVP integration with all 5 products | 🔲 PLANNED |
-
-### Year 2: Pilot & Certify (2026)
-- University student government elections
-- Corporate shareholder votes
-- Union elections
-- HOA / community votes
-- First municipal pilot (small town)
-
-### Year 3: Scale & Certify (2027)
-- EAC certification process
-- First state certification
-- County-level deployments
-- Security audit by CISA
-
-### Year 4: Market Penetration (2028)
-- Target states with expiring Dominion contracts
-- Multi-state deployment
-- Federal election pilot consideration
-
----
-
-## Success Metrics
-
-### Technical
-- [ ] Zero security breaches
-- [ ] 99.99% uptime during elections
-- [ ] Sub-second vote submission
-- [ ] 100% voter verification rate achievable
-- [ ] VeilKey: Key ceremonies complete in < 30 minutes
-- [ ] VeilKey: Threshold signatures in < 100ms
-
-### Business
-- [ ] Each product profitable standalone
-- [ ] 1000+ paying customers across products
-- [ ] 3+ security audits passed
-- [ ] EAC certification achieved
-- [ ] VeilKey: 100+ key groups managed (crypto wallets, enterprises)
-
-### Adoption
-- [ ] 10+ pilot elections completed
-- [ ] 1+ state certification
-- [ ] 100,000+ votes processed
-- [ ] Academic paper published
-- [ ] VeilKey used by 3+ non-TVS customers (standalone validation)
-
----
-
-## Risk Mitigation
-
-| Risk | Mitigation |
-|------|------------|
-| Security vulnerability | Multiple audits, bug bounty, formal verification |
-| Regulatory rejection | Early engagement with EAC, CISA |
-| Market resistance | Start with non-government elections, build trust |
-| Technical complexity | Modular approach, battle-test each component |
-| Funding | Each product generates revenue independently |
-| VeilKey: Threshold crypto bugs | Extensive test vectors, formal verification of protocols |
-| VeilKey: HSM compatibility | Multi-vendor testing (AWS, Azure, Yubi) |
-| VeilKey: Key ceremony failures | Rehearsals, rollback procedures, multi-party backup |
-| Single trustee coercion | t-of-n threshold requires collusion of multiple parties |
-
----
-
-## Repository Structure
-
-```
-trustless_voting_sytem_(tvs)/
-├── BRAINSTORM.md           # Original brainstorm document
-├── ROADMAP.md              # This file
-├── VeilForms/              # ✅ Zero-trust encrypted forms
-│   └── ...                 # veilforms.com source
-├── VeilChain/              # ✅ Merkle tree ledger
-│   ├── OVERVIEW.md
-│   ├── ROADMAP.md
-│   └── src/
-├── VeilSign/               # ✅ Blind signatures
-│   ├── OVERVIEW.md
-│   ├── ROADMAP.md
-│   └── src/
-├── VeilProof/              # ✅ Zero-knowledge proofs
-│   ├── OVERVIEW.md
-│   ├── ROADMAP.md
-│   └── circuits/
-├── VeilKey/                # 🔑 Threshold cryptography (BUILD NEXT)
-│   ├── README.md           # Product overview & standalone use cases
-│   ├── docs/
-│   │   ├── SPEC.md         # Technical specification
-│   │   └── ROADMAP.md      # Development roadmap
-│   └── src/                # (Future implementation)
-├── GhostBeat/              # ZK infrastructure monitoring
-│   ├── OVERVIEW.md
-│   └── ROADMAP.md
-└── TVS/                    # Integration wrapper
-    ├── packages/           # @tvs/* workspace packages
-    ├── apps/               # Admin & voter portals
-    └── docs/
-        └── TVS-WHITEPAPER.md
-```
-
----
-
-## Core Principles
-
-1. **Open Source First**: All code public, auditable by anyone
-2. **Cryptographic Trust**: Math, not institutions
-3. **Standalone Value**: Each product succeeds independently
-4. **Defense in Depth**: Multiple layers of security
-5. **Accessibility**: Works for all voters, all conditions
-6. **Transparency**: Every decision documented publicly
-
----
-
-*"Democracy is too important to trust. It must be verified."*
+*Building trust through mathematics, not institutions.*
