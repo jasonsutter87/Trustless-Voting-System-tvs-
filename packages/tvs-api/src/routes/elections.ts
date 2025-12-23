@@ -5,11 +5,12 @@
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { uuid } from '@tvs/core';
-import { generateAuthorityKeys, type AuthorityKeys } from '@tvs/veilsign';
+import { CeremonyCoordinator, type CeremonyResult } from '@veilkey/core';
 
 // In-memory store for MVP (replace with PostgreSQL)
 const elections = new Map<string, Election>();
-const electionKeys = new Map<string, AuthorityKeys>();
+const keyCeremonies = new Map<string, CeremonyCoordinator>();
+const ceremonyResults = new Map<string, CeremonyResult>();
 
 interface Election {
   id: string;
@@ -17,7 +18,9 @@ interface Election {
   description: string;
   startTime: string;
   endTime: string;
-  status: 'draft' | 'registration' | 'voting' | 'tallying' | 'complete';
+  status: 'setup' | 'draft' | 'registration' | 'voting' | 'tallying' | 'complete';
+  threshold: number;
+  totalTrustees: number;
   candidates: Candidate[];
   createdAt: string;
 }
@@ -33,21 +36,30 @@ const CreateElectionSchema = z.object({
   description: z.string().optional().default(''),
   startTime: z.string().datetime(),
   endTime: z.string().datetime(),
+  threshold: z.number().int().min(1),
+  totalTrustees: z.number().int().min(1),
   candidates: z.array(z.object({
     name: z.string().min(1),
   })).min(2),
+}).refine(data => data.threshold <= data.totalTrustees, {
+  message: 'Threshold cannot exceed total trustees',
 });
 
 export async function electionRoutes(fastify: FastifyInstance) {
-  // Create election
+  // Create election with threshold key ceremony
   fastify.post('/', async (request, reply) => {
     const body = CreateElectionSchema.parse(request.body);
 
     const id = uuid();
 
-    // Generate signing keys for this election (use 1024 for faster key gen in dev)
-    const keys = generateAuthorityKeys(1024);
-    electionKeys.set(id, keys);
+    // Create threshold key ceremony (replaces single-key generation)
+    const ceremony = new CeremonyCoordinator({
+      id: `ceremony-${id}`,
+      threshold: body.threshold,
+      totalParticipants: body.totalTrustees,
+    });
+
+    keyCeremonies.set(id, ceremony);
 
     const election: Election = {
       id,
@@ -55,7 +67,9 @@ export async function electionRoutes(fastify: FastifyInstance) {
       description: body.description,
       startTime: body.startTime,
       endTime: body.endTime,
-      status: 'draft',
+      status: 'setup', // Awaiting trustee registration
+      threshold: body.threshold,
+      totalTrustees: body.totalTrustees,
       candidates: body.candidates.map((c, i) => ({
         id: uuid(),
         name: c.name,
@@ -68,7 +82,7 @@ export async function electionRoutes(fastify: FastifyInstance) {
 
     return {
       election,
-      publicKey: keys.publicKey, // Share public key for credential verification
+      ceremonyStatus: ceremony.getStatus(),
     };
   });
 
@@ -81,11 +95,13 @@ export async function electionRoutes(fastify: FastifyInstance) {
       return reply.status(404).send({ error: 'Election not found' });
     }
 
-    const keys = electionKeys.get(id);
+    const ceremony = keyCeremonies.get(id);
+    const result = ceremonyResults.get(id);
 
     return {
       election,
-      publicKey: keys?.publicKey,
+      ceremonyStatus: ceremony?.getStatus(),
+      publicKey: result?.publicKey,
     };
   });
 
@@ -108,6 +124,7 @@ export async function electionRoutes(fastify: FastifyInstance) {
 
     // Validate status transitions
     const validTransitions: Record<Election['status'], Election['status'][]> = {
+      setup: ['draft'], // After key ceremony completes
       draft: ['registration'],
       registration: ['voting'],
       voting: ['tallying'],
@@ -154,4 +171,4 @@ export async function electionRoutes(fastify: FastifyInstance) {
 }
 
 // Export for use by other routes
-export { elections, electionKeys };
+export { elections, keyCeremonies, ceremonyResults };
