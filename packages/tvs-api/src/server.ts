@@ -13,6 +13,7 @@ import { registrationRoutes } from './routes/registration.js';
 import { votingRoutes } from './routes/voting.js';
 import { verifyRoutes } from './routes/verify.js';
 import { jurisdictionRoutes } from './routes/jurisdictions.js';
+import { ballotRoutes } from './routes/ballot.js';
 
 const fastify = Fastify({
   logger: true,
@@ -35,6 +36,7 @@ await fastify.register(registrationRoutes, { prefix: '/api/register' });
 await fastify.register(votingRoutes, { prefix: '/api/vote' });
 await fastify.register(verifyRoutes, { prefix: '/api/verify' });
 await fastify.register(jurisdictionRoutes, { prefix: '/api/jurisdictions' });
+await fastify.register(ballotRoutes, { prefix: '/api/ballot' });
 
 // Start server
 const start = async () => {
