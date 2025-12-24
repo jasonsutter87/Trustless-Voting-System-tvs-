@@ -1,9 +1,13 @@
-{{/* Accessible header with mobile menu */}}
+{{/* TVS Header with navigation */}}
 <div class="container py-4">
   <nav class="d-flex justify-content-between align-items-center" aria-label="Primary navigation">
     {{/* Logo/Site Title */}}
-    <a href="/" class="text-white text-decoration-none fw-bold text-xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 rounded">
-      {{ .Site.Title }}
+    <a href="/" class="text-white text-decoration-none fw-bold text-xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 rounded d-flex align-items-center gap-2">
+      <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 2L4 8v8c0 7.732 5.12 14.936 12 16 6.88-1.064 12-8.268 12-16V8L16 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 16l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>TVS</span>
     </a>
 
     {{/* Mobile menu button */}}
@@ -15,24 +19,36 @@
       aria-controls="mobile-menu"
       onclick="document.getElementById('mobile-menu').classList.toggle('hidden'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');"
     >
-      {{/* Hamburger icon */}}
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
     </button>
 
     {{/* Desktop menu */}}
-    <ul class="list-unstyled d-none d-md-flex gap-4 mb-0">
-      <li><a href="/" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 rounded px-1">Home</a></li>
-      <li><a href="/about" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 rounded px-1">About</a></li>
-      <li><a href="/contact" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 rounded px-1">Contact</a></li>
+    <ul class="list-unstyled d-none d-md-flex gap-4 mb-0 align-items-center">
+      {{ range .Site.Menus.main }}
+        <li>
+          <a href="{{ .URL }}" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 rounded px-1{{ if eq .Name "GitHub" }} d-flex align-items-center gap-1{{ end }}"{{ if strings.HasPrefix .URL "http" }} target="_blank" rel="noopener noreferrer"{{ end }}>
+            {{ if eq .Name "GitHub" }}
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+              </svg>
+            {{ end }}
+            {{ .Name }}
+          </a>
+        </li>
+      {{ end }}
     </ul>
   </nav>
 
   {{/* Mobile menu (hidden by default) */}}
   <ul id="mobile-menu" class="hidden list-unstyled d-md-none mt-4 pb-2">
-    <li class="py-2 border-b border-gray-700"><a href="/" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white rounded block py-1">Home</a></li>
-    <li class="py-2 border-b border-gray-700"><a href="/about" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white rounded block py-1">About</a></li>
-    <li class="py-2"><a href="/contact" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white rounded block py-1">Contact</a></li>
+    {{ range .Site.Menus.main }}
+      <li class="py-2 border-b border-gray-700">
+        <a href="{{ .URL }}" class="text-white text-decoration-none hover:underline focus:outline-none focus:ring-2 focus:ring-white rounded block py-1"{{ if strings.HasPrefix .URL "http" }} target="_blank" rel="noopener noreferrer"{{ end }}>
+          {{ .Name }}
+        </a>
+      </li>
+    {{ end }}
   </ul>
 </div>

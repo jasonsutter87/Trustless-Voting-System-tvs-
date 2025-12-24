@@ -1,79 +1,398 @@
 {{ define "main" }}
-  {{/* Bootstrap: container | Tailwind: py-8 */}}
-  <div class="container py-8">
-
-    {{/* Section Title */}}
-    <h2 class="text-xl font-bold mb-6 text-gray-700">3 Ways to Make 50% Columns</h2>
-
-    {{/* ROW 1: Pure Bootstrap */}}
-    <div class="row mb-6">
-      <div class="col-12 col-lg-6">
-        <div class="bg-primary text-white p-6 rounded-lg h-full">
-          <h3 class="text-lg font-bold mb-2">Bootstrap: col-12 col-lg-6</h3>
-          <p class="mb-0 text-sm">
-            <code class="bg-dark px-2 py-1 rounded">col-12 col-lg-6</code>
+  {{/* Hero Section */}}
+  <section class="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-20">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-12 col-lg-7">
+          <h1 class="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+            Voting You Can <span class="text-emerald-400">Verify</span>,<br>
+            Privacy You Can <span class="text-emerald-400">Trust</span>
+          </h1>
+          <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+            TVS is a cryptographic voting system that achieves voter privacy, vote integrity,
+            and public verifiability&mdash;without requiring trust in any single authority.
           </p>
+          <div class="d-flex gap-4 flex-wrap">
+            <a href="/demo/" class="btn btn-lg bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+              Try the Demo
+            </a>
+            <a href="/docs/" class="btn btn-lg bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900 px-6 py-3 rounded-lg font-semibold transition-colors">
+              Read the Docs
+            </a>
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-lg-6">
-        <div class="bg-primary text-white p-6 rounded-lg h-full">
-          <h3 class="text-lg font-bold mb-2">Bootstrap: col-12 col-lg-6</h3>
-          <p class="mb-0 text-sm">
-            <code class="bg-dark px-2 py-1 rounded">col-12 col-lg-6</code>
-          </p>
-        </div>
-      </div>
-    </div>
-
-    {{/* ROW 2: Pure Tailwind */}}
-    <div class="row mb-6">
-      <div class="w-full lg:w-1/2 px-3">
-        <div class="bg-emerald-600 text-white p-6 rounded-lg h-full">
-          <h3 class="text-lg font-bold mb-2">Tailwind: w-full lg:w-1/2</h3>
-          <p class="mb-0 text-sm">
-            <code class="bg-dark px-2 py-1 rounded">w-full lg:w-1/2</code>
-          </p>
-        </div>
-      </div>
-      <div class="w-full lg:w-1/2 px-3">
-        <div class="bg-emerald-600 text-white p-6 rounded-lg h-full">
-          <h3 class="text-lg font-bold mb-2">Tailwind: w-full lg:w-1/2</h3>
-          <p class="mb-0 text-sm">
-            <code class="bg-dark px-2 py-1 rounded">w-full lg:w-1/2</code>
-          </p>
-        </div>
-      </div>
-    </div>
-
-    {{/* ROW 3: Mixed - Bootstrap + Tailwind */}}
-    <div class="row mb-6">
-      <div class="col-12 lg:w-1/2">
-        <div class="bg-purple-600 text-white p-6 rounded-lg h-full">
-          <h3 class="text-lg font-bold mb-2">Mixed: col-12 lg:w-1/2</h3>
-          <p class="mb-0 text-sm">
-            <code class="bg-dark px-2 py-1 rounded">col-12 lg:w-1/2</code>
-          </p>
-        </div>
-      </div>
-      <div class="col-12 lg:w-1/2">
-        <div class="bg-purple-600 text-white p-6 rounded-lg h-full">
-          <h3 class="text-lg font-bold mb-2">Mixed: col-12 lg:w-1/2</h3>
-          <p class="mb-0 text-sm">
-            <code class="bg-dark px-2 py-1 rounded">col-12 lg:w-1/2</code>
-          </p>
+        <div class="col-12 col-lg-5 mt-10 lg:mt-0">
+          <div class="bg-gray-800/50 rounded-2xl p-8 border border-gray-700">
+            <div class="text-center mb-6">
+              <svg class="w-24 h-24 mx-auto text-emerald-400" viewBox="0 0 32 32" fill="none">
+                <path d="M16 2L4 8v8c0 7.732 5.12 14.936 12 16 6.88-1.064 12-8.268 12-16V8L16 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M12 16l3 3 5-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-emerald-400 mb-2">3,000+</div>
+              <div class="text-gray-400">Voters tested in E2E tests</div>
+            </div>
+            <div class="row mt-6 text-center">
+              <div class="col-6">
+                <div class="text-2xl font-bold">5</div>
+                <div class="text-sm text-gray-400">Veil Products</div>
+              </div>
+              <div class="col-6">
+                <div class="text-2xl font-bold">100%</div>
+                <div class="text-sm text-gray-400">Open Source</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </section>
 
-    {{/* Legend */}}
-    <div class="mt-8 p-4 bg-white rounded-lg shadow">
-      <h4 class="font-bold mb-3">Color Legend:</h4>
-      <ul class="list-unstyled mb-0 d-flex gap-4 flex-wrap">
-        <li><span class="bg-primary text-white px-2 py-1 rounded text-sm">Blue</span> = Bootstrap classes</li>
-        <li><span class="bg-emerald-600 text-white px-2 py-1 rounded text-sm">Green</span> = Tailwind classes</li>
-        <li><span class="bg-purple-600 text-white px-2 py-1 rounded text-sm">Purple</span> = Mixed approach</li>
-      </ul>
+  {{/* What is Trustless? */}}
+  <section class="py-20 bg-white">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">What Does "Trustless" Mean?</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          In traditional voting, you must trust election officials to count votes honestly and protect your privacy.
+          TVS replaces that trust with <strong>mathematical proof</strong>.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6">
+          <div class="bg-red-50 border border-red-200 rounded-xl p-6 h-full">
+            <h3 class="text-xl font-bold text-red-800 mb-4 d-flex align-items-center gap-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+              Traditional Voting
+            </h3>
+            <ul class="list-unstyled space-y-3 text-gray-700">
+              <li class="d-flex gap-2"><span class="text-red-500">&#x2717;</span> Trust administrators won't peek at votes</li>
+              <li class="d-flex gap-2"><span class="text-red-500">&#x2717;</span> Trust database operators won't modify records</li>
+              <li class="d-flex gap-2"><span class="text-red-500">&#x2717;</span> Trust software has no backdoors</li>
+              <li class="d-flex gap-2"><span class="text-red-500">&#x2717;</span> Trust a single key holder won't be compromised</li>
+              <li class="d-flex gap-2"><span class="text-red-500">&#x2717;</span> No way to independently verify your vote</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 h-full">
+            <h3 class="text-xl font-bold text-emerald-800 mb-4 d-flex align-items-center gap-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              TVS Trustless Voting
+            </h3>
+            <ul class="list-unstyled space-y-3 text-gray-700">
+              <li class="d-flex gap-2"><span class="text-emerald-500">&#x2713;</span> Server <strong>cannot</strong> see votes (encrypted in browser)</li>
+              <li class="d-flex gap-2"><span class="text-emerald-500">&#x2713;</span> Tampering is <strong>cryptographically detectable</strong></li>
+              <li class="d-flex gap-2"><span class="text-emerald-500">&#x2713;</span> All code is <strong>open source</strong> and auditable</li>
+              <li class="d-flex gap-2"><span class="text-emerald-500">&#x2713;</span> Key split among 5 trustees (need 3 to decrypt)</li>
+              <li class="d-flex gap-2"><span class="text-emerald-500">&#x2713;</span> <strong>Verify your vote</strong> with Merkle proof</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-  </div>
+  {{/* The Problem */}}
+  <section class="py-20 bg-gray-50">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">The Problems We Solve</h2>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <div class="bg-white rounded-xl p-6 shadow-sm h-full">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg d-flex align-items-center justify-content-center mb-4">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Vote Privacy</h3>
+            <p class="text-gray-600">
+              If administrators can see how you voted, they can be compelled to reveal it.
+              <strong>TVS encrypts your vote in the browser</strong>&mdash;the server only sees ciphertext.
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="bg-white rounded-xl p-6 shadow-sm h-full">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg d-flex align-items-center justify-content-center mb-4">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Single Point of Failure</h3>
+            <p class="text-gray-600">
+              One key holder = one target. <strong>TVS splits the election key among 5 trustees</strong>.
+              Need 3 to decrypt. No single person can compromise the election.
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="bg-white rounded-xl p-6 shadow-sm h-full">
+            <div class="w-12 h-12 bg-amber-100 rounded-lg d-flex align-items-center justify-content-center mb-4">
+              <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Vote Integrity</h3>
+            <p class="text-gray-600">
+              How do you know votes weren't modified? <strong>TVS stores votes in a Merkle tree</strong>.
+              Any change is cryptographically detectable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* The Veil Product Suite */}}
+  <section class="py-20 bg-white">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">The Veil Product Suite</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          TVS is powered by 5 modular cryptographic libraries. Each solves one problem,
+          together they create a trustless voting system.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        {{/* VeilKey */}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl p-6 h-full">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-white/20 rounded-lg d-flex align-items-center justify-content-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-0">VeilKey</h3>
+            </div>
+            <p class="text-white/90 mb-4">
+              Threshold cryptography. The election key <strong>never exists in one place</strong>.
+              Split among trustees using Shamir Secret Sharing.
+            </p>
+            <a href="/products/veilkey/" class="text-white font-semibold hover:underline">Learn more &rarr;</a>
+          </div>
+        </div>
+
+        {{/* VeilSign */}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-xl p-6 h-full">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-white/20 rounded-lg d-flex align-items-center justify-content-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-0">VeilSign</h3>
+            </div>
+            <p class="text-white/90 mb-4">
+              Blind signatures for anonymous credentials. Prove you're eligible to vote
+              <strong>without revealing your identity</strong>.
+            </p>
+            <a href="/products/veilsign/" class="text-white font-semibold hover:underline">Learn more &rarr;</a>
+          </div>
+        </div>
+
+        {{/* VeilForms */}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="bg-gradient-to-br from-blue-500 to-cyan-600 text-white rounded-xl p-6 h-full">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-white/20 rounded-lg d-flex align-items-center justify-content-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-0">VeilForms</h3>
+            </div>
+            <p class="text-white/90 mb-4">
+              Client-side encryption. Your vote is encrypted <strong>in your browser</strong>
+              before it ever leaves your device.
+            </p>
+            <a href="https://veilforms.com" target="_blank" rel="noopener" class="text-white font-semibold hover:underline">veilforms.com &rarr;</a>
+          </div>
+        </div>
+
+        {{/* VeilChain */}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl p-6 h-full">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-white/20 rounded-lg d-flex align-items-center justify-content-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-0">VeilChain</h3>
+            </div>
+            <p class="text-white/90 mb-4">
+              Merkle tree vote ledger. Every vote is <strong>tamper-evident</strong>.
+              Anchor the root hash to Bitcoin or Ethereum.
+            </p>
+            <a href="https://veilchain.io" target="_blank" rel="noopener" class="text-white font-semibold hover:underline">veilchain.io &rarr;</a>
+          </div>
+        </div>
+
+        {{/* VeilProof */}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="bg-gradient-to-br from-pink-500 to-rose-600 text-white rounded-xl p-6 h-full">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-white/20 rounded-lg d-flex align-items-center justify-content-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-0">VeilProof</h3>
+            </div>
+            <p class="text-white/90 mb-4">
+              Zero-knowledge proofs. Prove your vote is valid
+              <strong>without revealing what you voted for</strong>.
+            </p>
+            <a href="/products/veilproof/" class="text-white font-semibold hover:underline">Learn more &rarr;</a>
+          </div>
+        </div>
+
+        {{/* TVS */}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="bg-gradient-to-br from-gray-700 to-gray-900 text-white rounded-xl p-6 h-full">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-white/20 rounded-lg d-flex align-items-center justify-content-center">
+                <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
+                  <path d="M16 2L4 8v8c0 7.732 5.12 14.936 12 16 6.88-1.064 12-8.268 12-16V8L16 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <path d="M12 16l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-0">TVS</h3>
+            </div>
+            <p class="text-white/90 mb-4">
+              The complete voting system. <strong>Orchestrates all Veil products</strong>
+              into a production-ready election platform.
+            </p>
+            <a href="/docs/" class="text-white font-semibold hover:underline">Get Started &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* Security Properties */}}
+  <section class="py-20 bg-gray-900 text-white">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Security Properties</h2>
+        <p class="text-xl text-gray-400">Every property backed by cryptographic proof</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="d-flex gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex-shrink-0 d-flex align-items-center justify-content-center">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">Vote Privacy</h3>
+              <p class="text-gray-400 text-sm mb-0">VeilForms encrypts in browser. Server never sees plaintext.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="d-flex gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex-shrink-0 d-flex align-items-center justify-content-center">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">Voter Anonymity</h3>
+              <p class="text-gray-400 text-sm mb-0">VeilSign blind signatures unlink identity from vote.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="d-flex gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex-shrink-0 d-flex align-items-center justify-content-center">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">Vote Integrity</h3>
+              <p class="text-gray-400 text-sm mb-0">VeilChain Merkle tree makes tampering detectable.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="d-flex gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex-shrink-0 d-flex align-items-center justify-content-center">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">No Single Point of Failure</h3>
+              <p class="text-gray-400 text-sm mb-0">VeilKey threshold (3-of-5) splits key among trustees.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="d-flex gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex-shrink-0 d-flex align-items-center justify-content-center">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">Vote Validity</h3>
+              <p class="text-gray-400 text-sm mb-0">VeilProof ZK proofs ensure only valid votes counted.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="d-flex gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex-shrink-0 d-flex align-items-center justify-content-center">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">Coercion Resistance</h3>
+              <p class="text-gray-400 text-sm mb-0">Secret ballot. Voter can't prove how they voted.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* CTA */}}
+  <section class="py-20 bg-emerald-600 text-white">
+    <div class="container text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to see it in action?</h2>
+      <p class="text-xl text-emerald-100 mb-8">
+        Try the interactive demo or dive into the documentation.
+      </p>
+      <div class="d-flex gap-4 justify-content-center flex-wrap">
+        <a href="/demo/" class="btn btn-lg bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors">
+          Try the Demo
+        </a>
+        <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="btn btn-lg bg-emerald-700 hover:bg-emerald-800 text-white px-8 py-3 rounded-lg font-semibold transition-colors d-flex align-items-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </section>
 {{ end }}
