@@ -98,8 +98,8 @@ export async function verifyRoutes(fastify: FastifyInstance) {
 
     // Get Bitcoin anchors if database is enabled
     let bitcoinAnchors: {
-      start?: { txid: string; confirmations: number; explorerUrl: string };
-      close?: { txid: string; confirmations: number; explorerUrl: string };
+      start?: { status: string; txid?: string; explorerUrl?: string };
+      close?: { status: string; txid?: string; explorerUrl?: string };
     } | null = null;
 
     if (config.useDatabase && config.useBitcoinAnchoring) {
@@ -107,14 +107,14 @@ export async function verifyRoutes(fastify: FastifyInstance) {
         const summary = await anchorsDb.getAnchorSummary(electionId);
 
         const formatAnchor = (anchor: anchorsDb.BitcoinAnchor | null) => {
-          if (!anchor?.bitcoin_txid) return undefined;
+          if (!anchor) return undefined;
           const baseUrl = config.bitcoinNetwork === 'mainnet'
             ? 'https://mempool.space/tx/'
             : 'https://mempool.space/testnet/tx/';
           return {
-            txid: anchor.bitcoin_txid,
-            confirmations: anchor.confirmations,
-            explorerUrl: `${baseUrl}${anchor.bitcoin_txid}`,
+            status: anchor.status,
+            txid: anchor.bitcoin_txid || undefined,
+            explorerUrl: anchor.bitcoin_txid ? `${baseUrl}${anchor.bitcoin_txid}` : undefined,
           };
         };
 
