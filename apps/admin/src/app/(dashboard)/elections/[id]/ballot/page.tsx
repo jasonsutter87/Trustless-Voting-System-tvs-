@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getElection } from '@/lib/actions/elections';
 import { getQuestions } from '@/lib/actions/ballot';
 import { QuestionList } from '@/components/ballot/question-list';
+import { EncryptionStatus } from '@/components/ballot/encryption-status';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -11,6 +12,7 @@ export default async function BallotBuilderPage({ params }: Props) {
   const { id } = await params;
 
   let election;
+  let publicKey: string | undefined;
   let questions: Awaited<ReturnType<typeof getQuestions>>['questions'] = [];
   let error: string | null = null;
 
@@ -20,6 +22,7 @@ export default async function BallotBuilderPage({ params }: Props) {
       getQuestions({ electionId: id }),
     ]);
     election = electionResult.election;
+    publicKey = electionResult.publicKey;
     questions = questionsResult.questions;
   } catch (err) {
     error = err instanceof Error ? err.message : 'Failed to load ballot';
@@ -68,6 +71,18 @@ export default async function BallotBuilderPage({ params }: Props) {
           </p>
         </div>
       )}
+
+      {/* Encryption status */}
+      <EncryptionStatus
+        status={
+          election.status === 'voting' || election.status === 'tallying'
+            ? 'active'
+            : publicKey
+            ? 'ready'
+            : 'pending'
+        }
+        publicKey={publicKey}
+      />
 
       {/* Question list */}
       <QuestionList
