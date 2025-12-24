@@ -150,14 +150,14 @@
           <h3 class="text-xl font-bold text-gray-900 mb-4">Simulate Multiple Voters</h3>
           <p class="text-gray-600 mb-4">Add simulated voters to see the system in action.</p>
           <div class="d-flex gap-2">
-            <button id="add-10-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-              +10 Voters
+            <button id="add-500-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +500 Voters
             </button>
-            <button id="add-50-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-              +50 Voters
+            <button id="add-1000-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +1,000 Voters
             </button>
-            <button id="add-100-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-              +100 Voters
+            <button id="add-5000-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +5,000 Voters
             </button>
           </div>
         </div>
@@ -705,9 +705,9 @@
     document.getElementById('q2-limit-msg').classList.add('text-gray-500');
   });
 
-  document.getElementById('add-10-btn').addEventListener('click', () => addRandomVoters(10));
-  document.getElementById('add-50-btn').addEventListener('click', () => addRandomVoters(50));
-  document.getElementById('add-100-btn').addEventListener('click', () => addRandomVoters(100));
+  document.getElementById('add-500-btn').addEventListener('click', () => addRandomVoters(500));
+  document.getElementById('add-1000-btn').addEventListener('click', () => addRandomVoters(1000));
+  document.getElementById('add-5000-btn').addEventListener('click', () => addRandomVoters(5000));
   document.getElementById('tally-btn').addEventListener('click', tallyVotes);
 
   // Initialize
