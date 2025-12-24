@@ -141,8 +141,8 @@ export async function electionRoutes(fastify: FastifyInstance) {
       });
     }
 
-    // Bitcoin anchoring on status transitions
-    let anchorResult: { txid?: string; error?: string } | null = null;
+    // Bitcoin anchoring via OpenTimestamps on status transitions
+    let anchorResult: { submitted?: boolean; pending?: string; error?: string } | null = null;
 
     if (status === 'voting' && config.useBitcoinAnchoring && config.useDatabase) {
       // Anchor election START when transitioning to voting
@@ -169,18 +169,21 @@ export async function electionRoutes(fastify: FastifyInstance) {
           electionId: id,
           anchorType: 'start',
           dataHash: anchorData.dataHash,
-          opReturnData: anchorData.opReturnHex,
+          rawData: anchorData.rawData,
         });
 
-        // Broadcast to Bitcoin
-        const broadcastResult = await bitcoinAnchor.anchor(anchorData);
+        // Submit to OpenTimestamps
+        const otsResult = await bitcoinAnchor.anchor(anchorData);
 
-        if (broadcastResult.success && broadcastResult.txid) {
-          await anchorsDb.markAnchorBroadcast(anchorRecord.id, broadcastResult.txid);
-          anchorResult = { txid: broadcastResult.txid };
+        if (otsResult.success && otsResult.otsProof) {
+          await anchorsDb.markAnchorSubmitted(anchorRecord.id, otsResult.otsProof);
+          anchorResult = {
+            submitted: true,
+            pending: 'Submitted to OpenTimestamps - Bitcoin attestation in 1-24 hours',
+          };
         } else {
-          await anchorsDb.markAnchorFailed(anchorRecord.id, broadcastResult.error || 'Unknown error');
-          anchorResult = { error: broadcastResult.error };
+          await anchorsDb.markAnchorFailed(anchorRecord.id, otsResult.error || 'Unknown error');
+          anchorResult = { error: otsResult.error };
         }
       } catch (err) {
         anchorResult = { error: err instanceof Error ? err.message : 'Anchor failed' };

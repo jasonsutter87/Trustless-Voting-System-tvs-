@@ -1,136 +1,65 @@
-# Bitcoin Anchoring Setup for TVS
+# Bitcoin Anchoring for TVS (via OpenTimestamps)
 
-This guide explains how to set up Bitcoin anchoring for TVS elections. Bitcoin anchoring provides immutable timestamping of election Merkle roots using OP_RETURN transactions.
-
----
-
-## Overview
-
-TVS anchors two transactions per election:
-
-1. **Election Start Anchor**: When voting opens
-   - Commits to: Public key, trustee configuration, start timestamp
-   - Proves: Election parameters were fixed before voting began
-
-2. **Election Close Anchor**: When voting ends
-   - Commits to: Final Merkle root, total vote count, end timestamp
-   - Proves: All votes are unchanged since election close
-
-**Cost**: ~$0.20-0.50 total (two transactions)
+TVS uses **OpenTimestamps** for Bitcoin anchoring - it's **free**, **non-spammy**, and provides cryptographically secure Bitcoin-backed proofs.
 
 ---
 
-## Requirements
+## How It Works
 
-- Bitcoin Core 25.0 or later
-- Disk space:
-  - Mainnet: ~500GB
-  - Testnet: ~50GB
-  - Regtest: <1GB
-- RAM: 2GB minimum
-- TVS API with PostgreSQL database
+OpenTimestamps aggregates thousands of timestamps into a single Bitcoin transaction:
+
+1. **Submit hash** → Send your election hash to OTS calendar servers
+2. **Batching** → OTS collects thousands of hashes and builds a Merkle tree
+3. **Bitcoin anchor** → OTS anchors the tree root in a single Bitcoin OP_RETURN
+4. **Get proof** → Your .ots proof file links your hash to the Bitcoin block
+
+**Result**: Bitcoin-backed timestamp for ~$0 and zero blockchain spam!
 
 ---
 
-## Quick Start (Testnet)
+## What Gets Anchored
 
-### 1. Install Bitcoin Core
+Two anchors per election:
 
-**macOS (Homebrew):**
-```bash
-brew install bitcoin
-```
+### 1. Election Start Anchor
+When voting opens, we anchor:
+- Election ID
+- Public key hash
+- Trustee configuration hash
+- Start timestamp
 
-**Ubuntu/Debian:**
-```bash
-sudo apt-get install bitcoind
-```
+**Proves**: Election parameters were fixed before voting began.
 
-**From source:**
-```bash
-# Download from https://bitcoincore.org/en/download/
-tar xzf bitcoin-25.0-x86_64-linux-gnu.tar.gz
-sudo install -m 0755 bitcoin-25.0/bin/* /usr/local/bin/
-```
+### 2. Election Close Anchor
+When voting ends, we anchor:
+- Election ID
+- Final Merkle root (hash of all votes)
+- Total vote count
+- End timestamp
 
-### 2. Configure Bitcoin Core
+**Proves**: All votes are unchanged since election close.
 
-Create `~/.bitcoin/bitcoin.conf`:
+---
 
-```ini
-# Network (testnet for testing, remove for mainnet)
-testnet=1
+## Setup (It's Easy!)
 
-# Enable RPC server
-server=1
-rpcuser=tvs
-rpcpassword=YOUR_SECURE_PASSWORD_HERE
-
-# Required for looking up transactions
-txindex=1
-
-# Prune disabled (required for txindex)
-prune=0
-
-# Performance
-dbcache=450
-```
-
-**Security Note**: Generate a secure password:
-```bash
-openssl rand -hex 32
-```
-
-### 3. Start Bitcoin Core
+### 1. Enable in .env
 
 ```bash
-# Start daemon
-bitcoind -daemon
-
-# Check sync progress
-bitcoin-cli -testnet getblockchaininfo
-
-# Wait for sync (testnet: ~2-4 hours, mainnet: 1-3 days)
-```
-
-### 4. Create Wallet
-
-```bash
-# Create dedicated wallet for TVS anchoring
-bitcoin-cli -testnet createwallet "tvs-anchoring"
-
-# Get a receiving address
-bitcoin-cli -testnet -rpcwallet=tvs-anchoring getnewaddress
-
-# Fund with testnet coins from:
-# - https://coinfaucet.eu/en/btc-testnet/
-# - https://testnet-faucet.mempool.co/
-```
-
-### 5. Configure TVS
-
-Add to your `.env` file:
-
-```bash
-# Enable Bitcoin anchoring
-USE_BITCOIN_ANCHORING=true
 USE_DATABASE=true
-
-# Bitcoin node configuration
-BITCOIN_NETWORK=testnet
-BITCOIN_RPC_URL=http://127.0.0.1:18332
-BITCOIN_RPC_USER=tvs
-BITCOIN_RPC_PASSWORD=YOUR_SECURE_PASSWORD_HERE
-BITCOIN_WALLET=tvs-anchoring
+USE_BITCOIN_ANCHORING=true
+BITCOIN_NETWORK=mainnet
 ```
 
-### 6. Verify Connection
+That's it! No Bitcoin node required.
+
+### 2. Verify It's Working
 
 ```bash
-# Start TVS API
+# Start the API
 pnpm dev
 
-# Check Bitcoin connection
+# Check OTS calendar connectivity
 curl http://localhost:3000/api/anchors/status
 ```
 
@@ -138,38 +67,28 @@ Expected response:
 ```json
 {
   "enabled": true,
-  "network": "testnet",
+  "method": "OpenTimestamps",
   "connected": true,
-  "nodeVersion": 250000,
-  "walletBalance": 0.001
+  "calendars": [
+    "https://a.pool.opentimestamps.org",
+    "https://b.pool.opentimestamps.org",
+    "https://a.pool.eternitywall.com"
+  ],
+  "network": "mainnet"
 }
 ```
 
 ---
 
-## Mainnet Configuration
+## Timeline
 
-For production elections, use mainnet:
+| Phase | Duration | Status |
+|-------|----------|--------|
+| Submit to OTS | Instant | `submitted` |
+| Bitcoin attestation | 1-24 hours | `upgraded` |
+| Full verification | Instant | `verified` |
 
-**bitcoin.conf:**
-```ini
-# Remove testnet line for mainnet
-server=1
-rpcuser=tvs
-rpcpassword=YOUR_SECURE_PASSWORD_HERE
-txindex=1
-```
-
-**TVS .env:**
-```bash
-BITCOIN_NETWORK=mainnet
-BITCOIN_RPC_URL=http://127.0.0.1:8332
-```
-
-**Important:**
-- Mainnet sync requires ~500GB and 1-3 days
-- Fund wallet with real BTC (~0.0001 BTC per election)
-- Use hardware wallet or secure key management
+**Why the wait?** OTS batches timestamps to minimize Bitcoin transactions. This keeps it free and non-spammy.
 
 ---
 
@@ -190,103 +109,53 @@ Response:
   "anchors": {
     "start": {
       "type": "start",
-      "status": "confirmed",
+      "status": "verified",
+      "hasOtsProof": true,
       "bitcoin": {
         "txid": "abc123...",
-        "confirmations": 42,
-        "explorerUrl": "https://mempool.space/testnet/tx/abc123..."
+        "blockHeight": 812345,
+        "explorerUrl": "https://mempool.space/tx/abc123..."
       }
     },
     "close": {
       "type": "close",
-      "status": "confirmed",
+      "status": "verified",
+      "hasOtsProof": true,
       "bitcoin": {
         "txid": "def456...",
-        "confirmations": 6,
-        "explorerUrl": "https://mempool.space/testnet/tx/def456..."
+        "blockHeight": 812400,
+        "explorerUrl": "https://mempool.space/tx/def456..."
       }
     }
   }
 }
 ```
 
-### Verify on Block Explorer
-
-1. Open the explorer URL from the API response
-2. Find the OP_RETURN output in the transaction
-3. Decode the hex data - it should match:
-   - `TVS|v1|{election_id}|{merkle_root}|{vote_count}|{timestamp}`
-
-### Verify Merkle Root Matches
+### Upgrade Pending Proofs
 
 ```bash
-# Get integrity info
-curl http://localhost:3000/api/verify/integrity/{electionId}
-
-# Compare merkleRoot with anchored value
+# Check for Bitcoin attestation and upgrade proofs
+curl -X POST http://localhost:3000/api/anchors/{electionId}/refresh
 ```
 
----
+### Download .ots Proof
 
-## OP_RETURN Format
-
-**Election Start:**
-```
-TVS|v1|<election_id_8>|<pk_hash_16>|<trustees_hash_16>|<timestamp_hex>
-```
-
-**Election Close:**
-```
-TVS|v1|<election_id_8>|<merkle_root_32>|<vote_count>|<timestamp_hex>
-```
-
-Maximum size: 80 bytes (Bitcoin OP_RETURN limit)
-
----
-
-## Troubleshooting
-
-### "No UTXOs available"
-
-Fund the wallet:
 ```bash
-bitcoin-cli -testnet -rpcwallet=tvs-anchoring getnewaddress
-# Use a faucet to send testnet coins to this address
+# Download the proof file for independent verification
+curl http://localhost:3000/api/anchors/{electionId}/close/proof -o election-close.ots
 ```
 
-### "Bitcoin RPC error: Unauthorized"
+### Verify Independently
 
-Check credentials in `bitcoin.conf` match `.env`:
 ```bash
-# Verify RPC is working
-curl --user tvs:YOUR_PASSWORD \
-  --data-binary '{"jsonrpc":"1.0","method":"getblockchaininfo","params":[]}' \
-  http://127.0.0.1:18332/
+# Install OTS CLI
+pip install opentimestamps-client
+
+# Verify the proof
+ots verify election-close.ots
 ```
 
-### "Connection refused"
-
-Ensure bitcoind is running:
-```bash
-bitcoin-cli -testnet getblockchaininfo
-```
-
-### "txindex not enabled"
-
-Add `txindex=1` to bitcoin.conf and reindex:
-```bash
-bitcoind -reindex
-```
-
----
-
-## Security Considerations
-
-1. **RPC Credentials**: Use strong passwords, never commit to git
-2. **Wallet Backup**: Backup wallet file regularly
-3. **Firewall**: Only allow localhost RPC connections
-4. **Separate Wallet**: Use dedicated wallet for TVS, not personal funds
-5. **Minimum Funds**: Keep only necessary BTC (~0.001) in wallet
+Or use the web interface: https://opentimestamps.org
 
 ---
 
@@ -294,24 +163,61 @@ bitcoind -reindex
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/anchors/status` | GET | Bitcoin connection status |
-| `/api/anchors/:electionId` | GET | Get anchors for election |
-| `/api/anchors/:electionId/verify` | GET | Verify anchors against node |
-| `/api/anchors/:electionId/refresh` | POST | Update confirmation counts |
+| `/api/anchors/status` | GET | OTS calendar connectivity |
+| `/api/anchors/:electionId` | GET | Get anchor records |
+| `/api/anchors/:electionId/verify` | GET | Verify proofs |
+| `/api/anchors/:electionId/refresh` | POST | Upgrade pending proofs |
+| `/api/anchors/:electionId/:type/proof` | GET | Download .ots file |
+| `/api/anchors/:electionId/:type/data` | GET | Raw anchor data |
 
 ---
 
-## Cost Estimation
+## Anchor Statuses
 
-| Network | Fee per TX | Total per Election |
-|---------|------------|-------------------|
-| Testnet | Free | Free |
-| Mainnet (low priority) | ~$0.10 | ~$0.20 |
-| Mainnet (high priority) | ~$0.25 | ~$0.50 |
+| Status | Meaning |
+|--------|---------|
+| `pending` | Record created, not yet submitted |
+| `submitted` | Sent to OTS calendars, awaiting Bitcoin attestation |
+| `upgraded` | Bitcoin attestation received |
+| `verified` | Proof verified against Bitcoin blockchain |
+| `failed` | Submission or verification failed |
+
+---
+
+## Why OpenTimestamps?
+
+| Feature | OpenTimestamps | Direct Bitcoin |
+|---------|---------------|----------------|
+| Cost | **Free** | ~$0.10-0.50/tx |
+| Node required | **No** | Yes (500GB+) |
+| Spam | **None** (aggregated) | 1 tx per election |
+| Security | Bitcoin-backed | Bitcoin-backed |
+| Decentralized | Multiple calendars | Depends on node |
+
+**Trade-off**: OTS takes 1-24 hours for Bitcoin attestation vs instant with direct anchor. For elections, this is acceptable since verification happens after the election closes.
+
+---
+
+## Security Considerations
+
+1. **Multiple Calendars**: TVS submits to 3 calendar servers for redundancy
+2. **Proof Storage**: .ots proofs are stored in the database
+3. **Independent Verification**: Anyone can verify proofs offline
+4. **No Dependencies**: Verification doesn't require our servers
+
+---
+
+## Cost Comparison
 
 For a national election with 350 million votes:
-- **Cost**: $0.50
-- **Proof**: Every single vote is unchanged
+
+| Method | What's Anchored | Cost |
+|--------|-----------------|------|
+| OpenTimestamps | 2 hashes (start + close) | **$0** |
+| Direct Bitcoin | 2 transactions | ~$0.50 |
+| Per-vote anchoring | 350M transactions | $35M+ |
+
+**The magic of Merkle trees**: One hash represents 350 million votes.
 
 ---
 

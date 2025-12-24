@@ -243,8 +243,17 @@ CREATE TABLE merkle_roots (
 CREATE INDEX idx_merkle_roots_question ON merkle_roots(question_id, created_at DESC);
 
 -- ============================================
--- BITCOIN ANCHORS (Immutable timestamping via OP_RETURN)
+-- BITCOIN ANCHORS (via OpenTimestamps)
 -- ============================================
+-- OpenTimestamps provides free Bitcoin timestamping by aggregating
+-- thousands of hashes into a single Bitcoin transaction.
+--
+-- Flow:
+-- 1. Submit hash to OTS calendar servers → get pending .ots proof
+-- 2. OTS batches hashes and anchors to Bitcoin (every few hours)
+-- 3. Upgrade proof once Bitcoin attestation is ready
+-- 4. Verify by checking proof links your hash to Bitcoin block
+--
 CREATE TABLE bitcoin_anchors (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
@@ -252,22 +261,26 @@ CREATE TABLE bitcoin_anchors (
 
   -- What was anchored
   data_hash TEXT NOT NULL,              -- SHA-256 of anchored data
-  op_return_data TEXT NOT NULL,         -- Raw OP_RETURN payload (hex)
+  raw_data TEXT NOT NULL,               -- Original JSON that was hashed
 
-  -- Bitcoin transaction details
-  bitcoin_txid TEXT,                    -- Transaction hash (null until broadcast)
-  bitcoin_block_height BIGINT,          -- Block number (null until confirmed)
-  bitcoin_block_hash TEXT,              -- Block hash for verification
-  confirmations INT NOT NULL DEFAULT 0,
+  -- OpenTimestamps proof
+  ots_proof TEXT,                       -- Base64 encoded .ots proof file
+
+  -- Bitcoin attestation (populated after OTS upgrade/verify)
+  bitcoin_txid TEXT,                    -- Bitcoin transaction (from OTS proof)
+  bitcoin_block_height BIGINT,          -- Block number
+  bitcoin_block_hash TEXT,              -- Block hash
+  attestation_time BIGINT,              -- Unix timestamp of Bitcoin attestation
 
   -- Status tracking
   status TEXT NOT NULL DEFAULT 'pending'
-    CHECK (status IN ('pending', 'broadcast', 'confirmed', 'failed')),
+    CHECK (status IN ('pending', 'submitted', 'upgraded', 'verified', 'failed')),
   error_message TEXT,                   -- If status = 'failed'
 
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  broadcast_at TIMESTAMPTZ,
-  confirmed_at TIMESTAMPTZ,
+  submitted_at TIMESTAMPTZ,             -- When sent to OTS calendar
+  upgraded_at TIMESTAMPTZ,              -- When Bitcoin attestation added
+  verified_at TIMESTAMPTZ,              -- When we verified against Bitcoin
 
   -- One anchor per type per election
   UNIQUE(election_id, anchor_type)

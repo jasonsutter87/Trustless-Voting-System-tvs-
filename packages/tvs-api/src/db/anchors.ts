@@ -1,7 +1,9 @@
 /**
- * Bitcoin Anchors Repository
+ * Bitcoin Anchors Repository (OpenTimestamps)
  *
- * Manages bitcoin_anchors table for storing Merkle root anchoring records.
+ * Manages bitcoin_anchors table for storing OpenTimestamps proofs.
+ * OTS aggregates thousands of hashes into single Bitcoin transactions,
+ * providing free, non-spammy Bitcoin timestamping.
  */
 
 import { sql } from './connection.js';
@@ -15,32 +17,25 @@ export interface BitcoinAnchor {
   election_id: string;
   anchor_type: 'start' | 'close';
   data_hash: string;
-  op_return_data: string;
+  raw_data: string;
+  ots_proof: string | null;
   bitcoin_txid: string | null;
   bitcoin_block_height: number | null;
   bitcoin_block_hash: string | null;
-  confirmations: number;
-  status: 'pending' | 'broadcast' | 'confirmed' | 'failed';
+  attestation_time: number | null;
+  status: 'pending' | 'submitted' | 'upgraded' | 'verified' | 'failed';
   error_message: string | null;
   created_at: Date;
-  broadcast_at: Date | null;
-  confirmed_at: Date | null;
+  submitted_at: Date | null;
+  upgraded_at: Date | null;
+  verified_at: Date | null;
 }
 
 export interface CreateAnchorInput {
   electionId: string;
   anchorType: 'start' | 'close';
   dataHash: string;
-  opReturnData: string;
-}
-
-export interface UpdateAnchorInput {
-  txid?: string;
-  blockHeight?: number;
-  blockHash?: string;
-  confirmations?: number;
-  status?: 'pending' | 'broadcast' | 'confirmed' | 'failed';
-  errorMessage?: string;
+  rawData: string;
 }
 
 // ============================================================================
@@ -48,15 +43,15 @@ export interface UpdateAnchorInput {
 // ============================================================================
 
 /**
- * Create a new anchor record (before broadcasting)
+ * Create a new anchor record (before submitting to OTS)
  */
 export async function createAnchor(input: CreateAnchorInput): Promise<BitcoinAnchor> {
   const [anchor] = await sql<BitcoinAnchor[]>`
     INSERT INTO bitcoin_anchors (
-      election_id, anchor_type, data_hash, op_return_data
+      election_id, anchor_type, data_hash, raw_data
     )
     VALUES (
-      ${input.electionId}, ${input.anchorType}, ${input.dataHash}, ${input.opReturnData}
+      ${input.electionId}, ${input.anchorType}, ${input.dataHash}, ${input.rawData}
     )
     RETURNING *
   `;
@@ -100,22 +95,22 @@ export async function getAnchorByTxid(txid: string): Promise<BitcoinAnchor | nul
 }
 
 // ============================================================================
-// Update
+// OpenTimestamps Workflow Updates
 // ============================================================================
 
 /**
- * Update anchor after broadcast
+ * Mark anchor as submitted to OTS calendar and store proof
  */
-export async function markAnchorBroadcast(
+export async function markAnchorSubmitted(
   id: string,
-  txid: string
+  otsProof: string
 ): Promise<BitcoinAnchor> {
   const [anchor] = await sql<BitcoinAnchor[]>`
     UPDATE bitcoin_anchors
     SET
-      bitcoin_txid = ${txid},
-      status = 'broadcast',
-      broadcast_at = NOW()
+      ots_proof = ${otsProof},
+      status = 'submitted',
+      submitted_at = NOW()
     WHERE id = ${id}
     RETURNING *
   `;
@@ -123,24 +118,45 @@ export async function markAnchorBroadcast(
 }
 
 /**
- * Update anchor confirmation status
+ * Mark anchor as upgraded (Bitcoin attestation received)
  */
-export async function updateAnchorConfirmations(
+export async function markAnchorUpgraded(
   id: string,
-  confirmations: number,
-  blockHeight?: number,
-  blockHash?: string
+  upgradedProof: string
 ): Promise<BitcoinAnchor> {
-  const isConfirmed = confirmations >= 6;
-
   const [anchor] = await sql<BitcoinAnchor[]>`
     UPDATE bitcoin_anchors
     SET
-      confirmations = ${confirmations},
-      bitcoin_block_height = COALESCE(${blockHeight ?? null}, bitcoin_block_height),
-      bitcoin_block_hash = COALESCE(${blockHash ?? null}, bitcoin_block_hash),
-      status = ${isConfirmed ? 'confirmed' : 'broadcast'},
-      confirmed_at = ${isConfirmed ? sql`NOW()` : sql`confirmed_at`}
+      ots_proof = ${upgradedProof},
+      status = 'upgraded',
+      upgraded_at = NOW()
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return anchor!;
+}
+
+/**
+ * Mark anchor as verified with Bitcoin attestation details
+ */
+export async function markAnchorVerified(
+  id: string,
+  bitcoinDetails: {
+    txid?: string;
+    blockHeight?: number;
+    blockHash?: string;
+    attestationTime?: number;
+  }
+): Promise<BitcoinAnchor> {
+  const [anchor] = await sql<BitcoinAnchor[]>`
+    UPDATE bitcoin_anchors
+    SET
+      bitcoin_txid = COALESCE(${bitcoinDetails.txid ?? null}, bitcoin_txid),
+      bitcoin_block_height = COALESCE(${bitcoinDetails.blockHeight ?? null}, bitcoin_block_height),
+      bitcoin_block_hash = COALESCE(${bitcoinDetails.blockHash ?? null}, bitcoin_block_hash),
+      attestation_time = COALESCE(${bitcoinDetails.attestationTime ?? null}, attestation_time),
+      status = 'verified',
+      verified_at = NOW()
     WHERE id = ${id}
     RETURNING *
   `;
@@ -165,28 +181,55 @@ export async function markAnchorFailed(
   return anchor!;
 }
 
+/**
+ * Update OTS proof (for upgrading pending proofs)
+ */
+export async function updateOtsProof(
+  id: string,
+  otsProof: string
+): Promise<BitcoinAnchor> {
+  const [anchor] = await sql<BitcoinAnchor[]>`
+    UPDATE bitcoin_anchors
+    SET ots_proof = ${otsProof}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return anchor!;
+}
+
 // ============================================================================
 // Queries
 // ============================================================================
 
 /**
- * Get all anchors pending confirmation (for background refresh)
+ * Get anchors pending Bitcoin attestation (submitted but not yet upgraded)
  */
 export async function getPendingAnchors(): Promise<BitcoinAnchor[]> {
   return sql<BitcoinAnchor[]>`
     SELECT * FROM bitcoin_anchors
-    WHERE status = 'broadcast' AND confirmations < 6
+    WHERE status = 'submitted'
     ORDER BY created_at ASC
   `;
 }
 
 /**
- * Check if election has both anchors confirmed
+ * Get anchors that have been upgraded but not verified
+ */
+export async function getUpgradedAnchors(): Promise<BitcoinAnchor[]> {
+  return sql<BitcoinAnchor[]>`
+    SELECT * FROM bitcoin_anchors
+    WHERE status = 'upgraded'
+    ORDER BY created_at ASC
+  `;
+}
+
+/**
+ * Check if election has both anchors verified
  */
 export async function isElectionFullyAnchored(electionId: string): Promise<boolean> {
   const [result] = await sql<{ count: number }[]>`
     SELECT COUNT(*)::int as count FROM bitcoin_anchors
-    WHERE election_id = ${electionId} AND status = 'confirmed'
+    WHERE election_id = ${electionId} AND status = 'verified'
   `;
   return (result?.count || 0) >= 2;
 }
@@ -205,7 +248,7 @@ export async function getAnchorSummary(electionId: string): Promise<{
   const close = anchors.find((a) => a.anchor_type === 'close') || null;
 
   const fullyAnchored =
-    start?.status === 'confirmed' && close?.status === 'confirmed';
+    start?.status === 'verified' && close?.status === 'verified';
 
   return { start, close, fullyAnchored };
 }
