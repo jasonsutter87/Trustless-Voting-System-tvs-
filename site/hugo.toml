@@ -1,44 +1,42 @@
 baseURL = 'https://tvs.vote/'
 languageCode = 'en-us'
 title = 'TVS - Trustless Voting System'
-theme = 'tvs'
 
 [params]
-  description = "End-to-end verifiable elections powered by cryptography"
-  tagline = "Democracy verified by math, not trust"
-  github = "https://github.com/your-org/tvs"
+CompanyName = 'TVS'
+repoName = 'Trustless-Voting-System-tvs-'
+description = 'A cryptographic voting system that achieves voter privacy, vote integrity, and public verifiability without requiring trust in any single authority.'
+github = 'https://github.com/jasonsutter87/Trustless-Voting-System-tvs-'
 
-[params.hero]
-  title = "Trustless Voting"
-  subtitle = "Every vote cryptographically verified. Zero trust required."
-  cta = "Learn More"
-  ctaLink = "/how-it-works/"
+[environments.development]
+baseURL = 'http://localhost:1313/'
+
+[environments.production]
+baseURL = 'https://tvs.vote/'
 
 [menu]
   [[menu.main]]
-    name = "How It Works"
-    url = "/how-it-works/"
+    name = 'Home'
+    url = '/'
     weight = 1
   [[menu.main]]
-    name = "For Universities"
-    url = "/universities/"
+    name = 'Products'
+    url = '/products/'
     weight = 2
   [[menu.main]]
-    name = "Blog"
-    url = "/blog/"
+    name = 'Demo'
+    url = '/demo/'
     weight = 3
   [[menu.main]]
-    name = "Docs"
-    url = "/docs/"
+    name = 'Docs'
+    url = '/docs/'
     weight = 4
   [[menu.main]]
-    name = "Vote Now"
-    url = "/vote/"
+    name = 'GitHub'
+    url = 'https://github.com/jasonsutter87/Trustless-Voting-System-tvs-'
     weight = 5
 
 [markup]
   [markup.highlight]
-    style = "dracula"
-  [markup.goldmark]
-    [markup.goldmark.renderer]
-      unsafe = true
+    style = 'monokai'
+    lineNos = true
