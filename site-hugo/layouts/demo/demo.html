@@ -180,15 +180,24 @@
             </button>
           </div>
           <p class="text-gray-600 mb-3">Or reset and generate fresh voters:</p>
-          <div class="d-flex gap-2">
+          <div class="d-flex gap-2 flex-wrap">
             <button id="add-500-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold">
-              500 Voters
+              500
             </button>
             <button id="add-1000-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold">
-              1,000 Voters
+              1K
             </button>
             <button id="add-5000-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold">
-              5,000 Voters
+              5K
+            </button>
+            <button id="add-10000-btn" class="btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold">
+              10K
+            </button>
+            <button id="add-50000-btn" class="btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold">
+              50K
+            </button>
+            <button id="add-100000-btn" class="btn bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-semibold">
+              100K
             </button>
           </div>
         </div>
@@ -817,6 +826,9 @@
   document.getElementById('add-500-btn').addEventListener('click', () => resetAndAddVoters(500));
   document.getElementById('add-1000-btn').addEventListener('click', () => resetAndAddVoters(1000));
   document.getElementById('add-5000-btn').addEventListener('click', () => resetAndAddVoters(5000));
+  document.getElementById('add-10000-btn').addEventListener('click', () => resetAndAddVoters(10000));
+  document.getElementById('add-50000-btn').addEventListener('click', () => resetAndAddVoters(50000));
+  document.getElementById('add-100000-btn').addEventListener('click', () => resetAndAddVoters(100000));
 
   document.getElementById('tally-btn').addEventListener('click', tallyVotes);
 
