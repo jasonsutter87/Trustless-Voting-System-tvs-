@@ -1,15 +1,73 @@
-{{/* Accessible footer with proper contrast */}}
-<div class="container py-5">
-  <div class="row">
-    {{/* Company info */}}
-    <div class="col-12 col-md-6 mb-4 mb-md-0">
-      <h4 class="fw-bold mb-3">{{ .Site.Title }}</h4>
-      {{/* Changed from text-gray-400 to text-gray-300 for WCAG AA compliance (4.5:1 contrast) */}}
-      <p class="text-gray-300 mb-0">{{ .Site.Params.companyName | default "Your Company" }}</p>
+{{/* TVS Footer */}}
+<div class="container py-12">
+  <div class="row g-4">
+    {{/* Brand */}}
+    <div class="col-12 col-md-4">
+      <div class="d-flex align-items-center gap-2 mb-4">
+        <svg class="w-8 h-8 text-emerald-400" viewBox="0 0 32 32" fill="none">
+          <path d="M16 2L4 8v8c0 7.732 5.12 14.936 12 16 6.88-1.064 12-8.268 12-16V8L16 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 16l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-xl font-bold">TVS</span>
+      </div>
+      <p class="text-gray-400 text-sm">
+        Building trust through mathematics, not institutions.
+      </p>
     </div>
-    {{/* Copyright */}}
-    <div class="col-12 col-md-6 md:text-right">
-      <p class="text-gray-300 mb-0">&copy; {{ now.Year }} {{ .Site.Params.companyName | default "Your Company" }}. All rights reserved.</p>
+
+    {{/* Products */}}
+    <div class="col-6 col-md-2">
+      <h4 class="font-bold mb-4">Products</h4>
+      <ul class="list-unstyled text-gray-400 text-sm">
+        <li class="mb-2"><a href="/products/veilkey/" class="text-gray-400 hover:text-white text-decoration-none">VeilKey</a></li>
+        <li class="mb-2"><a href="/products/veilsign/" class="text-gray-400 hover:text-white text-decoration-none">VeilSign</a></li>
+        <li class="mb-2"><a href="https://veilforms.com" target="_blank" class="text-gray-400 hover:text-white text-decoration-none">VeilForms</a></li>
+        <li class="mb-2"><a href="https://veilchain.io" target="_blank" class="text-gray-400 hover:text-white text-decoration-none">VeilChain</a></li>
+        <li class="mb-2"><a href="/products/veilproof/" class="text-gray-400 hover:text-white text-decoration-none">VeilProof</a></li>
+      </ul>
+    </div>
+
+    {{/* Resources */}}
+    <div class="col-6 col-md-2">
+      <h4 class="font-bold mb-4">Resources</h4>
+      <ul class="list-unstyled text-gray-400 text-sm">
+        <li class="mb-2"><a href="/docs/" class="text-gray-400 hover:text-white text-decoration-none">Documentation</a></li>
+        <li class="mb-2"><a href="/demo/" class="text-gray-400 hover:text-white text-decoration-none">Live Demo</a></li>
+        <li class="mb-2"><a href="{{ .Site.Params.github }}" target="_blank" class="text-gray-400 hover:text-white text-decoration-none">GitHub</a></li>
+      </ul>
+    </div>
+
+    {{/* External Links */}}
+    <div class="col-12 col-md-4">
+      <h4 class="font-bold mb-4">Related Projects</h4>
+      <ul class="list-unstyled text-gray-400 text-sm">
+        <li class="mb-2">
+          <a href="https://veilforms.com" target="_blank" class="text-gray-400 hover:text-white text-decoration-none d-flex align-items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            veilforms.com
+          </a>
+        </li>
+        <li class="mb-2">
+          <a href="https://veilchain.io" target="_blank" class="text-gray-400 hover:text-white text-decoration-none d-flex align-items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            veilchain.io
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="border-gray-700 my-8">
+
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-gray-500 text-sm">
+    <div>&copy; {{ now.Year }} TVS - Trustless Voting System</div>
+    <div class="d-flex gap-4 mt-4 mt-md-0">
+      <a href="/privacy-policy/" class="text-gray-500 hover:text-white text-decoration-none">Privacy</a>
+      <a href="/terms-of-use/" class="text-gray-500 hover:text-white text-decoration-none">Terms</a>
     </div>
   </div>
 </div>
