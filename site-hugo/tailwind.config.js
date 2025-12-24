@@ -22,8 +22,11 @@ module.exports = {
     { pattern: /^text-(left|center|right)$/ },
     { pattern: /^(md|lg):text-(left|center|right)$/ },
     // Colors commonly used in CMS content
-    { pattern: /^bg-(gray|red|green|blue|emerald|purple)-(500|600|700|800)$/ },
-    { pattern: /^text-gray-(300|400|500|600|700)$/ },
+    { pattern: /^bg-(gray|red|green|blue|emerald|purple|indigo|teal|cyan|orange|pink|rose|amber|yellow)-(50|100|200|300|400|500|600|700|800|900)$/ },
+    { pattern: /^text-(gray|red|green|blue|emerald|purple|indigo|teal|cyan|orange|pink|rose|amber|yellow)-(50|100|200|300|400|500|600|700|800|900)$/ },
+    { pattern: /^from-(gray|indigo|emerald|blue|orange|pink)-(500|600|700|800|900)$/ },
+    { pattern: /^to-(gray|purple|teal|cyan|red|rose)-(500|600|700|800|900)$/ },
+    { pattern: /^border-(gray|red|green|emerald)-(200|300|700)$/ },
     'bg-white', 'bg-black', 'bg-transparent',
     'text-white', 'text-black',
     // Focus states for accessibility
