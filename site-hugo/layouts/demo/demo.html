@@ -1,0 +1,386 @@
+{{ define "main" }}
+<div class="bg-gray-50 min-h-screen">
+  {{/* Header */}}
+  <div class="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-12">
+    <div class="container text-center">
+      <h1 class="text-4xl font-bold mb-4">TVS Live Demo</h1>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+        Watch votes being encrypted, stored in a Merkle tree, and tallied with threshold decryption.
+        No actual server - everything runs in your browser.
+      </p>
+    </div>
+  </div>
+
+  <div class="container py-8">
+    {{/* Election Setup */}}
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-2xl font-bold text-gray-900 mb-0">Election: Best Programming Language 2025</h2>
+        <span id="election-status" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold">Voting Open</span>
+      </div>
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <div class="text-center p-4 bg-gray-50 rounded-lg">
+            <div class="text-3xl font-bold text-gray-900" id="total-voters">0</div>
+            <div class="text-gray-600">Registered Voters</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="text-center p-4 bg-gray-50 rounded-lg">
+            <div class="text-3xl font-bold text-emerald-600" id="total-votes">0</div>
+            <div class="text-gray-600">Votes Cast</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="text-center p-4 bg-gray-50 rounded-lg">
+            <div class="text-3xl font-bold text-blue-600" id="merkle-root">-</div>
+            <div class="text-gray-600">Merkle Root (first 8 chars)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {{/* Left Column - Voting */}}
+      <div class="col-12 col-lg-6">
+        {{/* Cast Vote */}}
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Cast a Vote</h3>
+          <div class="mb-4">
+            <label class="form-label font-semibold">Select a candidate:</label>
+            <div class="d-flex flex-column gap-2" id="candidates">
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="candidate" value="rust" class="form-check-input">
+                <span class="font-semibold">Rust</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="candidate" value="typescript" class="form-check-input">
+                <span class="font-semibold">TypeScript</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="candidate" value="python" class="form-check-input">
+                <span class="font-semibold">Python</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="candidate" value="go" class="form-check-input">
+                <span class="font-semibold">Go</span>
+              </label>
+            </div>
+          </div>
+          <button id="cast-vote-btn" class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-semibold w-full">
+            Encrypt & Cast Vote
+          </button>
+          <div id="vote-result" class="mt-4 hidden"></div>
+        </div>
+
+        {{/* Simulate Voters */}}
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Simulate Multiple Voters</h3>
+          <p class="text-gray-600 mb-4">Add simulated voters to see the system in action.</p>
+          <div class="d-flex gap-2">
+            <button id="add-10-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +10 Voters
+            </button>
+            <button id="add-50-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +50 Voters
+            </button>
+            <button id="add-100-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +100 Voters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{/* Right Column - Results & Votes */}}
+      <div class="col-12 col-lg-6">
+        {{/* Live Results */}}
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-0">Live Results</h3>
+            <button id="tally-btn" class="btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold text-sm">
+              Tally Votes (3-of-5 Trustees)
+            </button>
+          </div>
+          <div id="results-container">
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="font-semibold">Rust</span>
+                <span id="rust-count">0 (0%)</span>
+              </div>
+              <div class="progress" style="height: 24px;">
+                <div id="rust-bar" class="progress-bar bg-orange-500" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="font-semibold">TypeScript</span>
+                <span id="typescript-count">0 (0%)</span>
+              </div>
+              <div class="progress" style="height: 24px;">
+                <div id="typescript-bar" class="progress-bar bg-blue-500" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="font-semibold">Python</span>
+                <span id="python-count">0 (0%)</span>
+              </div>
+              <div class="progress" style="height: 24px;">
+                <div id="python-bar" class="progress-bar bg-yellow-500" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="font-semibold">Go</span>
+                <span id="go-count">0 (0%)</span>
+              </div>
+              <div class="progress" style="height: 24px;">
+                <div id="go-bar" class="progress-bar bg-cyan-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <div id="tally-status" class="mt-4 text-center text-gray-500 text-sm">
+            Results update after tallying
+          </div>
+        </div>
+
+        {{/* Vote Log */}}
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Vote Log (Encrypted)</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            This is what the server sees - encrypted votes with no way to read them.
+          </p>
+          <div id="vote-log" class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-auto" style="max-height: 300px;">
+            <div class="text-gray-500">// Waiting for votes...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{/* How It Works */}}
+    <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
+      <h3 class="text-xl font-bold text-gray-900 mb-4">How This Demo Works</h3>
+      <div class="row g-4">
+        <div class="col-12 col-md-3">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-blue-100 rounded-full d-flex align-items-center justify-content-center mx-auto mb-3">
+              <span class="text-blue-600 font-bold">1</span>
+            </div>
+            <h4 class="font-bold mb-2">VeilForms</h4>
+            <p class="text-gray-600 text-sm">Vote encrypted in browser with AES-256-GCM</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-emerald-100 rounded-full d-flex align-items-center justify-content-center mx-auto mb-3">
+              <span class="text-emerald-600 font-bold">2</span>
+            </div>
+            <h4 class="font-bold mb-2">VeilChain</h4>
+            <p class="text-gray-600 text-sm">Vote added to Merkle tree, root hash updated</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-purple-100 rounded-full d-flex align-items-center justify-content-center mx-auto mb-3">
+              <span class="text-purple-600 font-bold">3</span>
+            </div>
+            <h4 class="font-bold mb-2">VeilKey</h4>
+            <p class="text-gray-600 text-sm">3-of-5 trustees provide partial decryptions</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-pink-100 rounded-full d-flex align-items-center justify-content-center mx-auto mb-3">
+              <span class="text-pink-600 font-bold">4</span>
+            </div>
+            <h4 class="font-bold mb-2">Results</h4>
+            <p class="text-gray-600 text-sm">Votes tallied, results published</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{/* Links */}}
+    <div class="text-center mt-8">
+      <p class="text-gray-600 mb-4">Want to see more?</p>
+      <div class="d-flex gap-4 justify-content-center flex-wrap">
+        <a href="https://veilforms.com/demo/" target="_blank" rel="noopener" class="btn bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
+          VeilForms Demo
+        </a>
+        <a href="https://veilchain.io" target="_blank" rel="noopener" class="btn bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold">
+          VeilChain Explorer
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Simple demo simulation
+(function() {
+  const state = {
+    voters: 0,
+    votes: [],
+    results: { rust: 0, typescript: 0, python: 0, go: 0 },
+    merkleRoot: null,
+    tallied: false
+  };
+
+  // Simple hash function for demo
+  function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash).toString(16).padStart(8, '0');
+  }
+
+  // Generate fake encrypted vote
+  function generateEncryptedVote(candidate) {
+    const iv = Array.from({length: 12}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    const ciphertext = Array.from({length: 32}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    const tag = Array.from({length: 16}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    return { iv, ciphertext, tag, candidate };
+  }
+
+  // Update Merkle root
+  function updateMerkleRoot() {
+    if (state.votes.length === 0) {
+      state.merkleRoot = null;
+      document.getElementById('merkle-root').textContent = '-';
+      return;
+    }
+
+    // Simplified: just hash all votes together
+    const combined = state.votes.map(v => v.ciphertext).join('');
+    state.merkleRoot = simpleHash(combined + Date.now());
+    document.getElementById('merkle-root').textContent = state.merkleRoot.substring(0, 8);
+  }
+
+  // Add vote to log
+  function addToLog(vote, index) {
+    const log = document.getElementById('vote-log');
+    if (index === 0) {
+      log.innerHTML = '';
+    }
+    const entry = document.createElement('div');
+    entry.className = 'mb-2 border-b border-gray-700 pb-2';
+    entry.innerHTML = `
+      <div class="text-gray-500">// Vote #${index + 1}</div>
+      <div>{</div>
+      <div class="pl-4">"iv": "${vote.iv.substring(0, 16)}...",</div>
+      <div class="pl-4">"ciphertext": "${vote.ciphertext.substring(0, 24)}...",</div>
+      <div class="pl-4">"tag": "${vote.tag.substring(0, 16)}..."</div>
+      <div>}</div>
+    `;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  // Update stats
+  function updateStats() {
+    document.getElementById('total-voters').textContent = state.voters;
+    document.getElementById('total-votes').textContent = state.votes.length;
+    updateMerkleRoot();
+  }
+
+  // Update results display
+  function updateResults() {
+    const total = state.votes.length || 1;
+    ['rust', 'typescript', 'python', 'go'].forEach(lang => {
+      const count = state.results[lang];
+      const pct = Math.round((count / total) * 100);
+      document.getElementById(`${lang}-count`).textContent = `${count} (${pct}%)`;
+      document.getElementById(`${lang}-bar`).style.width = `${pct}%`;
+    });
+  }
+
+  // Cast a vote
+  function castVote(candidate) {
+    const vote = generateEncryptedVote(candidate);
+    state.votes.push(vote);
+    state.voters++;
+    if (state.tallied) {
+      state.results[candidate]++;
+    }
+    addToLog(vote, state.votes.length - 1);
+    updateStats();
+    if (state.tallied) {
+      updateResults();
+    }
+    return vote;
+  }
+
+  // Add random voters
+  function addRandomVoters(count) {
+    const candidates = ['rust', 'typescript', 'python', 'go'];
+    const weights = [0.35, 0.30, 0.20, 0.15]; // Rust slightly favored for demo
+
+    for (let i = 0; i < count; i++) {
+      const rand = Math.random();
+      let cumulative = 0;
+      let selected = candidates[0];
+      for (let j = 0; j < candidates.length; j++) {
+        cumulative += weights[j];
+        if (rand < cumulative) {
+          selected = candidates[j];
+          break;
+        }
+      }
+      castVote(selected);
+    }
+  }
+
+  // Tally votes
+  function tallyVotes() {
+    state.tallied = true;
+    state.results = { rust: 0, typescript: 0, python: 0, go: 0 };
+
+    // "Decrypt" votes (in demo, we stored the candidate)
+    state.votes.forEach(vote => {
+      state.results[vote.candidate]++;
+    });
+
+    updateResults();
+    document.getElementById('tally-status').innerHTML = `
+      <span class="text-emerald-600 font-semibold">Tallied with 3-of-5 threshold decryption</span>
+    `;
+  }
+
+  // Event listeners
+  document.getElementById('cast-vote-btn').addEventListener('click', function() {
+    const selected = document.querySelector('input[name="candidate"]:checked');
+    if (!selected) {
+      alert('Please select a candidate');
+      return;
+    }
+
+    const vote = castVote(selected.value);
+    const resultDiv = document.getElementById('vote-result');
+    resultDiv.classList.remove('hidden');
+    resultDiv.innerHTML = `
+      <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+        <div class="font-bold text-emerald-800 mb-2">Vote Encrypted & Cast!</div>
+        <div class="text-sm text-gray-600">
+          <div>Ciphertext: <code class="bg-gray-100 px-1">${vote.ciphertext.substring(0, 16)}...</code></div>
+          <div>Merkle Position: <code class="bg-gray-100 px-1">#${state.votes.length}</code></div>
+        </div>
+      </div>
+    `;
+
+    // Clear selection
+    selected.checked = false;
+  });
+
+  document.getElementById('add-10-btn').addEventListener('click', () => addRandomVoters(10));
+  document.getElementById('add-50-btn').addEventListener('click', () => addRandomVoters(50));
+  document.getElementById('add-100-btn').addEventListener('click', () => addRandomVoters(100));
+  document.getElementById('tally-btn').addEventListener('click', tallyVotes);
+
+  // Initialize
+  updateStats();
+})();
+</script>
+{{ end }}

@@ -1,0 +1,60 @@
+{{ define "main" }}
+<div class="container py-12">
+  <div class="row">
+    {{/* Sidebar */}}
+    <div class="col-12 col-md-3 mb-6">
+      <div class="bg-white rounded-xl shadow-sm p-4 sticky-top" style="top: 1rem;">
+        <h3 class="font-bold text-gray-900 mb-4">Documentation</h3>
+        <ul class="list-unstyled">
+          {{ range .Pages.ByWeight }}
+          <li class="mb-2">
+            <a href="{{ .Permalink }}" class="text-gray-600 hover:text-emerald-600 text-decoration-none">
+              {{ .Title }}
+            </a>
+          </li>
+          {{ end }}
+        </ul>
+        <hr class="my-4">
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a href="/products/" class="text-gray-600 hover:text-emerald-600 text-decoration-none">
+              Veil Products
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="/demo/" class="text-gray-600 hover:text-emerald-600 text-decoration-none">
+              Live Demo
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="https://github.com/jasonsutter87/Trustless-Voting-System-tvs-" target="_blank" class="text-gray-600 hover:text-emerald-600 text-decoration-none">
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    {{/* Main Content */}}
+    <div class="col-12 col-md-9">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ .Title }}</h1>
+        <p class="text-xl text-gray-600 mb-8">{{ .Description }}</p>
+
+        <div class="row g-4">
+          {{ range .Pages.ByWeight }}
+          <div class="col-12">
+            <a href="{{ .Permalink }}" class="text-decoration-none">
+              <div class="bg-gray-50 rounded-lg p-6 hover:bg-gray-100 transition-colors">
+                <h2 class="text-xl font-bold text-gray-900 mb-2">{{ .Title }}</h2>
+                <p class="text-gray-600 mb-0">{{ .Description }}</p>
+              </div>
+            </a>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}
