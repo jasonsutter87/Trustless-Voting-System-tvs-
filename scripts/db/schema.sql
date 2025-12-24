@@ -27,20 +27,90 @@ CREATE INDEX idx_elections_status ON elections(status);
 CREATE INDEX idx_elections_time ON elections(start_time, end_time);
 
 -- ============================================
--- CANDIDATES / BALLOT OPTIONS
+-- JURISDICTIONS (Hierarchical: Federal > State > County > City)
+-- ============================================
+CREATE TABLE jurisdictions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  parent_id UUID REFERENCES jurisdictions(id) ON DELETE RESTRICT,
+  name TEXT NOT NULL,                           -- "Placer County"
+  type TEXT NOT NULL CHECK (type IN ('federal', 'state', 'county', 'city', 'district', 'precinct')),
+  code TEXT NOT NULL UNIQUE,                    -- "US-CA-PLACER"
+  full_path TEXT NOT NULL,                      -- "United States > California > Placer County"
+  level INT NOT NULL,                           -- 0=federal, 1=state, 2=county, 3=city
+
+  -- Threshold cryptography per jurisdiction
+  public_key TEXT,                              -- RSA public key for vote encryption
+  threshold INT,                                -- Required trustees for decryption
+  total_trustees INT,
+
+  metadata JSONB,                               -- Population, geographic data, etc.
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+  CONSTRAINT unique_name_at_level UNIQUE(parent_id, name)
+);
+
+CREATE INDEX idx_jurisdictions_parent ON jurisdictions(parent_id);
+CREATE INDEX idx_jurisdictions_code ON jurisdictions(code);
+CREATE INDEX idx_jurisdictions_level ON jurisdictions(level);
+CREATE INDEX idx_jurisdictions_type ON jurisdictions(type);
+
+-- Get jurisdiction ancestry chain (from current up to federal)
+CREATE OR REPLACE FUNCTION get_jurisdiction_chain(p_jurisdiction_id UUID)
+RETURNS TABLE(id UUID, name TEXT, code TEXT, type TEXT, level INT) AS $$
+  WITH RECURSIVE chain AS (
+    SELECT j.id, j.name, j.code, j.type, j.level, j.parent_id
+    FROM jurisdictions j
+    WHERE j.id = p_jurisdiction_id
+
+    UNION ALL
+
+    SELECT j.id, j.name, j.code, j.type, j.level, j.parent_id
+    FROM jurisdictions j
+    JOIN chain c ON j.id = c.parent_id
+  )
+  SELECT id, name, code, type, level FROM chain ORDER BY level ASC;
+$$ LANGUAGE sql;
+
+-- ============================================
+-- BALLOT QUESTIONS (belong to jurisdictions)
+-- ============================================
+CREATE TABLE ballot_questions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
+  jurisdiction_id UUID NOT NULL REFERENCES jurisdictions(id),
+
+  title TEXT NOT NULL,                          -- "County Sheriff", "Proposition 47"
+  description TEXT,
+  question_type TEXT NOT NULL CHECK (question_type IN
+    ('single_choice', 'multi_choice', 'ranked_choice', 'yes_no', 'write_in')),
+  max_selections INT NOT NULL DEFAULT 1,        -- For multi_choice: how many can be selected
+  allow_write_in BOOLEAN NOT NULL DEFAULT FALSE,
+  display_order INT NOT NULL,                   -- Order within jurisdiction section
+
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+  UNIQUE(election_id, jurisdiction_id, display_order)
+);
+
+CREATE INDEX idx_questions_election ON ballot_questions(election_id);
+CREATE INDEX idx_questions_jurisdiction ON ballot_questions(jurisdiction_id);
+
+-- ============================================
+-- CANDIDATES / BALLOT OPTIONS (belong to questions)
 -- ============================================
 CREATE TABLE candidates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
+  question_id UUID NOT NULL REFERENCES ballot_questions(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
-  position INT NOT NULL,              -- Display order
+  party TEXT,                         -- Political party (optional)
+  position INT NOT NULL,              -- Display order within question
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-  UNIQUE(election_id, position)
+  UNIQUE(question_id, position)
 );
 
-CREATE INDEX idx_candidates_election ON candidates(election_id);
+CREATE INDEX idx_candidates_question ON candidates(question_id);
 
 -- ============================================
 -- VOTERS (Identity side - before credential issuance)
@@ -48,17 +118,44 @@ CREATE INDEX idx_candidates_election ON candidates(election_id);
 CREATE TABLE voters (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
-  student_id_hash TEXT NOT NULL,      -- SHA-256 of student ID (never store plaintext)
+  jurisdiction_id UUID NOT NULL REFERENCES jurisdictions(id),  -- Voter's home jurisdiction (most specific)
+  voter_id_hash TEXT NOT NULL,        -- SHA-256 of voter ID (never store plaintext)
   email_hash TEXT,                    -- SHA-256 of email (for notifications)
   registered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   credential_issued BOOLEAN NOT NULL DEFAULT FALSE,
   credential_issued_at TIMESTAMPTZ,
 
-  UNIQUE(election_id, student_id_hash)
+  -- Cache the jurisdiction chain at registration time for ballot generation
+  jurisdiction_chain UUID[],          -- [federal_id, state_id, county_id, ...]
+
+  UNIQUE(election_id, voter_id_hash)
 );
 
 CREATE INDEX idx_voters_election ON voters(election_id);
+CREATE INDEX idx_voters_jurisdiction ON voters(jurisdiction_id);
 CREATE INDEX idx_voters_credential ON voters(election_id, credential_issued);
+
+-- ============================================
+-- JURISDICTION TRUSTEES (for threshold decryption)
+-- ============================================
+CREATE TABLE jurisdiction_trustees (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  jurisdiction_id UUID NOT NULL REFERENCES jurisdictions(id) ON DELETE CASCADE,
+  election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
+  trustee_name TEXT NOT NULL,
+  email TEXT,
+  public_key TEXT,                    -- Trustee's public key for share encryption
+  key_share_encrypted TEXT,           -- Encrypted portion of jurisdiction's private key
+  share_index INT,                    -- Position in threshold scheme
+  status TEXT NOT NULL DEFAULT 'invited'
+    CHECK (status IN ('invited', 'registered', 'confirmed', 'revoked')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+  UNIQUE(jurisdiction_id, election_id, trustee_name)
+);
+
+CREATE INDEX idx_trustees_jurisdiction ON jurisdiction_trustees(jurisdiction_id);
+CREATE INDEX idx_trustees_election ON jurisdiction_trustees(election_id);
 
 -- ============================================
 -- VEILSIGN: Blind Signature Authority Keys
@@ -74,41 +171,43 @@ CREATE TABLE signing_keys (
 );
 
 -- ============================================
--- VEILCHAIN: Merkle Tree Nodes
+-- VEILCHAIN: Merkle Tree Nodes (per question for jurisdiction separation)
 -- ============================================
 CREATE TABLE merkle_nodes (
   id BIGSERIAL PRIMARY KEY,
-  election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
+  question_id UUID NOT NULL REFERENCES ballot_questions(id) ON DELETE CASCADE,
   level INT NOT NULL,                 -- 0 = leaves, higher = internal nodes
   position BIGINT NOT NULL,           -- Position at this level
   hash TEXT NOT NULL,                 -- SHA-256 hash
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-  UNIQUE(election_id, level, position)
+  UNIQUE(question_id, level, position)
 );
 
-CREATE INDEX idx_merkle_election_level ON merkle_nodes(election_id, level);
+CREATE INDEX idx_merkle_question_level ON merkle_nodes(question_id, level);
 
 -- ============================================
--- VEILCHAIN: Vote Entries (APPEND-ONLY)
+-- VEILCHAIN: Vote Entries (APPEND-ONLY, per question)
 -- ============================================
 CREATE TABLE votes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  election_id UUID NOT NULL REFERENCES elections(id),
-  encrypted_vote TEXT NOT NULL,       -- Encrypted ballot (VeilForms format)
+  question_id UUID NOT NULL REFERENCES ballot_questions(id),
+  encrypted_vote TEXT NOT NULL,       -- Encrypted answer (VeilForms format)
   commitment TEXT NOT NULL,           -- Vote commitment hash
   zk_proof TEXT NOT NULL,             -- Zero-knowledge proof of validity
-  credential_nullifier TEXT NOT NULL, -- Prevents double voting (unique per credential)
-  merkle_position BIGINT NOT NULL,    -- Position in Merkle tree
+  credential_nullifier TEXT NOT NULL, -- Prevents double voting (unique per election)
+  merkle_position BIGINT NOT NULL,    -- Position in question's Merkle tree
   confirmation_code TEXT NOT NULL,    -- Voter's receipt code
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-  UNIQUE(credential_nullifier),       -- One vote per credential
-  UNIQUE(election_id, merkle_position)
+  -- Nullifier is unique per question (voter can vote on multiple questions)
+  UNIQUE(question_id, credential_nullifier),
+  UNIQUE(question_id, merkle_position)
 );
 
-CREATE INDEX idx_votes_election ON votes(election_id);
+CREATE INDEX idx_votes_question ON votes(question_id);
 CREATE INDEX idx_votes_confirmation ON votes(confirmation_code);
+CREATE INDEX idx_votes_nullifier ON votes(credential_nullifier);
 
 -- ============================================
 -- APPEND-ONLY ENFORCEMENT
@@ -131,24 +230,26 @@ BEFORE UPDATE OR DELETE ON votes
 FOR EACH ROW EXECUTE FUNCTION prevent_vote_modification();
 
 -- ============================================
--- MERKLE ROOT SNAPSHOTS (for anchoring)
+-- MERKLE ROOT SNAPSHOTS (per question for independent verification)
 -- ============================================
 CREATE TABLE merkle_roots (
   id BIGSERIAL PRIMARY KEY,
-  election_id UUID NOT NULL REFERENCES elections(id),
+  question_id UUID NOT NULL REFERENCES ballot_questions(id),
   root_hash TEXT NOT NULL,
   vote_count BIGINT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_merkle_roots_election ON merkle_roots(election_id, created_at DESC);
+CREATE INDEX idx_merkle_roots_question ON merkle_roots(question_id, created_at DESC);
 
 -- ============================================
--- AUDIT LOG
+-- AUDIT LOG (with jurisdiction/question scoping)
 -- ============================================
 CREATE TABLE audit_log (
   id BIGSERIAL PRIMARY KEY,
   election_id UUID REFERENCES elections(id),
+  jurisdiction_id UUID REFERENCES jurisdictions(id),  -- For jurisdiction-specific audits
+  question_id UUID REFERENCES ballot_questions(id),   -- For question-specific audits
   action TEXT NOT NULL,
   actor TEXT,                         -- System component or admin ID
   details JSONB,
@@ -156,20 +257,22 @@ CREATE TABLE audit_log (
 );
 
 CREATE INDEX idx_audit_election ON audit_log(election_id, created_at DESC);
+CREATE INDEX idx_audit_jurisdiction ON audit_log(jurisdiction_id, created_at DESC);
+CREATE INDEX idx_audit_question ON audit_log(question_id, created_at DESC);
 
 -- ============================================
 -- HELPER FUNCTIONS
 -- ============================================
 
--- Get current Merkle root for an election
-CREATE OR REPLACE FUNCTION get_merkle_root(p_election_id UUID)
+-- Get current Merkle root for a ballot question
+CREATE OR REPLACE FUNCTION get_merkle_root(p_question_id UUID)
 RETURNS TEXT AS $$
 DECLARE
   v_root TEXT;
 BEGIN
   SELECT hash INTO v_root
   FROM merkle_nodes
-  WHERE election_id = p_election_id
+  WHERE question_id = p_question_id
   ORDER BY level DESC, position ASC
   LIMIT 1;
 
@@ -177,11 +280,44 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Get vote count for an election
-CREATE OR REPLACE FUNCTION get_vote_count(p_election_id UUID)
+-- Get vote count for a ballot question
+CREATE OR REPLACE FUNCTION get_vote_count(p_question_id UUID)
 RETURNS BIGINT AS $$
 BEGIN
-  RETURN (SELECT COUNT(*) FROM votes WHERE election_id = p_election_id);
+  RETURN (SELECT COUNT(*) FROM votes WHERE question_id = p_question_id);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Get ballot questions for a voter's jurisdiction chain
+CREATE OR REPLACE FUNCTION get_ballot_for_voter(p_election_id UUID, p_jurisdiction_id UUID)
+RETURNS TABLE(
+  question_id UUID,
+  jurisdiction_id UUID,
+  jurisdiction_name TEXT,
+  jurisdiction_level INT,
+  title TEXT,
+  question_type TEXT,
+  max_selections INT,
+  display_order INT
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    bq.id as question_id,
+    bq.jurisdiction_id,
+    j.name as jurisdiction_name,
+    j.level as jurisdiction_level,
+    bq.title,
+    bq.question_type,
+    bq.max_selections,
+    bq.display_order
+  FROM ballot_questions bq
+  JOIN jurisdictions j ON bq.jurisdiction_id = j.id
+  WHERE bq.election_id = p_election_id
+    AND bq.jurisdiction_id IN (
+      SELECT id FROM get_jurisdiction_chain(p_jurisdiction_id)
+    )
+  ORDER BY j.level ASC, bq.display_order ASC;
 END;
 $$ LANGUAGE plpgsql;
 
