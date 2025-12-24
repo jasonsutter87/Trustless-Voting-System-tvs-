@@ -23,7 +23,7 @@ export interface Election {
 }
 
 export interface CeremonyStatus {
-  phase: string;
+  phase: 'CREATED' | 'REGISTRATION' | 'COMMITMENT' | 'SHARE_DISTRIBUTION' | 'FINALIZED';
   registeredCount: number;
   requiredCount: number;
   committedCount: number;
