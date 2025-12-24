@@ -167,16 +167,28 @@
         {{/* Simulate Voters */}}
         <div class="bg-white rounded-xl shadow-sm p-6">
           <h3 class="text-xl font-bold text-gray-900 mb-4">Simulate Multiple Voters</h3>
-          <p class="text-gray-600 mb-4">Add simulated voters to see the system in action.</p>
+          <p class="text-gray-600 mb-3">Add voters to the existing pool:</p>
+          <div class="d-flex gap-2 mb-4">
+            <button id="add-10-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +10
+            </button>
+            <button id="add-50-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +50
+            </button>
+            <button id="add-100-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
+              +100
+            </button>
+          </div>
+          <p class="text-gray-600 mb-3">Or reset and generate fresh voters:</p>
           <div class="d-flex gap-2">
-            <button id="add-500-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-              +500 Voters
+            <button id="add-500-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold">
+              500 Voters
             </button>
-            <button id="add-1000-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-              +1,000 Voters
+            <button id="add-1000-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold">
+              1,000 Voters
             </button>
-            <button id="add-5000-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-              +5,000 Voters
+            <button id="add-5000-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold">
+              5,000 Voters
             </button>
           </div>
         </div>
@@ -188,7 +200,11 @@
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
           <h3 class="text-xl font-bold text-gray-900 mb-4">Live Results</h3>
           <button id="tally-btn" class="btn bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold w-full text-lg mb-4">
-            Tally Votes (3-of-5 Trustees)
+            <span id="tally-btn-text">Tally Votes (3-of-5 Trustees)</span>
+            <svg id="tally-spinner" class="hidden animate-spin ml-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
           </button>
 
           {{/* Q1 Results */}}
@@ -637,30 +653,59 @@
 
   // Tally votes
   function tallyVotes() {
-    state.tallied = true;
-    state.results = {
-      q1: { rust: 0, typescript: 0, python: 0, go: 0 },
-      q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
-      q3: { vscode: 0, neovim: 0, jetbrains: 0 }
-    };
-    state.writeIns = {};
+    const btn = document.getElementById('tally-btn');
+    const btnText = document.getElementById('tally-btn-text');
+    const spinner = document.getElementById('tally-spinner');
+    const statusDiv = document.getElementById('tally-status');
 
-    // "Decrypt" ballots
-    state.votes.forEach(vote => {
-      const b = vote.ballot;
-      state.results.q1[b.q1]++;
-      b.q2.forEach(opt => state.results.q2[opt]++);
-      if (b.q3 === 'other' && b.q3Text) {
-        state.writeIns[b.q3Text] = (state.writeIns[b.q3Text] || 0) + 1;
-      } else {
-        state.results.q3[b.q3]++;
-      }
-    });
+    // Show spinner for large vote counts
+    const showSpinner = state.votes.length >= 1000;
 
-    updateResults();
-    document.getElementById('tally-status').innerHTML = `
-      <span class="text-emerald-600 font-semibold">Tallied with 3-of-5 threshold decryption</span>
-    `;
+    if (showSpinner) {
+      btn.disabled = true;
+      btnText.textContent = 'Decrypting with trustees...';
+      spinner.classList.remove('hidden');
+      statusDiv.innerHTML = `<span class="text-purple-600">Processing ${state.votes.length.toLocaleString()} ballots...</span>`;
+    }
+
+    // Use setTimeout to allow UI to update before heavy processing
+    setTimeout(() => {
+      state.tallied = true;
+      state.results = {
+        q1: { rust: 0, typescript: 0, python: 0, go: 0 },
+        q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
+        q3: { vscode: 0, neovim: 0, jetbrains: 0 }
+      };
+      state.writeIns = {};
+
+      // "Decrypt" ballots
+      state.votes.forEach(vote => {
+        const b = vote.ballot;
+        state.results.q1[b.q1]++;
+        b.q2.forEach(opt => state.results.q2[opt]++);
+        if (b.q3 === 'other' && b.q3Text) {
+          state.writeIns[b.q3Text] = (state.writeIns[b.q3Text] || 0) + 1;
+        } else {
+          state.results.q3[b.q3]++;
+        }
+      });
+
+      // Simulate decryption delay for large counts
+      const delay = showSpinner ? Math.min(state.votes.length / 2, 2000) : 0;
+
+      setTimeout(() => {
+        updateResults();
+
+        // Reset button state
+        btn.disabled = false;
+        btnText.textContent = 'Tally Votes (3-of-5 Trustees)';
+        spinner.classList.add('hidden');
+
+        statusDiv.innerHTML = `
+          <span class="text-emerald-600 font-semibold">Tallied ${state.votes.length.toLocaleString()} ballots with 3-of-5 threshold decryption</span>
+        `;
+      }, delay);
+    }, showSpinner ? 100 : 0);
   }
 
   // Q2 checkbox limit (max 2)
@@ -763,9 +808,16 @@
     document.getElementById('q2-limit-msg').classList.add('text-gray-500');
   });
 
+  // Add to existing voters
+  document.getElementById('add-10-btn').addEventListener('click', () => addRandomVoters(10));
+  document.getElementById('add-50-btn').addEventListener('click', () => addRandomVoters(50));
+  document.getElementById('add-100-btn').addEventListener('click', () => addRandomVoters(100));
+
+  // Reset and generate fresh voters
   document.getElementById('add-500-btn').addEventListener('click', () => resetAndAddVoters(500));
   document.getElementById('add-1000-btn').addEventListener('click', () => resetAndAddVoters(1000));
   document.getElementById('add-5000-btn').addEventListener('click', () => resetAndAddVoters(5000));
+
   document.getElementById('tally-btn').addEventListener('click', tallyVotes);
 
   // Open voting process
