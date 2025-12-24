@@ -1,6 +1,32 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 
+// Mock ResizeObserver for Radix UI components
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+global.ResizeObserver = ResizeObserverMock;
+
+// Mock window.matchMedia for responsive components
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Mock scrollIntoView for focus management
+Element.prototype.scrollIntoView = jest.fn();
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
