@@ -15,6 +15,7 @@ import { verifyRoutes } from './routes/verify.js';
 import { jurisdictionRoutes } from './routes/jurisdictions.js';
 import { ballotRoutes } from './routes/ballot.js';
 import { anchorsRoutes } from './routes/anchors.js';
+import { organizationRoutes } from './routes/organizations.js';
 
 const fastify = Fastify({
   logger: true,
@@ -31,6 +32,7 @@ fastify.get('/health', async () => {
 });
 
 // Register routes
+await fastify.register(organizationRoutes, { prefix: '/api/orgs' });
 await fastify.register(electionRoutes, { prefix: '/api/elections' });
 await fastify.register(trusteeRoutes, { prefix: '/api/elections' }); // Mounted under elections for /elections/:id/trustees
 await fastify.register(registrationRoutes, { prefix: '/api/register' });

@@ -5,10 +5,44 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
+-- ORGANIZATIONS (Multi-tenant support)
+-- ============================================
+CREATE TABLE organizations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,          -- for URLs: org-name.veilsuite.com
+  type TEXT CHECK (type IN ('hoa', 'company', 'nonprofit', 'government', 'other')),
+  settings JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_organizations_slug ON organizations(slug);
+CREATE INDEX idx_organizations_type ON organizations(type);
+
+-- ============================================
+-- ORGANIZATION MEMBERS (links users to orgs with roles)
+-- ============================================
+CREATE TABLE org_members (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('owner', 'admin', 'member')),
+  invited_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  joined_at TIMESTAMPTZ,
+  UNIQUE(org_id, email)
+);
+
+CREATE INDEX idx_org_members_org ON org_members(org_id);
+CREATE INDEX idx_org_members_email ON org_members(email);
+CREATE INDEX idx_org_members_role ON org_members(org_id, role);
+
+-- ============================================
 -- ELECTIONS
 -- ============================================
 CREATE TABLE elections (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
   start_time TIMESTAMPTZ NOT NULL,
@@ -23,6 +57,7 @@ CREATE TABLE elections (
   CONSTRAINT valid_time_range CHECK (end_time > start_time)
 );
 
+CREATE INDEX idx_elections_org ON elections(org_id);
 CREATE INDEX idx_elections_status ON elections(status);
 CREATE INDEX idx_elections_time ON elections(start_time, end_time);
 
@@ -380,4 +415,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER elections_updated_at
 BEFORE UPDATE ON elections
+FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER organizations_updated_at
+BEFORE UPDATE ON organizations
 FOR EACH ROW EXECUTE FUNCTION update_updated_at();
