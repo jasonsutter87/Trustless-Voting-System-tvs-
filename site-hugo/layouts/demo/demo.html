@@ -309,16 +309,9 @@
                   <div id="q3-jetbrains-bar" class="progress-bar bg-emerald-500" style="width: 0%"></div>
                 </div>
               </div>
-              <div class="mb-2">
-                <div class="d-flex justify-content-between mb-1 text-sm">
-                  <span>Other (write-in)</span>
-                  <span id="q3-other-count">0 (0%)</span>
-                </div>
-                <div class="progress" style="height: 16px;">
-                  <div id="q3-other-bar" class="progress-bar bg-emerald-500" style="width: 0%"></div>
-                </div>
+              <div id="q3-writeins-container">
+                {{/* Write-in entries will be added dynamically here */}}
               </div>
-              <div id="q3-writeins" class="mt-2 text-xs text-gray-500 hidden"></div>
             </div>
           </div>
 
@@ -407,9 +400,9 @@
     results: {
       q1: { rust: 0, typescript: 0, python: 0, go: 0 },
       q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
-      q3: { vscode: 0, neovim: 0, jetbrains: 0, other: 0 }
+      q3: { vscode: 0, neovim: 0, jetbrains: 0 }
     },
-    writeIns: [],
+    writeIns: {}, // { "Emacs": 2, "Vim": 1, ... }
     merkleRoot: null,
     tallied: false
   };
@@ -493,21 +486,37 @@
       document.getElementById(`q2-${opt}-bar`).style.width = `${pct}%`;
     });
 
-    // Q3 results
-    ['vscode', 'neovim', 'jetbrains', 'other'].forEach(opt => {
+    // Q3 results (fixed options)
+    ['vscode', 'neovim', 'jetbrains'].forEach(opt => {
       const count = state.results.q3[opt];
       const pct = Math.round((count / total) * 100);
       document.getElementById(`q3-${opt}-count`).textContent = `${count} (${pct}%)`;
       document.getElementById(`q3-${opt}-bar`).style.width = `${pct}%`;
     });
 
-    // Show write-ins
-    if (state.writeIns.length > 0) {
-      const writeInsDiv = document.getElementById('q3-writeins');
-      writeInsDiv.classList.remove('hidden');
-      const unique = [...new Set(state.writeIns)];
-      writeInsDiv.innerHTML = 'Write-ins: ' + unique.slice(0, 5).join(', ') + (unique.length > 5 ? '...' : '');
-    }
+    // Q3 write-ins (each gets its own bar)
+    const writeInsContainer = document.getElementById('q3-writeins-container');
+    writeInsContainer.innerHTML = '';
+
+    const writeInEntries = Object.entries(state.writeIns).sort((a, b) => b[1] - a[1]);
+    writeInEntries.forEach(([name, count]) => {
+      const pct = Math.round((count / total) * 100);
+      const div = document.createElement('div');
+      div.className = 'mb-2';
+      div.innerHTML = `
+        <div class="d-flex justify-content-between mb-1 text-sm">
+          <span class="d-flex align-items-center gap-1">
+            <span class="text-gray-400 text-xs">(write-in)</span>
+            ${name}
+          </span>
+          <span>${count} (${pct}%)</span>
+        </div>
+        <div class="progress" style="height: 16px;">
+          <div class="progress-bar bg-teal-500" style="width: ${pct}%"></div>
+        </div>
+      `;
+      writeInsContainer.appendChild(div);
+    });
   }
 
   // Cast a ballot
@@ -520,9 +529,8 @@
       // Update results live
       state.results.q1[ballot.q1]++;
       ballot.q2.forEach(opt => state.results.q2[opt]++);
-      if (ballot.q3 === 'other') {
-        state.results.q3.other++;
-        if (ballot.q3Text) state.writeIns.push(ballot.q3Text);
+      if (ballot.q3 === 'other' && ballot.q3Text) {
+        state.writeIns[ballot.q3Text] = (state.writeIns[ballot.q3Text] || 0) + 1;
       } else {
         state.results.q3[ballot.q3]++;
       }
@@ -577,18 +585,17 @@
     state.results = {
       q1: { rust: 0, typescript: 0, python: 0, go: 0 },
       q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
-      q3: { vscode: 0, neovim: 0, jetbrains: 0, other: 0 }
+      q3: { vscode: 0, neovim: 0, jetbrains: 0 }
     };
-    state.writeIns = [];
+    state.writeIns = {};
 
     // "Decrypt" ballots
     state.votes.forEach(vote => {
       const b = vote.ballot;
       state.results.q1[b.q1]++;
       b.q2.forEach(opt => state.results.q2[opt]++);
-      if (b.q3 === 'other') {
-        state.results.q3.other++;
-        if (b.q3Text) state.writeIns.push(b.q3Text);
+      if (b.q3 === 'other' && b.q3Text) {
+        state.writeIns[b.q3Text] = (state.writeIns[b.q3Text] || 0) + 1;
       } else {
         state.results.q3[b.q3]++;
       }
