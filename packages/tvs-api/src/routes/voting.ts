@@ -11,12 +11,20 @@ import { uuid, randomBytesHex } from '@tvs/core';
 import { verifyCredential, type SignedCredential } from '@tvs/veilsign';
 import { VoteLedger, type VoteEntry } from '@tvs/veilchain';
 import { elections, ceremonyResults } from './elections.js';
+import { ballotQuestions } from './ballot.js';
 
-// Vote ledgers per election
+// Vote ledgers per election (legacy)
 const voteLedgers = new Map<string, VoteLedger>();
 
-// Used nullifiers (prevents double voting)
+// Vote ledgers per question (new multi-jurisdiction model)
+const questionLedgers = new Map<string, VoteLedger>();
+
+// Used nullifiers (prevents double voting) - legacy per-election
 const usedNullifiers = new Set<string>();
+
+// Used nullifiers per question - allows same credential for multiple questions
+// Key format: "questionId:nullifier"
+const questionNullifiers = new Set<string>();
 
 // Decryption ceremony tracking
 interface PartialDecryption {
@@ -142,6 +150,193 @@ export async function votingRoutes(fastify: FastifyInstance) {
       merkleRoot: proof.root,
       merkleProof: proof,
       message: 'Your vote has been recorded. Save your confirmation code to verify later.',
+    };
+  });
+
+  // =========================================================================
+  // Multi-Question Ballot Submission (Jurisdiction-based)
+  // =========================================================================
+
+  const BallotSubmissionSchema = z.object({
+    electionId: z.string().uuid(),
+    credential: z.object({
+      electionId: z.string(),
+      nullifier: z.string(),
+      message: z.string(),
+      signature: z.string(),
+    }),
+    answers: z.array(z.object({
+      questionId: z.string().uuid(),
+      encryptedVote: z.string(),
+      commitment: z.string(),
+      zkProof: z.string(),
+    })).min(1),
+  });
+
+  /**
+   * Submit a complete ballot with answers to multiple questions
+   *
+   * POST /api/vote/ballot
+   * Body: { electionId, credential, answers: [{ questionId, encryptedVote, commitment, zkProof }] }
+   * Returns: { confirmationCode, results: [{ questionId, position, merkleRoot }] }
+   */
+  fastify.post('/ballot', async (request, reply) => {
+    const body = BallotSubmissionSchema.parse(request.body);
+
+    // Get election
+    const election = elections.get(body.electionId);
+    if (!election) {
+      return reply.status(404).send({ error: 'Election not found' });
+    }
+
+    if (election.status !== 'voting') {
+      return reply.status(400).send({
+        error: `Voting not open. Current status: ${election.status}`,
+      });
+    }
+
+    // Verify credential belongs to this election
+    const credential: SignedCredential = body.credential;
+    if (credential.electionId !== body.electionId) {
+      return reply.status(400).send({ error: 'Credential is for different election' });
+    }
+
+    // TODO: Verify credential signature with threshold public key
+
+    // Process each answer
+    const results: Array<{
+      questionId: string;
+      success: boolean;
+      position?: number;
+      merkleRoot?: string;
+      error?: string;
+    }> = [];
+
+    for (const answer of body.answers) {
+      // Verify question exists and belongs to this election
+      const question = ballotQuestions.get(answer.questionId);
+      if (!question) {
+        results.push({
+          questionId: answer.questionId,
+          success: false,
+          error: 'Question not found',
+        });
+        continue;
+      }
+
+      if (question.electionId !== body.electionId) {
+        results.push({
+          questionId: answer.questionId,
+          success: false,
+          error: 'Question belongs to different election',
+        });
+        continue;
+      }
+
+      // Check if already voted on this question with this credential
+      const nullifierKey = `${answer.questionId}:${credential.nullifier}`;
+      if (questionNullifiers.has(nullifierKey)) {
+        results.push({
+          questionId: answer.questionId,
+          success: false,
+          error: 'Already voted on this question',
+        });
+        continue;
+      }
+
+      // Get or create ledger for this question
+      let ledger = questionLedgers.get(answer.questionId);
+      if (!ledger) {
+        ledger = new VoteLedger(answer.questionId);
+        questionLedgers.set(answer.questionId, ledger);
+      }
+
+      // Create vote entry
+      const voteEntry: VoteEntry = {
+        id: uuid(),
+        encryptedVote: answer.encryptedVote,
+        commitment: answer.commitment,
+        zkProof: answer.zkProof,
+        nullifier: credential.nullifier,
+        timestamp: Date.now(),
+      };
+
+      // Append to ledger
+      const { position, proof } = ledger.append(voteEntry);
+
+      // Mark nullifier as used for this question
+      questionNullifiers.add(nullifierKey);
+
+      results.push({
+        questionId: answer.questionId,
+        success: true,
+        position,
+        merkleRoot: proof.root,
+      });
+    }
+
+    // Generate single confirmation code for entire ballot
+    const confirmationCode = randomBytesHex(8).toUpperCase();
+
+    const successCount = results.filter(r => r.success).length;
+
+    return {
+      success: successCount > 0,
+      confirmationCode,
+      electionId: body.electionId,
+      answersSubmitted: successCount,
+      answersTotal: body.answers.length,
+      results,
+      message: successCount === body.answers.length
+        ? 'All votes recorded successfully. Save your confirmation code.'
+        : `${successCount} of ${body.answers.length} votes recorded. Check results for details.`,
+    };
+  });
+
+  /**
+   * Get voting stats for a specific question
+   *
+   * GET /api/vote/question/:questionId/stats
+   */
+  fastify.get('/question/:questionId/stats', async (request, reply) => {
+    const { questionId } = request.params as { questionId: string };
+
+    const question = ballotQuestions.get(questionId);
+    if (!question) {
+      return reply.status(404).send({ error: 'Question not found' });
+    }
+
+    const ledger = questionLedgers.get(questionId);
+    const snapshot = ledger?.getSnapshot();
+
+    return {
+      questionId,
+      questionTitle: question.title,
+      jurisdictionId: question.jurisdictionId,
+      voteCount: snapshot?.voteCount || 0,
+      merkleRoot: snapshot?.root,
+      lastUpdated: snapshot?.timestamp,
+    };
+  });
+
+  /**
+   * Get current Merkle root for a question
+   *
+   * GET /api/vote/question/:questionId/root
+   */
+  fastify.get('/question/:questionId/root', async (request, reply) => {
+    const { questionId } = request.params as { questionId: string };
+
+    const ledger = questionLedgers.get(questionId);
+    if (!ledger) {
+      return reply.status(404).send({ error: 'No votes recorded for this question' });
+    }
+
+    return {
+      questionId,
+      root: ledger.getRoot(),
+      voteCount: ledger.getVoteCount(),
+      timestamp: Date.now(),
     };
   });
 
@@ -347,4 +542,4 @@ export async function votingRoutes(fastify: FastifyInstance) {
   });
 }
 
-export { voteLedgers, usedNullifiers, decryptionCeremonies };
+export { voteLedgers, questionLedgers, usedNullifiers, questionNullifiers, decryptionCeremonies };
