@@ -1,73 +1,90 @@
 {{/* TVS Footer */}}
-<div class="container py-12">
-  <div class="row g-4">
-    {{/* Brand */}}
-    <div class="col-12 col-md-4">
-      <div class="d-flex align-items-center gap-2 mb-4">
-        <svg class="w-8 h-8 text-emerald-400" viewBox="0 0 32 32" fill="none">
+<div class="container py-16">
+  {{/* Main Footer Content */}}
+  <div class="row">
+    {{/* Brand Column - Takes more space */}}
+    <div class="col-12 col-lg-5 mb-8 lg:mb-0">
+      <a href="/" class="d-inline-flex align-items-center gap-3 text-decoration-none mb-4">
+        <svg class="w-10 h-10 text-emerald-400" viewBox="0 0 32 32" fill="none">
           <path d="M16 2L4 8v8c0 7.732 5.12 14.936 12 16 6.88-1.064 12-8.268 12-16V8L16 2z" stroke="currentColor" stroke-width="2" fill="none"/>
           <path d="M12 16l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="text-xl font-bold">TVS</span>
-      </div>
-      <p class="text-gray-400 text-sm">
-        Building trust through mathematics, not institutions.
+        <span class="text-2xl font-bold text-white">TVS</span>
+      </a>
+      <p class="text-gray-400 mb-6 max-w-xs">
+        A cryptographic voting system that achieves privacy, integrity, and verifiability through mathematics.
       </p>
+      {{/* Social / GitHub */}}
+      <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="d-inline-flex align-items-center gap-2 text-gray-400 hover:text-white text-decoration-none text-sm">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+        </svg>
+        <span>View on GitHub</span>
+      </a>
     </div>
 
-    {{/* Products */}}
-    <div class="col-6 col-md-2">
-      <h4 class="font-bold mb-4">Products</h4>
-      <ul class="list-unstyled text-gray-400 text-sm">
-        <li class="mb-2"><a href="/products/veilkey/" class="text-gray-400 hover:text-white text-decoration-none">VeilKey</a></li>
-        <li class="mb-2"><a href="/products/veilsign/" class="text-gray-400 hover:text-white text-decoration-none">VeilSign</a></li>
-        <li class="mb-2"><a href="https://veilforms.com" target="_blank" class="text-gray-400 hover:text-white text-decoration-none">VeilForms</a></li>
-        <li class="mb-2"><a href="https://veilchain.io" target="_blank" class="text-gray-400 hover:text-white text-decoration-none">VeilChain</a></li>
-        <li class="mb-2"><a href="/products/veilproof/" class="text-gray-400 hover:text-white text-decoration-none">VeilProof</a></li>
-      </ul>
-    </div>
+    {{/* Links Columns */}}
+    <div class="col-12 col-lg-7">
+      <div class="row">
+        {{/* Products */}}
+        <div class="col-6 col-md-4 mb-6 md:mb-0">
+          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Products</h4>
+          <ul class="list-unstyled">
+            <li class="mb-3"><a href="/products/veilkey/" class="text-gray-300 hover:text-white text-decoration-none">VeilKey</a></li>
+            <li class="mb-3"><a href="/products/veilsign/" class="text-gray-300 hover:text-white text-decoration-none">VeilSign</a></li>
+            <li class="mb-3"><a href="https://veilforms.com" target="_blank" rel="noopener" class="text-gray-300 hover:text-white text-decoration-none">VeilForms</a></li>
+            <li class="mb-3"><a href="https://veilchain.io" target="_blank" rel="noopener" class="text-gray-300 hover:text-white text-decoration-none">VeilChain</a></li>
+            <li><a href="/products/veilproof/" class="text-gray-300 hover:text-white text-decoration-none">VeilProof</a></li>
+          </ul>
+        </div>
 
-    {{/* Resources */}}
-    <div class="col-6 col-md-2">
-      <h4 class="font-bold mb-4">Resources</h4>
-      <ul class="list-unstyled text-gray-400 text-sm">
-        <li class="mb-2"><a href="/docs/" class="text-gray-400 hover:text-white text-decoration-none">Documentation</a></li>
-        <li class="mb-2"><a href="/demo/" class="text-gray-400 hover:text-white text-decoration-none">Live Demo</a></li>
-        <li class="mb-2"><a href="{{ .Site.Params.github }}" target="_blank" class="text-gray-400 hover:text-white text-decoration-none">GitHub</a></li>
-      </ul>
-    </div>
+        {{/* Resources */}}
+        <div class="col-6 col-md-4 mb-6 md:mb-0">
+          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Resources</h4>
+          <ul class="list-unstyled">
+            <li class="mb-3"><a href="/docs/" class="text-gray-300 hover:text-white text-decoration-none">Documentation</a></li>
+            <li class="mb-3"><a href="/docs/getting-started/" class="text-gray-300 hover:text-white text-decoration-none">Getting Started</a></li>
+            <li class="mb-3"><a href="/demo/" class="text-gray-300 hover:text-white text-decoration-none">Live Demo</a></li>
+            <li><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="text-gray-300 hover:text-white text-decoration-none">GitHub</a></li>
+          </ul>
+        </div>
 
-    {{/* External Links */}}
-    <div class="col-12 col-md-4">
-      <h4 class="font-bold mb-4">Related Projects</h4>
-      <ul class="list-unstyled text-gray-400 text-sm">
-        <li class="mb-2">
-          <a href="https://veilforms.com" target="_blank" class="text-gray-400 hover:text-white text-decoration-none d-flex align-items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-            </svg>
-            veilforms.com
-          </a>
-        </li>
-        <li class="mb-2">
-          <a href="https://veilchain.io" target="_blank" class="text-gray-400 hover:text-white text-decoration-none d-flex align-items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-            </svg>
-            veilchain.io
-          </a>
-        </li>
-      </ul>
+        {{/* Ecosystem */}}
+        <div class="col-12 col-md-4">
+          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Ecosystem</h4>
+          <ul class="list-unstyled">
+            <li class="mb-3">
+              <a href="https://veilforms.com" target="_blank" rel="noopener" class="text-gray-300 hover:text-white text-decoration-none d-flex align-items-center gap-2">
+                veilforms.com
+                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://veilchain.io" target="_blank" rel="noopener" class="text-gray-300 hover:text-white text-decoration-none d-flex align-items-center gap-2">
+                veilchain.io
+                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 
-  <hr class="border-gray-700 my-8">
-
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-gray-500 text-sm">
-    <div>&copy; {{ now.Year }} TVS - Trustless Voting System</div>
-    <div class="d-flex gap-4 mt-4 mt-md-0">
-      <a href="/privacy-policy/" class="text-gray-500 hover:text-white text-decoration-none">Privacy</a>
-      <a href="/terms-of-use/" class="text-gray-500 hover:text-white text-decoration-none">Terms</a>
+  {{/* Bottom Bar */}}
+  <div class="border-t border-gray-700 mt-12 pt-8">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <p class="text-gray-500 text-sm mb-4 mb-md-0">
+        &copy; {{ now.Year }} TVS. Building trust through mathematics.
+      </p>
+      <div class="d-flex align-items-center gap-6">
+        <a href="/privacy-policy/" class="text-gray-500 hover:text-gray-300 text-decoration-none text-sm">Privacy</a>
+        <a href="/terms-of-use/" class="text-gray-500 hover:text-gray-300 text-decoration-none text-sm">Terms</a>
+      </div>
     </div>
   </div>
 </div>
