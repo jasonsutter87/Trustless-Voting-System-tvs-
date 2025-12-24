@@ -1,6 +1,6 @@
 # TVS: A Trustless Voting System
 
-**Version 1.2 — December 2025**
+**Version 1.3 — December 2025**
 
 > **GitHub**: [github.com/jasonsutter87/Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-)
 
@@ -1393,22 +1393,83 @@ VerifyElection(election_id, published_results, published_root):
     return SUCCESS("Election integrity verified")
 ```
 
-### 11.3 Merkle Root Anchoring
+### 11.3 Merkle Root Anchoring (Bitcoin Timestamping)
 
-For additional tamper-evidence, the Merkle root can be anchored to external systems:
+For immutable timestamping, TVS anchors election commitments to the Bitcoin blockchain using OP_RETURN transactions. This provides proof-of-existence that cannot be altered without rewriting Bitcoin's proof-of-work chain.
+
+**Two-Transaction Protocol:**
 
 ```
-Anchor Points:
-├── Bitcoin (OP_RETURN transaction)
-├── Ethereum (smart contract event)
-├── Public blockchain timestamp
-├── Multiple independent newspapers
-└── Government archives
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    BITCOIN ANCHORING PROTOCOL                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  TRANSACTION 1: Election Start                                               │
+│  ─────────────────────────────────                                           │
+│  OP_RETURN: TVS|v1|election_id|H(pk_election)|H(trustees)|start_time        │
+│                                                                              │
+│  Commits to:                                                                 │
+│  • Election public key (for vote encryption)                                │
+│  • Trustee configuration (threshold parameters)                             │
+│  • Election start timestamp                                                  │
+│                                                                              │
+│  TRANSACTION 2: Election Close                                               │
+│  ─────────────────────────────────                                           │
+│  OP_RETURN: TVS|v1|election_id|merkle_root|vote_count|end_time              │
+│                                                                              │
+│  Commits to:                                                                 │
+│  • Final Merkle root (represents ALL votes)                                 │
+│  • Total vote count                                                          │
+│  • Election end timestamp                                                    │
+│                                                                              │
+│  TOTAL COST: ~$0.20-0.50 (two transactions)                                 │
+│  PROVES: Every vote in the election is unchanged                            │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Why Bitcoin:**
+
+| Property | Benefit |
+|----------|---------|
+| Proof-of-work | ~$30B/year in mining secures timestamps |
+| Immutability | Rewriting requires >50% hashpower |
+| Decentralization | No single party can censor anchors |
+| Longevity | 15+ years of continuous operation |
+| Verifiability | Anyone can verify with full node |
+
+**Verification:**
+
+```
+VerifyAnchor(election_id, claimed_root):
+
+    // 1. Query Bitcoin for OP_RETURN transactions
+    tx = BitcoinRPC.SearchOpReturn("TVS|v1|" + election_id)
+
+    // 2. Parse anchored data
+    anchored_root = tx.ParseMerkleRoot()
+    block_height = tx.GetBlockHeight()
+    confirmations = CurrentHeight - block_height
+
+    // 3. Verify root matches
+    if anchored_root != claimed_root:
+        return ALERT("Merkle root doesn't match Bitcoin anchor!")
+
+    // 4. Verify sufficient confirmations (6+ = ~1 hour)
+    if confirmations < 6:
+        return WARNING("Awaiting confirmations")
+
+    return SUCCESS("Election anchored at block " + block_height)
+```
+
+**Scale:**
+- 350 million votes → 1 Merkle root → 1 transaction
+- Cost: ~$0.15 in fees
+- Proof: Cryptographic commitment to every vote
 
 Once anchored, any modification to votes would require:
-- Modifying all anchor points (practically impossible)
-- Or producing a hash collision (computationally infeasible)
+- Rewriting Bitcoin's blockchain (economically infeasible: ~$30B+)
+- Or producing a SHA-256 collision (computationally infeasible: ~2¹²⁸ operations)
 
 ---
 
@@ -1476,10 +1537,11 @@ Together, these five components create a system where mathematical proof replace
 2. Merkle, R. (1987). "A Digital Signature Based on a Conventional Encryption Function." CRYPTO.
 3. Ben-Sasson, E., et al. (2014). "Succinct Non-Interactive Zero Knowledge for a von Neumann Architecture." USENIX Security.
 4. Groth, J. (2016). "On the Size of Pairing-based Non-interactive Arguments." EUROCRYPT.
-5. Nakamoto, S. (2008). "Bitcoin: A Peer-to-Peer Electronic Cash System."
-6. **Shamir, A. (1979). "How to Share a Secret." Communications of the ACM.**
-7. **Feldman, P. (1987). "A Practical Scheme for Non-interactive Verifiable Secret Sharing." FOCS.**
-8. **Shoup, V. (2000). "Practical Threshold Signatures." EUROCRYPT.**
+5. **Back, A. (2002). "Hashcash - A Denial of Service Counter-Measure."** *(Proof-of-work foundation for Bitcoin timestamping)*
+6. Nakamoto, S. (2008). "Bitcoin: A Peer-to-Peer Electronic Cash System."
+7. **Shamir, A. (1979). "How to Share a Secret." Communications of the ACM.**
+8. **Feldman, P. (1987). "A Practical Scheme for Non-interactive Verifiable Secret Sharing." FOCS.**
+9. **Shoup, V. (2000). "Practical Threshold Signatures." EUROCRYPT.**
 
 ---
 
@@ -1526,7 +1588,7 @@ All TVS components are open source and available on GitHub:
 
 ---
 
-*Document version: 1.2*
+*Document version: 1.3*
 *Last updated: December 2025*
 *Authors: TVS Development Team*
 
@@ -1534,6 +1596,7 @@ All TVS components are open source and available on GitHub:
 
 ## Changelog
 
+- **v1.3** (December 2025): Enhanced Bitcoin anchoring protocol (Section 11.3) with two-transaction specification, added Hashcash citation
 - **v1.2** (December 2025): Added comprehensive Veil Product Suite section (Section 5) with GitHub links, detailed each product's problem/solution
 - **v1.1** (December 2025): Added VeilKey threshold cryptography (Section 6), updated all protocols to use distributed key management, added key ceremony specification
 - **v1.0** (December 2025): Initial release

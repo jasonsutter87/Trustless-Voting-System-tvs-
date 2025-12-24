@@ -8,6 +8,8 @@ import { FastifyInstance } from 'fastify';
 import { VoteLedger } from '@tvs/veilchain';
 import { elections } from './elections.js';
 import { voteLedgers } from './voting.js';
+import { config } from '../config.js';
+import * as anchorsDb from '../db/anchors.js';
 
 export async function verifyRoutes(fastify: FastifyInstance) {
   /**
@@ -94,6 +96,37 @@ export async function verifyRoutes(fastify: FastifyInstance) {
     const ledger = voteLedgers.get(electionId);
     const snapshot = ledger?.getSnapshot();
 
+    // Get Bitcoin anchors if database is enabled
+    let bitcoinAnchors: {
+      start?: { txid: string; confirmations: number; explorerUrl: string };
+      close?: { txid: string; confirmations: number; explorerUrl: string };
+    } | null = null;
+
+    if (config.useDatabase && config.useBitcoinAnchoring) {
+      try {
+        const summary = await anchorsDb.getAnchorSummary(electionId);
+
+        const formatAnchor = (anchor: anchorsDb.BitcoinAnchor | null) => {
+          if (!anchor?.bitcoin_txid) return undefined;
+          const baseUrl = config.bitcoinNetwork === 'mainnet'
+            ? 'https://mempool.space/tx/'
+            : 'https://mempool.space/testnet/tx/';
+          return {
+            txid: anchor.bitcoin_txid,
+            confirmations: anchor.confirmations,
+            explorerUrl: `${baseUrl}${anchor.bitcoin_txid}`,
+          };
+        };
+
+        bitcoinAnchors = {
+          start: formatAnchor(summary.start),
+          close: formatAnchor(summary.close),
+        };
+      } catch {
+        // Database not available, skip anchors
+      }
+    }
+
     return {
       election: {
         id: election.id,
@@ -108,13 +141,23 @@ export async function verifyRoutes(fastify: FastifyInstance) {
         merkleRoot: snapshot?.root || null,
         lastUpdate: snapshot?.timestamp || null,
       },
+      bitcoinAnchors,
       verification: {
-        message: 'Compare this Merkle root with published anchors',
-        instructions: [
-          '1. Save the Merkle root displayed above',
-          '2. Check published anchors (Bitcoin, Ethereum, etc.)',
-          '3. Roots should match for integrity verification',
-        ],
+        message: bitcoinAnchors?.close
+          ? 'Merkle root is anchored to Bitcoin. Verify by checking the transaction.'
+          : 'Compare this Merkle root with published anchors',
+        instructions: bitcoinAnchors?.close
+          ? [
+              '1. Click the explorer URL to view the Bitcoin transaction',
+              '2. Find the OP_RETURN output in the transaction',
+              '3. Verify the Merkle root matches the anchored data',
+              '4. 6+ confirmations means the anchor is final',
+            ]
+          : [
+              '1. Save the Merkle root displayed above',
+              '2. Check published anchors (Bitcoin, Ethereum, etc.)',
+              '3. Roots should match for integrity verification',
+            ],
       },
     };
   });

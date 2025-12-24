@@ -12,6 +12,9 @@ import { verifyCredential, type SignedCredential } from '@tvs/veilsign';
 import { VoteLedger, type VoteEntry } from '@tvs/veilchain';
 import { elections, ceremonyResults } from './elections.js';
 import { ballotQuestions } from './ballot.js';
+import { config } from '../config.js';
+import { bitcoinAnchor } from '../services/bitcoin-anchor.js';
+import * as anchorsDb from '../db/anchors.js';
 
 // Vote ledgers per election (legacy)
 const voteLedgers = new Map<string, VoteLedger>();
@@ -410,6 +413,44 @@ export async function votingRoutes(fastify: FastifyInstance) {
       });
     }
 
+    const ledger = voteLedgers.get(electionId);
+    const snapshot = ledger?.getSnapshot();
+
+    // Bitcoin anchoring: Anchor election CLOSE with final Merkle root
+    let anchorResult: { txid?: string; error?: string } | null = null;
+
+    if (config.useBitcoinAnchoring && config.useDatabase && snapshot) {
+      try {
+        const anchorData = bitcoinAnchor.buildCloseAnchorData(
+          electionId,
+          snapshot.root,
+          snapshot.voteCount,
+          Date.now()
+        );
+
+        // Store anchor record
+        const anchorRecord = await anchorsDb.createAnchor({
+          electionId,
+          anchorType: 'close',
+          dataHash: anchorData.dataHash,
+          opReturnData: anchorData.opReturnHex,
+        });
+
+        // Broadcast to Bitcoin
+        const broadcastResult = await bitcoinAnchor.anchor(anchorData);
+
+        if (broadcastResult.success && broadcastResult.txid) {
+          await anchorsDb.markAnchorBroadcast(anchorRecord.id, broadcastResult.txid);
+          anchorResult = { txid: broadcastResult.txid };
+        } else {
+          await anchorsDb.markAnchorFailed(anchorRecord.id, broadcastResult.error || 'Unknown error');
+          anchorResult = { error: broadcastResult.error };
+        }
+      } catch (err) {
+        anchorResult = { error: err instanceof Error ? err.message : 'Anchor failed' };
+      }
+    }
+
     // Transition to tallying
     election.status = 'tallying';
     elections.set(electionId, election);
@@ -424,13 +465,13 @@ export async function votingRoutes(fastify: FastifyInstance) {
 
     decryptionCeremonies.set(electionId, ceremony);
 
-    const ledger = voteLedgers.get(electionId);
-
     return {
       status: 'awaiting_shares',
       required: election.threshold,
       received: 0,
-      voteCount: ledger?.getVoteCount() || 0,
+      voteCount: snapshot?.voteCount || 0,
+      merkleRoot: snapshot?.root,
+      bitcoinAnchor: anchorResult,
       message: `Decryption ceremony started. Need ${election.threshold} trustees to submit partial decryptions.`,
     };
   });

@@ -243,6 +243,41 @@ CREATE TABLE merkle_roots (
 CREATE INDEX idx_merkle_roots_question ON merkle_roots(question_id, created_at DESC);
 
 -- ============================================
+-- BITCOIN ANCHORS (Immutable timestamping via OP_RETURN)
+-- ============================================
+CREATE TABLE bitcoin_anchors (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  election_id UUID NOT NULL REFERENCES elections(id) ON DELETE CASCADE,
+  anchor_type TEXT NOT NULL CHECK (anchor_type IN ('start', 'close')),
+
+  -- What was anchored
+  data_hash TEXT NOT NULL,              -- SHA-256 of anchored data
+  op_return_data TEXT NOT NULL,         -- Raw OP_RETURN payload (hex)
+
+  -- Bitcoin transaction details
+  bitcoin_txid TEXT,                    -- Transaction hash (null until broadcast)
+  bitcoin_block_height BIGINT,          -- Block number (null until confirmed)
+  bitcoin_block_hash TEXT,              -- Block hash for verification
+  confirmations INT NOT NULL DEFAULT 0,
+
+  -- Status tracking
+  status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending', 'broadcast', 'confirmed', 'failed')),
+  error_message TEXT,                   -- If status = 'failed'
+
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  broadcast_at TIMESTAMPTZ,
+  confirmed_at TIMESTAMPTZ,
+
+  -- One anchor per type per election
+  UNIQUE(election_id, anchor_type)
+);
+
+CREATE INDEX idx_anchors_election ON bitcoin_anchors(election_id);
+CREATE INDEX idx_anchors_status ON bitcoin_anchors(status);
+CREATE INDEX idx_anchors_txid ON bitcoin_anchors(bitcoin_txid);
+
+-- ============================================
 -- AUDIT LOG (with jurisdiction/question scoping)
 -- ============================================
 CREATE TABLE audit_log (

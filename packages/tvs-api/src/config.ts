@@ -21,6 +21,14 @@ export const config = {
   // Feature flags
   useDatabase: process.env['USE_DATABASE'] === 'true',
   useVeilForms: process.env['USE_VEILFORMS'] === 'true',
+  useBitcoinAnchoring: process.env['USE_BITCOIN_ANCHORING'] === 'true',
+
+  // Bitcoin Node (RPC) - for Merkle root anchoring
+  bitcoinNetwork: (process.env['BITCOIN_NETWORK'] || 'testnet') as 'mainnet' | 'testnet' | 'regtest',
+  bitcoinRpcUrl: process.env['BITCOIN_RPC_URL'] || 'http://127.0.0.1:18332',
+  bitcoinRpcUser: process.env['BITCOIN_RPC_USER'] || '',
+  bitcoinRpcPassword: process.env['BITCOIN_RPC_PASSWORD'] || '',
+  bitcoinWallet: process.env['BITCOIN_WALLET'] || 'tvs-anchoring',
 };
 
 export function isDev(): boolean {

@@ -6,6 +6,9 @@ import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { uuid } from '@tvs/core';
 import { CeremonyCoordinator, type CeremonyResult } from '@veilkey/core';
+import { config } from '../config.js';
+import { bitcoinAnchor, BitcoinAnchorService } from '../services/bitcoin-anchor.js';
+import * as anchorsDb from '../db/anchors.js';
 
 // In-memory store for MVP (replace with PostgreSQL)
 const elections = new Map<string, Election>();
@@ -138,10 +141,59 @@ export async function electionRoutes(fastify: FastifyInstance) {
       });
     }
 
+    // Bitcoin anchoring on status transitions
+    let anchorResult: { txid?: string; error?: string } | null = null;
+
+    if (status === 'voting' && config.useBitcoinAnchoring && config.useDatabase) {
+      // Anchor election START when transitioning to voting
+      try {
+        const result = ceremonyResults.get(id);
+        const publicKeyHash = result?.publicKey
+          ? BitcoinAnchorService.sha256(result.publicKey)
+          : BitcoinAnchorService.sha256('no-key');
+
+        // Hash trustee info (for now, just use threshold config)
+        const trusteesHash = BitcoinAnchorService.sha256(
+          JSON.stringify({ threshold: election.threshold, total: election.totalTrustees })
+        );
+
+        const anchorData = bitcoinAnchor.buildStartAnchorData(
+          id,
+          publicKeyHash,
+          trusteesHash,
+          Date.now()
+        );
+
+        // Store anchor record
+        const anchorRecord = await anchorsDb.createAnchor({
+          electionId: id,
+          anchorType: 'start',
+          dataHash: anchorData.dataHash,
+          opReturnData: anchorData.opReturnHex,
+        });
+
+        // Broadcast to Bitcoin
+        const broadcastResult = await bitcoinAnchor.anchor(anchorData);
+
+        if (broadcastResult.success && broadcastResult.txid) {
+          await anchorsDb.markAnchorBroadcast(anchorRecord.id, broadcastResult.txid);
+          anchorResult = { txid: broadcastResult.txid };
+        } else {
+          await anchorsDb.markAnchorFailed(anchorRecord.id, broadcastResult.error || 'Unknown error');
+          anchorResult = { error: broadcastResult.error };
+        }
+      } catch (err) {
+        anchorResult = { error: err instanceof Error ? err.message : 'Anchor failed' };
+      }
+    }
+
     election.status = status;
     elections.set(id, election);
 
-    return { election };
+    return {
+      election,
+      bitcoinAnchor: anchorResult,
+    };
   });
 
   // Get election results (only after tallying)
