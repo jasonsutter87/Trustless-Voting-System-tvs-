@@ -16,7 +16,7 @@
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-2xl font-bold text-gray-900 mb-0">Election: Best Programming Language 2025</h2>
-        <span id="election-status" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold">Voting Open</span>
+        <span id="election-status" class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">Not Started</span>
       </div>
       <div class="row g-4">
         <div class="col-12 col-md-4">
@@ -40,6 +40,25 @@
       </div>
     </div>
 
+    {{/* Open Voting Button - shown initially */}}
+    <div id="open-voting-section" class="bg-white rounded-xl shadow-sm p-8 mb-6 text-center">
+      <div class="max-w-lg mx-auto">
+        <svg class="w-16 h-16 text-emerald-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">Ready to Start the Election</h3>
+        <p class="text-gray-600 mb-6">
+          Open voting to allow participants to cast their encrypted ballots.
+          All votes are encrypted client-side before submission.
+        </p>
+        <button id="open-voting-btn" class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold text-lg">
+          Open Voting Process
+        </button>
+      </div>
+    </div>
+
+    {{/* Voting Content - hidden initially */}}
+    <div id="voting-content" class="hidden">
     <div class="row g-4">
       {{/* Left Column - Voting */}}
       <div class="col-12 col-lg-6">
@@ -330,6 +349,9 @@
         </div>
       </div>
     </div>
+
+    </div>
+    {{/* End voting-content */}}
 
     {{/* How It Works */}}
     <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
@@ -745,6 +767,19 @@
   document.getElementById('add-1000-btn').addEventListener('click', () => resetAndAddVoters(1000));
   document.getElementById('add-5000-btn').addEventListener('click', () => resetAndAddVoters(5000));
   document.getElementById('tally-btn').addEventListener('click', tallyVotes);
+
+  // Open voting process
+  document.getElementById('open-voting-btn').addEventListener('click', function() {
+    // Hide the open voting section
+    document.getElementById('open-voting-section').classList.add('hidden');
+    // Show the voting content
+    document.getElementById('voting-content').classList.remove('hidden');
+    // Update election status
+    const status = document.getElementById('election-status');
+    status.textContent = 'Voting Open';
+    status.classList.remove('bg-yellow-100', 'text-yellow-800');
+    status.classList.add('bg-emerald-100', 'text-emerald-800');
+  });
 
   // Initialize
   updateStats();
