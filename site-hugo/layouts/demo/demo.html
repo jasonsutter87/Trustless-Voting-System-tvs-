@@ -540,6 +540,42 @@
     return vote;
   }
 
+  // Reset state and add voters (replaces, not accumulates)
+  function resetAndAddVoters(count) {
+    // Reset state
+    state.voters = 0;
+    state.votes = [];
+    state.results = {
+      q1: { rust: 0, typescript: 0, python: 0, go: 0 },
+      q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
+      q3: { vscode: 0, neovim: 0, jetbrains: 0 }
+    };
+    state.writeIns = {};
+    state.tallied = false;
+
+    // Clear the vote log
+    document.getElementById('vote-log').innerHTML = '<div class="text-gray-500">// Generating votes...</div>';
+    document.getElementById('tally-status').innerHTML = 'Results update after tallying';
+    document.getElementById('q3-writeins-container').innerHTML = '';
+
+    // Reset result displays
+    ['rust', 'typescript', 'python', 'go'].forEach(opt => {
+      document.getElementById(`q1-${opt}-count`).textContent = '0 (0%)';
+      document.getElementById(`q1-${opt}-bar`).style.width = '0%';
+    });
+    ['type-safety', 'performance', 'ecosystem', 'simplicity', 'concurrency'].forEach(opt => {
+      document.getElementById(`q2-${opt}-count`).textContent = '0';
+      document.getElementById(`q2-${opt}-bar`).style.width = '0%';
+    });
+    ['vscode', 'neovim', 'jetbrains'].forEach(opt => {
+      document.getElementById(`q3-${opt}-count`).textContent = '0 (0%)';
+      document.getElementById(`q3-${opt}-bar`).style.width = '0%';
+    });
+
+    // Add new voters
+    addRandomVoters(count);
+  }
+
   // Add random voters
   function addRandomVoters(count) {
     const q1Options = ['rust', 'typescript', 'python', 'go'];
@@ -705,9 +741,9 @@
     document.getElementById('q2-limit-msg').classList.add('text-gray-500');
   });
 
-  document.getElementById('add-500-btn').addEventListener('click', () => addRandomVoters(500));
-  document.getElementById('add-1000-btn').addEventListener('click', () => addRandomVoters(1000));
-  document.getElementById('add-5000-btn').addEventListener('click', () => addRandomVoters(5000));
+  document.getElementById('add-500-btn').addEventListener('click', () => resetAndAddVoters(500));
+  document.getElementById('add-1000-btn').addEventListener('click', () => resetAndAddVoters(1000));
+  document.getElementById('add-5000-btn').addEventListener('click', () => resetAndAddVoters(5000));
   document.getElementById('tally-btn').addEventListener('click', tallyVotes);
 
   // Initialize
