@@ -43,32 +43,104 @@
     <div class="row g-4">
       {{/* Left Column - Voting */}}
       <div class="col-12 col-lg-6">
-        {{/* Cast Vote */}}
+        {{/* Question 1: Single Choice */}}
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Cast a Vote</h3>
+          <div class="d-flex align-items-center gap-2 mb-4">
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Question 1</span>
+            <span class="text-gray-500 text-sm">Single Choice</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Best Programming Language 2025?</h3>
           <div class="mb-4">
-            <label class="form-label font-semibold">Select a candidate:</label>
-            <div class="d-flex flex-column gap-2" id="candidates">
+            <div class="d-flex flex-column gap-2" id="q1-options">
               <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                <input type="radio" name="candidate" value="rust" class="form-check-input">
+                <input type="radio" name="q1" value="rust" class="form-check-input">
                 <span class="font-semibold">Rust</span>
               </label>
               <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                <input type="radio" name="candidate" value="typescript" class="form-check-input">
+                <input type="radio" name="q1" value="typescript" class="form-check-input">
                 <span class="font-semibold">TypeScript</span>
               </label>
               <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                <input type="radio" name="candidate" value="python" class="form-check-input">
+                <input type="radio" name="q1" value="python" class="form-check-input">
                 <span class="font-semibold">Python</span>
               </label>
               <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                <input type="radio" name="candidate" value="go" class="form-check-input">
+                <input type="radio" name="q1" value="go" class="form-check-input">
                 <span class="font-semibold">Go</span>
               </label>
             </div>
           </div>
-          <button id="cast-vote-btn" class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-semibold w-full">
-            Encrypt & Cast Vote
+        </div>
+
+        {{/* Question 2: Pick up to 2 */}}
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div class="d-flex align-items-center gap-2 mb-4">
+            <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs font-semibold">Question 2</span>
+            <span class="text-gray-500 text-sm">Pick up to 2</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Most important language features?</h3>
+          <p class="text-gray-600 text-sm mb-3">Select up to 2 options:</p>
+          <div class="mb-4">
+            <div class="d-flex flex-column gap-2" id="q2-options">
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="checkbox" name="q2" value="type-safety" class="form-check-input q2-checkbox">
+                <span class="font-semibold">Type Safety</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="checkbox" name="q2" value="performance" class="form-check-input q2-checkbox">
+                <span class="font-semibold">Performance</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="checkbox" name="q2" value="ecosystem" class="form-check-input q2-checkbox">
+                <span class="font-semibold">Ecosystem & Libraries</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="checkbox" name="q2" value="simplicity" class="form-check-input q2-checkbox">
+                <span class="font-semibold">Simplicity</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="checkbox" name="q2" value="concurrency" class="form-check-input q2-checkbox">
+                <span class="font-semibold">Concurrency Support</span>
+              </label>
+            </div>
+            <div id="q2-limit-msg" class="text-sm text-gray-500 mt-2">0 of 2 selected</div>
+          </div>
+        </div>
+
+        {{/* Question 3: Single Choice with Write-in */}}
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div class="d-flex align-items-center gap-2 mb-4">
+            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-semibold">Question 3</span>
+            <span class="text-gray-500 text-sm">Single Choice + Write-in</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Preferred code editor?</h3>
+          <div class="mb-4">
+            <div class="d-flex flex-column gap-2" id="q3-options">
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="q3" value="vscode" class="form-check-input">
+                <span class="font-semibold">VS Code</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="q3" value="neovim" class="form-check-input">
+                <span class="font-semibold">Neovim</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="q3" value="jetbrains" class="form-check-input">
+                <span class="font-semibold">JetBrains IDE</span>
+              </label>
+              <label class="d-flex align-items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 q3-other-label">
+                <input type="radio" name="q3" value="other" class="form-check-input" id="q3-other-radio">
+                <span class="font-semibold">Other:</span>
+                <input type="text" id="q3-other-text" placeholder="Enter your choice..." class="form-control form-control-sm flex-grow-1" style="max-width: 200px;" disabled>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {{/* Submit Button */}}
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <button id="cast-vote-btn" class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold w-full text-lg">
+            Encrypt & Cast Ballot
           </button>
           <div id="vote-result" class="mt-4 hidden"></div>
         </div>
@@ -101,44 +173,155 @@
               Tally Votes (3-of-5 Trustees)
             </button>
           </div>
-          <div id="results-container">
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="font-semibold">Rust</span>
-                <span id="rust-count">0 (0%)</span>
-              </div>
-              <div class="progress" style="height: 24px;">
-                <div id="rust-bar" class="progress-bar bg-orange-500" style="width: 0%"></div>
-              </div>
+
+          {{/* Q1 Results */}}
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Q1</span>
+              <span class="font-semibold text-gray-700">Best Programming Language</span>
             </div>
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="font-semibold">TypeScript</span>
-                <span id="typescript-count">0 (0%)</span>
+            <div id="q1-results">
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Rust</span>
+                  <span id="q1-rust-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q1-rust-bar" class="progress-bar bg-orange-500" style="width: 0%"></div>
+                </div>
               </div>
-              <div class="progress" style="height: 24px;">
-                <div id="typescript-bar" class="progress-bar bg-blue-500" style="width: 0%"></div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>TypeScript</span>
+                  <span id="q1-typescript-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q1-typescript-bar" class="progress-bar bg-blue-500" style="width: 0%"></div>
+                </div>
               </div>
-            </div>
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="font-semibold">Python</span>
-                <span id="python-count">0 (0%)</span>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Python</span>
+                  <span id="q1-python-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q1-python-bar" class="progress-bar bg-yellow-500" style="width: 0%"></div>
+                </div>
               </div>
-              <div class="progress" style="height: 24px;">
-                <div id="python-bar" class="progress-bar bg-yellow-500" style="width: 0%"></div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="font-semibold">Go</span>
-                <span id="go-count">0 (0%)</span>
-              </div>
-              <div class="progress" style="height: 24px;">
-                <div id="go-bar" class="progress-bar bg-cyan-500" style="width: 0%"></div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Go</span>
+                  <span id="q1-go-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q1-go-bar" class="progress-bar bg-cyan-500" style="width: 0%"></div>
+                </div>
               </div>
             </div>
           </div>
+
+          {{/* Q2 Results */}}
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs font-semibold">Q2</span>
+              <span class="font-semibold text-gray-700">Important Features (pick 2)</span>
+            </div>
+            <div id="q2-results">
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Type Safety</span>
+                  <span id="q2-type-safety-count">0</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q2-type-safety-bar" class="progress-bar bg-purple-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Performance</span>
+                  <span id="q2-performance-count">0</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q2-performance-bar" class="progress-bar bg-purple-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Ecosystem</span>
+                  <span id="q2-ecosystem-count">0</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q2-ecosystem-bar" class="progress-bar bg-purple-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Simplicity</span>
+                  <span id="q2-simplicity-count">0</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q2-simplicity-bar" class="progress-bar bg-purple-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Concurrency</span>
+                  <span id="q2-concurrency-count">0</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q2-concurrency-bar" class="progress-bar bg-purple-500" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{/* Q3 Results */}}
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-semibold">Q3</span>
+              <span class="font-semibold text-gray-700">Preferred Editor</span>
+            </div>
+            <div id="q3-results">
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>VS Code</span>
+                  <span id="q3-vscode-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q3-vscode-bar" class="progress-bar bg-emerald-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Neovim</span>
+                  <span id="q3-neovim-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q3-neovim-bar" class="progress-bar bg-emerald-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>JetBrains</span>
+                  <span id="q3-jetbrains-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q3-jetbrains-bar" class="progress-bar bg-emerald-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-1 text-sm">
+                  <span>Other (write-in)</span>
+                  <span id="q3-other-count">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 16px;">
+                  <div id="q3-other-bar" class="progress-bar bg-emerald-500" style="width: 0%"></div>
+                </div>
+              </div>
+              <div id="q3-writeins" class="mt-2 text-xs text-gray-500 hidden"></div>
+            </div>
+          </div>
+
           <div id="tally-status" class="mt-4 text-center text-gray-500 text-sm">
             Results update after tallying
           </div>
@@ -216,12 +399,17 @@
 </div>
 
 <script>
-// Simple demo simulation
+// Multi-question demo simulation
 (function() {
   const state = {
     voters: 0,
     votes: [],
-    results: { rust: 0, typescript: 0, python: 0, go: 0 },
+    results: {
+      q1: { rust: 0, typescript: 0, python: 0, go: 0 },
+      q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
+      q3: { vscode: 0, neovim: 0, jetbrains: 0, other: 0 }
+    },
+    writeIns: [],
     merkleRoot: null,
     tallied: false
   };
@@ -237,12 +425,12 @@
     return Math.abs(hash).toString(16).padStart(8, '0');
   }
 
-  // Generate fake encrypted vote
-  function generateEncryptedVote(candidate) {
+  // Generate fake encrypted ballot
+  function generateEncryptedBallot(ballot) {
     const iv = Array.from({length: 12}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
-    const ciphertext = Array.from({length: 32}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    const ciphertext = Array.from({length: 48}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
     const tag = Array.from({length: 16}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
-    return { iv, ciphertext, tag, candidate };
+    return { iv, ciphertext, tag, ballot };
   }
 
   // Update Merkle root
@@ -252,8 +440,6 @@
       document.getElementById('merkle-root').textContent = '-';
       return;
     }
-
-    // Simplified: just hash all votes together
     const combined = state.votes.map(v => v.ciphertext).join('');
     state.merkleRoot = simpleHash(combined + Date.now());
     document.getElementById('merkle-root').textContent = state.merkleRoot.substring(0, 8);
@@ -268,10 +454,10 @@
     const entry = document.createElement('div');
     entry.className = 'mb-2 border-b border-gray-700 pb-2';
     entry.innerHTML = `
-      <div class="text-gray-500">// Vote #${index + 1}</div>
+      <div class="text-gray-500">// Ballot #${index + 1} (3 questions)</div>
       <div>{</div>
       <div class="pl-4">"iv": "${vote.iv.substring(0, 16)}...",</div>
-      <div class="pl-4">"ciphertext": "${vote.ciphertext.substring(0, 24)}...",</div>
+      <div class="pl-4">"ciphertext": "${vote.ciphertext.substring(0, 32)}...",</div>
       <div class="pl-4">"tag": "${vote.tag.substring(0, 16)}..."</div>
       <div>}</div>
     `;
@@ -289,58 +475,123 @@
   // Update results display
   function updateResults() {
     const total = state.votes.length || 1;
-    ['rust', 'typescript', 'python', 'go'].forEach(lang => {
-      const count = state.results[lang];
+
+    // Q1 results
+    ['rust', 'typescript', 'python', 'go'].forEach(opt => {
+      const count = state.results.q1[opt];
       const pct = Math.round((count / total) * 100);
-      document.getElementById(`${lang}-count`).textContent = `${count} (${pct}%)`;
-      document.getElementById(`${lang}-bar`).style.width = `${pct}%`;
+      document.getElementById(`q1-${opt}-count`).textContent = `${count} (${pct}%)`;
+      document.getElementById(`q1-${opt}-bar`).style.width = `${pct}%`;
     });
+
+    // Q2 results (multi-select, so max is 2*total)
+    const q2Max = Math.max(...Object.values(state.results.q2), 1);
+    ['type-safety', 'performance', 'ecosystem', 'simplicity', 'concurrency'].forEach(opt => {
+      const count = state.results.q2[opt];
+      const pct = Math.round((count / q2Max) * 100);
+      document.getElementById(`q2-${opt}-count`).textContent = count;
+      document.getElementById(`q2-${opt}-bar`).style.width = `${pct}%`;
+    });
+
+    // Q3 results
+    ['vscode', 'neovim', 'jetbrains', 'other'].forEach(opt => {
+      const count = state.results.q3[opt];
+      const pct = Math.round((count / total) * 100);
+      document.getElementById(`q3-${opt}-count`).textContent = `${count} (${pct}%)`;
+      document.getElementById(`q3-${opt}-bar`).style.width = `${pct}%`;
+    });
+
+    // Show write-ins
+    if (state.writeIns.length > 0) {
+      const writeInsDiv = document.getElementById('q3-writeins');
+      writeInsDiv.classList.remove('hidden');
+      const unique = [...new Set(state.writeIns)];
+      writeInsDiv.innerHTML = 'Write-ins: ' + unique.slice(0, 5).join(', ') + (unique.length > 5 ? '...' : '');
+    }
   }
 
-  // Cast a vote
-  function castVote(candidate) {
-    const vote = generateEncryptedVote(candidate);
+  // Cast a ballot
+  function castBallot(ballot) {
+    const vote = generateEncryptedBallot(ballot);
     state.votes.push(vote);
     state.voters++;
+
     if (state.tallied) {
-      state.results[candidate]++;
-    }
-    addToLog(vote, state.votes.length - 1);
-    updateStats();
-    if (state.tallied) {
+      // Update results live
+      state.results.q1[ballot.q1]++;
+      ballot.q2.forEach(opt => state.results.q2[opt]++);
+      if (ballot.q3 === 'other') {
+        state.results.q3.other++;
+        if (ballot.q3Text) state.writeIns.push(ballot.q3Text);
+      } else {
+        state.results.q3[ballot.q3]++;
+      }
       updateResults();
     }
+
+    addToLog(vote, state.votes.length - 1);
+    updateStats();
     return vote;
   }
 
   // Add random voters
   function addRandomVoters(count) {
-    const candidates = ['rust', 'typescript', 'python', 'go'];
-    const weights = [0.35, 0.30, 0.20, 0.15]; // Rust slightly favored for demo
+    const q1Options = ['rust', 'typescript', 'python', 'go'];
+    const q1Weights = [0.35, 0.30, 0.20, 0.15];
+    const q2Options = ['type-safety', 'performance', 'ecosystem', 'simplicity', 'concurrency'];
+    const q3Options = ['vscode', 'neovim', 'jetbrains', 'other'];
+    const q3Weights = [0.45, 0.20, 0.25, 0.10];
+    const otherEditors = ['Emacs', 'Sublime', 'Vim', 'Zed', 'Helix', 'Atom'];
 
     for (let i = 0; i < count; i++) {
-      const rand = Math.random();
+      // Q1: weighted single choice
+      let rand = Math.random();
       let cumulative = 0;
-      let selected = candidates[0];
-      for (let j = 0; j < candidates.length; j++) {
-        cumulative += weights[j];
-        if (rand < cumulative) {
-          selected = candidates[j];
-          break;
-        }
+      let q1 = q1Options[0];
+      for (let j = 0; j < q1Options.length; j++) {
+        cumulative += q1Weights[j];
+        if (rand < cumulative) { q1 = q1Options[j]; break; }
       }
-      castVote(selected);
+
+      // Q2: random 2 from 5
+      const shuffled = [...q2Options].sort(() => Math.random() - 0.5);
+      const q2 = shuffled.slice(0, 2);
+
+      // Q3: weighted single choice with write-in
+      rand = Math.random();
+      cumulative = 0;
+      let q3 = q3Options[0];
+      for (let j = 0; j < q3Options.length; j++) {
+        cumulative += q3Weights[j];
+        if (rand < cumulative) { q3 = q3Options[j]; break; }
+      }
+      const q3Text = q3 === 'other' ? otherEditors[Math.floor(Math.random() * otherEditors.length)] : null;
+
+      castBallot({ q1, q2, q3, q3Text });
     }
   }
 
   // Tally votes
   function tallyVotes() {
     state.tallied = true;
-    state.results = { rust: 0, typescript: 0, python: 0, go: 0 };
+    state.results = {
+      q1: { rust: 0, typescript: 0, python: 0, go: 0 },
+      q2: { 'type-safety': 0, performance: 0, ecosystem: 0, simplicity: 0, concurrency: 0 },
+      q3: { vscode: 0, neovim: 0, jetbrains: 0, other: 0 }
+    };
+    state.writeIns = [];
 
-    // "Decrypt" votes (in demo, we stored the candidate)
+    // "Decrypt" ballots
     state.votes.forEach(vote => {
-      state.results[vote.candidate]++;
+      const b = vote.ballot;
+      state.results.q1[b.q1]++;
+      b.q2.forEach(opt => state.results.q2[opt]++);
+      if (b.q3 === 'other') {
+        state.results.q3.other++;
+        if (b.q3Text) state.writeIns.push(b.q3Text);
+      } else {
+        state.results.q3[b.q3]++;
+      }
     });
 
     updateResults();
@@ -349,29 +600,104 @@
     `;
   }
 
-  // Event listeners
+  // Q2 checkbox limit (max 2)
+  document.querySelectorAll('.q2-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+      const checked = document.querySelectorAll('.q2-checkbox:checked');
+      const msg = document.getElementById('q2-limit-msg');
+
+      if (checked.length > 2) {
+        this.checked = false;
+        msg.textContent = '2 of 2 selected (max reached)';
+        msg.classList.add('text-red-500');
+        msg.classList.remove('text-gray-500');
+      } else {
+        msg.textContent = `${checked.length} of 2 selected`;
+        if (checked.length === 2) {
+          msg.classList.add('text-emerald-600');
+          msg.classList.remove('text-gray-500', 'text-red-500');
+        } else {
+          msg.classList.add('text-gray-500');
+          msg.classList.remove('text-emerald-600', 'text-red-500');
+        }
+      }
+    });
+  });
+
+  // Q3 "Other" text field enable/disable
+  document.querySelectorAll('input[name="q3"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      const textField = document.getElementById('q3-other-text');
+      if (this.value === 'other') {
+        textField.disabled = false;
+        textField.focus();
+      } else {
+        textField.disabled = true;
+        textField.value = '';
+      }
+    });
+  });
+
+  // Cast ballot button
   document.getElementById('cast-vote-btn').addEventListener('click', function() {
-    const selected = document.querySelector('input[name="candidate"]:checked');
-    if (!selected) {
-      alert('Please select a candidate');
+    // Validate Q1
+    const q1Selected = document.querySelector('input[name="q1"]:checked');
+    if (!q1Selected) {
+      alert('Please answer Question 1');
       return;
     }
 
-    const vote = castVote(selected.value);
+    // Validate Q2
+    const q2Selected = document.querySelectorAll('.q2-checkbox:checked');
+    if (q2Selected.length === 0) {
+      alert('Please select at least one option for Question 2');
+      return;
+    }
+
+    // Validate Q3
+    const q3Selected = document.querySelector('input[name="q3"]:checked');
+    if (!q3Selected) {
+      alert('Please answer Question 3');
+      return;
+    }
+
+    const q3Text = q3Selected.value === 'other' ? document.getElementById('q3-other-text').value.trim() : null;
+    if (q3Selected.value === 'other' && !q3Text) {
+      alert('Please enter your write-in choice for Question 3');
+      return;
+    }
+
+    // Build ballot
+    const ballot = {
+      q1: q1Selected.value,
+      q2: Array.from(q2Selected).map(cb => cb.value),
+      q3: q3Selected.value,
+      q3Text: q3Text
+    };
+
+    const vote = castBallot(ballot);
     const resultDiv = document.getElementById('vote-result');
     resultDiv.classList.remove('hidden');
     resultDiv.innerHTML = `
       <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-        <div class="font-bold text-emerald-800 mb-2">Vote Encrypted & Cast!</div>
+        <div class="font-bold text-emerald-800 mb-2">Ballot Encrypted & Cast!</div>
         <div class="text-sm text-gray-600">
+          <div>3 questions encrypted together</div>
           <div>Ciphertext: <code class="bg-gray-100 px-1">${vote.ciphertext.substring(0, 16)}...</code></div>
           <div>Merkle Position: <code class="bg-gray-100 px-1">#${state.votes.length}</code></div>
         </div>
       </div>
     `;
 
-    // Clear selection
-    selected.checked = false;
+    // Clear selections
+    q1Selected.checked = false;
+    q2Selected.forEach(cb => cb.checked = false);
+    q3Selected.checked = false;
+    document.getElementById('q3-other-text').disabled = true;
+    document.getElementById('q3-other-text').value = '';
+    document.getElementById('q2-limit-msg').textContent = '0 of 2 selected';
+    document.getElementById('q2-limit-msg').classList.remove('text-emerald-600');
+    document.getElementById('q2-limit-msg').classList.add('text-gray-500');
   });
 
   document.getElementById('add-10-btn').addEventListener('click', () => addRandomVoters(10));
