@@ -483,12 +483,31 @@
     document.getElementById('merkle-root').textContent = state.merkleRoot.substring(0, 8);
   }
 
-  // Add vote to log
-  function addToLog(vote, index) {
+  // Add vote to log (optimized for large counts)
+  const MAX_LOG_ENTRIES = 50;
+  let logUpdatePending = false;
+
+  function addToLog(vote, index, total) {
+    // For large batches, only update periodically
+    if (total > 1000 && !logUpdatePending) {
+      logUpdatePending = true;
+      requestAnimationFrame(() => {
+        updateLogSummary(index + 1, total);
+        logUpdatePending = false;
+      });
+      return;
+    }
+
     const log = document.getElementById('vote-log');
     if (index === 0) {
       log.innerHTML = '';
     }
+
+    // Only keep last N entries in DOM
+    if (log.children.length >= MAX_LOG_ENTRIES) {
+      log.removeChild(log.firstChild);
+    }
+
     const entry = document.createElement('div');
     entry.className = 'mb-2 border-b border-gray-700 pb-2';
     entry.innerHTML = `
@@ -503,11 +522,32 @@
     log.scrollTop = log.scrollHeight;
   }
 
-  // Update stats
+  function updateLogSummary(current, total) {
+    const log = document.getElementById('vote-log');
+    const pct = Math.round((current / total) * 100);
+    log.innerHTML = `
+      <div class="text-center py-4">
+        <div class="text-emerald-400 text-2xl font-bold mb-2">${current.toLocaleString()} / ${total.toLocaleString()}</div>
+        <div class="text-gray-500 mb-3">ballots encrypted</div>
+        <div class="progress mx-auto" style="height: 8px; max-width: 200px;">
+          <div class="progress-bar bg-emerald-500" style="width: ${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update stats (throttled for large batches)
+  let statsUpdatePending = false;
   function updateStats() {
-    document.getElementById('total-voters').textContent = state.voters;
-    document.getElementById('total-votes').textContent = state.votes.length;
-    updateMerkleRoot();
+    if (statsUpdatePending) return;
+    statsUpdatePending = true;
+
+    requestAnimationFrame(() => {
+      document.getElementById('total-voters').textContent = state.voters.toLocaleString();
+      document.getElementById('total-votes').textContent = state.votes.length.toLocaleString();
+      updateMerkleRoot();
+      statsUpdatePending = false;
+    });
   }
 
   // Update results display
@@ -565,7 +605,7 @@
   }
 
   // Cast a ballot
-  function castBallot(ballot) {
+  function castBallot(ballot, totalTarget = null) {
     const vote = generateEncryptedBallot(ballot);
     state.votes.push(vote);
     state.voters++;
@@ -582,7 +622,7 @@
       updateResults();
     }
 
-    addToLog(vote, state.votes.length - 1);
+    addToLog(vote, state.votes.length - 1, totalTarget || state.votes.length);
     updateStats();
     return vote;
   }
@@ -620,11 +660,11 @@
     });
 
     // Add new voters
-    addRandomVoters(count);
+    addRandomVoters(count, true);
   }
 
-  // Add random voters
-  function addRandomVoters(count) {
+  // Add random voters (batched for large counts)
+  function addRandomVoters(count, isReset = false) {
     const q1Options = ['rust', 'typescript', 'python', 'go'];
     const q1Weights = [0.35, 0.30, 0.20, 0.15];
     const q2Options = ['type-safety', 'performance', 'ecosystem', 'simplicity', 'concurrency'];
@@ -632,32 +672,61 @@
     const q3Weights = [0.45, 0.20, 0.25, 0.10];
     const otherEditors = ['Emacs', 'Sublime', 'Vim', 'Zed', 'Helix', 'Atom'];
 
-    for (let i = 0; i < count; i++) {
-      // Q1: weighted single choice
-      let rand = Math.random();
-      let cumulative = 0;
-      let q1 = q1Options[0];
-      for (let j = 0; j < q1Options.length; j++) {
-        cumulative += q1Weights[j];
-        if (rand < cumulative) { q1 = q1Options[j]; break; }
+    const BATCH_SIZE = 500;
+    let processed = 0;
+    const totalTarget = isReset ? count : state.votes.length + count;
+
+    function processBatch() {
+      const batchEnd = Math.min(processed + BATCH_SIZE, count);
+
+      for (let i = processed; i < batchEnd; i++) {
+        // Q1: weighted single choice
+        let rand = Math.random();
+        let cumulative = 0;
+        let q1 = q1Options[0];
+        for (let j = 0; j < q1Options.length; j++) {
+          cumulative += q1Weights[j];
+          if (rand < cumulative) { q1 = q1Options[j]; break; }
+        }
+
+        // Q2: random 2 from 5
+        const shuffled = [...q2Options].sort(() => Math.random() - 0.5);
+        const q2 = shuffled.slice(0, 2);
+
+        // Q3: weighted single choice with write-in
+        rand = Math.random();
+        cumulative = 0;
+        let q3 = q3Options[0];
+        for (let j = 0; j < q3Options.length; j++) {
+          cumulative += q3Weights[j];
+          if (rand < cumulative) { q3 = q3Options[j]; break; }
+        }
+        const q3Text = q3 === 'other' ? otherEditors[Math.floor(Math.random() * otherEditors.length)] : null;
+
+        castBallot({ q1, q2, q3, q3Text }, totalTarget);
       }
 
-      // Q2: random 2 from 5
-      const shuffled = [...q2Options].sort(() => Math.random() - 0.5);
-      const q2 = shuffled.slice(0, 2);
+      processed = batchEnd;
 
-      // Q3: weighted single choice with write-in
-      rand = Math.random();
-      cumulative = 0;
-      let q3 = q3Options[0];
-      for (let j = 0; j < q3Options.length; j++) {
-        cumulative += q3Weights[j];
-        if (rand < cumulative) { q3 = q3Options[j]; break; }
+      if (processed < count) {
+        // Continue with next batch, allowing UI to update
+        setTimeout(processBatch, 0);
+      } else {
+        // Done - show final log state for large counts
+        if (count >= 1000) {
+          const log = document.getElementById('vote-log');
+          log.innerHTML = `
+            <div class="text-center py-4">
+              <div class="text-emerald-400 text-2xl font-bold mb-2">${state.votes.length.toLocaleString()}</div>
+              <div class="text-gray-500 mb-2">encrypted ballots ready</div>
+              <div class="text-gray-600 text-xs">Click "Tally Votes" to decrypt</div>
+            </div>
+          `;
+        }
       }
-      const q3Text = q3 === 'other' ? otherEditors[Math.floor(Math.random() * otherEditors.length)] : null;
-
-      castBallot({ q1, q2, q3, q3Text });
     }
+
+    processBatch();
   }
 
   // Tally votes
