@@ -120,6 +120,11 @@ function text({ url, host }: { url: string; host: string }) {
 
 /**
  * NextAuth configuration
+ *
+ * SECURITY NOTES:
+ * - NEXTAUTH_SECRET env var is REQUIRED for JWT signing in production
+ * - Session maxAge is 24 hours (reduced from 30 days for security)
+ * - Use AUTH_TRUST_HOST=true for Vercel deployments
  */
 export const authConfig: NextAuthConfig = {
   providers: [createEmailProvider()],
@@ -132,7 +137,9 @@ export const authConfig: NextAuthConfig = {
 
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    // 24 hours session (reduced from 30 days for security)
+    // Shorter session window reduces attack surface for stolen tokens
+    maxAge: 24 * 60 * 60,
   },
 
   callbacks: {
