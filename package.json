@@ -10,6 +10,14 @@
     "dev:ui": "cd apps && python3 -m http.server 8080",
     "test": "pnpm -r test",
     "test:e2e": "tsx scripts/test-30-voters.ts",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:headed": "playwright test --headed",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:voter": "playwright test --project=voter-chromium",
+    "test:admin": "playwright test --project=admin-chromium",
+    "test:flow": "playwright test --project=election-flow",
+    "playwright:report": "playwright show-report",
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean",
     "db:start": "docker compose -f docker/docker-compose.yml up -d",
@@ -30,11 +38,13 @@
   "author": "TVS",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@types/crypto-js": "^4.2.2",
+    "playwright": "^1.57.0",
     "tsx": "^4.6.0"
   },
   "dependencies": {
-    "@tvs/veilforms": "workspace:*",
-    "@tvs/core": "workspace:*"
+    "@tvs/core": "workspace:*",
+    "@tvs/veilforms": "workspace:*"
   }
 }
