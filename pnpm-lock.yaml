@@ -313,6 +313,9 @@ importers:
       '@fastify/cors':
         specifier: ^8.4.0
         version: 8.5.0
+      '@fastify/rate-limit':
+        specifier: ^9.1.0
+        version: 9.1.0
       '@tvs/core':
         specifier: workspace:*
         version: link:../core
