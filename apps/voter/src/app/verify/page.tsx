@@ -6,7 +6,7 @@
  * Allows voters to verify their vote was recorded correctly
  */
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Search, Shield, Info } from "lucide-react"
 import {
@@ -39,9 +39,9 @@ export default function VerifyPage() {
   const [error, setError] = useState("")
 
   // Load elections on mount
-  useState(() => {
+  useEffect(() => {
     getElections().then(setElections).catch(console.error)
-  })
+  }, [])
 
   const handleVerify = async () => {
     setError("")

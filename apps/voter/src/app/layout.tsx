@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TVS Voter Portal",
-  description: "Secure, private, and transparent voting with Trustless Voting System",
+  title: "TVS - Voter Portal",
+  description: "Verify your vote and explore election integrity with Trustless Voting System",
 };
 
 export default function RootLayout({

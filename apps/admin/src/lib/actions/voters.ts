@@ -1,7 +1,5 @@
 'use server';
 
-import { apiFetch } from './api';
-
 // Types
 export interface Voter {
   id: string;
