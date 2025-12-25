@@ -56,21 +56,32 @@ describe('VoterForm', () => {
       const user = userEvent.setup();
       render(<VoterForm {...defaultProps} />);
 
-      await user.type(screen.getByLabelText(/email address/i), 'jane@example.com');
-      await user.click(screen.getByRole('button', { name: /add voter/i }));
+      const emailInput = screen.getByLabelText(/email address/i);
+      await user.type(emailInput, 'jane@example.com');
 
-      expect(await screen.findByText(/name is required/i)).toBeInTheDocument();
+      const submitButton = screen.getByRole('button', { name: /add voter/i });
+      await user.click(submitButton);
+
+      expect(await screen.findByText('Name is required', { timeout: 3000 })).toBeInTheDocument();
+      expect(defaultProps.onSubmit).not.toHaveBeenCalled();
     });
 
     it('should show validation error for invalid email', async () => {
       const user = userEvent.setup();
       render(<VoterForm {...defaultProps} />);
 
-      await user.type(screen.getByLabelText(/full name/i), 'Jane Smith');
-      await user.type(screen.getByLabelText(/email address/i), 'invalid-email');
-      await user.click(screen.getByRole('button', { name: /add voter/i }));
+      const nameInput = screen.getByLabelText(/full name/i);
+      await user.type(nameInput, 'Jane Smith');
 
-      expect(await screen.findByText(/invalid email format/i)).toBeInTheDocument();
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
+      await user.clear(emailInput);
+      await user.type(emailInput, 'invalid-email');
+
+      const submitButton = screen.getByRole('button', { name: /add voter/i });
+      await user.click(submitButton);
+
+      expect(await screen.findByText('Invalid email format', { timeout: 3000 })).toBeInTheDocument();
+      expect(defaultProps.onSubmit).not.toHaveBeenCalled();
     });
   });
 

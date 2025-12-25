@@ -124,7 +124,7 @@ export function VoterForm({
                 aria-describedby={errors.name ? 'name-error' : undefined}
               />
               {errors.name && (
-                <p id="name-error" className="text-sm text-red-500">
+                <p id="name-error" className="text-sm text-red-500" role="alert">
                   {errors.name}
                 </p>
               )}
@@ -143,7 +143,7 @@ export function VoterForm({
                 aria-describedby={errors.email ? 'email-error' : undefined}
               />
               {errors.email && (
-                <p id="email-error" className="text-sm text-red-500">
+                <p id="email-error" className="text-sm text-red-500" role="alert">
                   {errors.email}
                 </p>
               )}
@@ -185,7 +185,11 @@ export function VoterForm({
             </div>
 
             {errors.submit && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950"
+              >
                 <p className="text-sm text-red-600 dark:text-red-400">{errors.submit}</p>
               </div>
             )}

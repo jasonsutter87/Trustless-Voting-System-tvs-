@@ -53,55 +53,61 @@ export default function DashboardHomePage() {
         </div>
         <Link
           href="/elections/new"
-          className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
-          <PlusIcon className="h-4 w-4" />
+          <PlusIcon className="h-4 w-4" aria-hidden="true" />
           New Election
         </Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-            Active Elections
-          </p>
-          <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-            1
-          </p>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-            Currently running
-          </p>
+      <section aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className="sr-only">
+          Election statistics
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              Active Elections
+            </p>
+            <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+              1
+            </p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+              Currently running
+            </p>
+          </div>
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              Total Voters
+            </p>
+            <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+              6,847
+            </p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Across all elections
+            </p>
+          </div>
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              Participation Rate
+            </p>
+            <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+              71.5%
+            </p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Average across active
+            </p>
+          </div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-            Total Voters
-          </p>
-          <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-            6,847
-          </p>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-            Across all elections
-          </p>
-        </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-            Participation Rate
-          </p>
-          <p className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-            71.5%
-          </p>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-            Average across active
-          </p>
-        </div>
-      </div>
+      </section>
 
-      <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-            Recent Elections
-          </h2>
-        </div>
+      <section aria-labelledby="recent-elections-heading">
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+            <h2 id="recent-elections-heading" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              Recent Elections
+            </h2>
+          </div>
         <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
           {recentElections.map((election) => {
             const getStatusClass = (status: string) => {
@@ -122,6 +128,7 @@ export default function DashboardHomePage() {
                       {election.title}
                     </h3>
                     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusClass(election.status)}`}>
+                      <span className="sr-only">Status: </span>
                       {election.status.charAt(0).toUpperCase() + election.status.slice(1)}
                     </span>
                   </div>
@@ -133,20 +140,21 @@ export default function DashboardHomePage() {
                     <span>Ends {new Date(election.endDate).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <ChevronRightIcon className="h-5 w-5 text-zinc-400" />
+                <ChevronRightIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
               </Link>
             );
           })}
         </div>
-        <div className="border-t border-zinc-200 px-6 py-4 dark:border-zinc-800">
-          <Link
-            href="/elections"
-            className="text-sm font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300"
-          >
-            View all elections →
-          </Link>
+          <div className="border-t border-zinc-200 px-6 py-4 dark:border-zinc-800">
+            <Link
+              href="/elections"
+              className="text-sm font-medium text-zinc-900 hover:text-zinc-700 focus:outline-none focus:underline dark:text-zinc-100 dark:hover:text-zinc-300"
+            >
+              View all elections →
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

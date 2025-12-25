@@ -84,9 +84,9 @@ export default function ElectionsPage() {
         </div>
         <Link
           href="/elections/new"
-          className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
-          <PlusIcon className="h-4 w-4" />
+          <PlusIcon className="h-4 w-4" aria-hidden="true" />
           New Election
         </Link>
       </div>
@@ -94,15 +94,24 @@ export default function ElectionsPage() {
       {/* Search and filters */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+          <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" aria-hidden="true" />
+          <label htmlFor="search-elections" className="sr-only">
+            Search elections
+          </label>
           <input
-            type="text"
+            id="search-elections"
+            type="search"
             placeholder="Search elections..."
-            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-10 pr-4 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-10 pr-4 text-sm focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+            aria-label="Search elections"
           />
         </div>
-        <button className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800">
-          <FilterIcon className="h-4 w-4" />
+        <button
+          type="button"
+          className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-400/50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          aria-label="Filter elections"
+        >
+          <FilterIcon className="h-4 w-4" aria-hidden="true" />
           Filter
         </button>
       </div>
@@ -111,6 +120,7 @@ export default function ElectionsPage() {
       <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="overflow-x-auto">
           <table className="w-full">
+            <caption className="sr-only">List of all elections</caption>
             <thead className="border-b border-zinc-200 dark:border-zinc-800">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
@@ -158,6 +168,7 @@ export default function ElectionsPage() {
                           statusStyles[election.status as keyof typeof statusStyles]
                         }`}
                       >
+                        <span className="sr-only">Status: </span>
                         {election.status.charAt(0).toUpperCase() + election.status.slice(1)}
                       </span>
                     </td>
