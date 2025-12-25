@@ -1,18 +1,26 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import {
-  CheckCircleIcon,
-  CopyIcon,
-  CheckIcon,
-  PrinterIcon,
-  ShieldCheckIcon,
-  AlertCircleIcon,
-  LoaderIcon,
-  ExternalLinkIcon,
+  CheckCircle2,
+  Copy,
+  Check,
+  Printer,
+  ShieldCheck,
+  AlertCircle,
+  Loader2,
+  Search,
+  Home,
 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { copyToClipboard } from "@/lib/utils";
@@ -62,7 +70,7 @@ export default function ConfirmationPage() {
 
   const handleCopyMerkleRoot = async () => {
     if (!confirmation) return;
-    const firstSuccess = confirmation.results.find(r => r.success);
+    const firstSuccess = confirmation.results.find((r) => r.success);
     if (firstSuccess?.merkleRoot) {
       const success = await copyToClipboard(firstSuccess.merkleRoot);
       if (success) {
@@ -77,38 +85,44 @@ export default function ConfirmationPage() {
   };
 
   const handleFinish = () => {
-    // Clear all session data
     sessionStorage.removeItem("votingCredential");
     sessionStorage.removeItem("ballotSelections");
     sessionStorage.removeItem("voteConfirmation");
     router.push("/");
   };
 
+  // Loading state
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center space-y-4">
-          <LoaderIcon className="size-8 animate-spin text-primary mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto" />
           <p className="text-muted-foreground">Loading confirmation...</p>
         </div>
       </div>
     );
   }
 
+  // Error state
   if (error || !confirmation) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <Card className="max-w-md">
+      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
+        <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircleIcon className="size-5" />
-              Error
+            <CardTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              No Confirmation Found
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="mb-4">{error || "No confirmation data found"}</p>
-            <Button onClick={() => router.push("/")} variant="outline">
-              Return to Home
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              {error || "No confirmation data found. Your vote may not have been submitted."}
+            </p>
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/">
+                <Home className="mr-2 h-4 w-4" />
+                Return Home
+              </Link>
             </Button>
           </CardContent>
         </Card>
@@ -116,47 +130,48 @@ export default function ConfirmationPage() {
     );
   }
 
-  const successfulResults = confirmation.results.filter(r => r.success);
-  const failedResults = confirmation.results.filter(r => !r.success);
-  const firstMerkleRoot = successfulResults.length > 0 ? successfulResults[0].merkleRoot : null;
+  const successfulResults = confirmation.results.filter((r) => r.success);
+  const failedResults = confirmation.results.filter((r) => !r.success);
+  const firstMerkleRoot =
+    successfulResults.length > 0 ? successfulResults[0].merkleRoot : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-8 print:bg-white">
-      <div className="container max-w-3xl mx-auto px-4 space-y-6">
+    <div className="container mx-auto px-4 py-6 print:bg-white">
+      <div className="mx-auto max-w-2xl space-y-6">
         {/* Success Header */}
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-center">
-            <div className="rounded-full bg-green-100 p-4">
-              <CheckCircleIcon className="size-12 text-green-600" />
-            </div>
+          <div className="inline-flex items-center justify-center rounded-full bg-green-100 p-4 dark:bg-green-900">
+            <CheckCircle2 className="h-12 w-12 text-green-600 dark:text-green-400" />
           </div>
-          <h1 className="text-3xl font-bold">Vote Submitted Successfully!</h1>
-          <p className="text-muted-foreground text-lg">
-            Your ballot has been encrypted and recorded in the secure voting ledger.
+          <h1 className="text-2xl font-bold sm:text-3xl">
+            Vote Submitted Successfully!
+          </h1>
+          <p className="text-muted-foreground">
+            Your ballot has been encrypted and recorded securely.
           </p>
         </div>
 
         {/* Confirmation Code */}
-        <Card className="border-primary print:border-black">
-          <CardHeader className="bg-primary/5 print:bg-white">
+        <Card className="border-2 border-green-200 dark:border-green-800 print:border-black">
+          <CardHeader className="bg-green-50 dark:bg-green-950 print:bg-white">
             <CardTitle className="flex items-center gap-2">
-              <ShieldCheckIcon className="size-5" />
+              <ShieldCheck className="h-5 w-5 text-green-600" />
               Your Confirmation Code
             </CardTitle>
             <CardDescription>
-              Save this code to verify your vote was counted
+              Save this code to verify your vote later
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="space-y-4">
-              <div className="p-6 rounded-lg bg-muted/50 border-2 border-dashed border-primary print:border-black">
+              <div className="rounded-lg border-2 border-dashed border-green-300 bg-green-50 p-6 dark:border-green-700 dark:bg-green-950 print:border-black print:bg-white">
                 <div className="text-center">
-                  <div className="text-3xl font-mono font-bold tracking-wider text-primary print:text-black">
+                  <div className="font-mono text-2xl font-bold tracking-widest text-green-700 dark:text-green-300 sm:text-3xl print:text-black">
                     {confirmation.confirmationCode}
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2 print:hidden">
+              <div className="flex flex-col gap-2 sm:flex-row print:hidden">
                 <Button
                   variant="outline"
                   className="flex-1"
@@ -164,18 +179,18 @@ export default function ConfirmationPage() {
                 >
                   {copiedConfirmation ? (
                     <>
-                      <CheckIcon className="size-4 mr-2" />
+                      <Check className="mr-2 h-4 w-4" />
                       Copied!
                     </>
                   ) : (
                     <>
-                      <CopyIcon className="size-4 mr-2" />
+                      <Copy className="mr-2 h-4 w-4" />
                       Copy Code
                     </>
                   )}
                 </Button>
-                <Button variant="outline" onClick={handlePrint}>
-                  <PrinterIcon className="size-4 mr-2" />
+                <Button variant="outline" onClick={handlePrint} className="flex-1">
+                  <Printer className="mr-2 h-4 w-4" />
                   Print Receipt
                 </Button>
               </div>
@@ -188,21 +203,24 @@ export default function ConfirmationPage() {
           <CardHeader>
             <CardTitle>Submission Summary</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4">
+          <CardContent>
+            <div className="grid gap-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Election ID:</span>
-                <span className="font-mono text-sm">{confirmation.electionId}</span>
+                <span className="text-muted-foreground">Election:</span>
+                <span className="font-mono">{electionId}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Questions Answered:</span>
-                <span className="font-semibold">
+                <span className="font-medium">
                   {confirmation.answersSubmitted} of {confirmation.answersTotal}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Status:</span>
-                <Badge variant={confirmation.success ? "default" : "destructive"}>
+                <Badge
+                  variant={confirmation.success ? "default" : "destructive"}
+                  className="bg-green-600"
+                >
                   {confirmation.success ? "Submitted" : "Partial"}
                 </Badge>
               </div>
@@ -214,58 +232,54 @@ export default function ConfirmationPage() {
         {firstMerkleRoot && (
           <Card>
             <CardHeader>
-              <CardTitle>Cryptographic Verification</CardTitle>
+              <CardTitle>Cryptographic Proof</CardTitle>
               <CardDescription>
-                Your vote is secured in a tamper-proof Merkle tree
+                Your vote is secured in a tamper-proof ledger
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Merkle Root Hash</div>
-                <div className="p-3 rounded-md bg-muted font-mono text-xs break-all">
+            <CardContent className="space-y-3">
+              <div>
+                <p className="mb-2 text-sm font-medium">Merkle Root Hash</p>
+                <div className="rounded-md bg-zinc-100 p-3 font-mono text-xs break-all dark:bg-zinc-800">
                   {firstMerkleRoot}
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full print:hidden"
-                  onClick={handleCopyMerkleRoot}
-                >
-                  {copiedRoot ? (
-                    <>
-                      <CheckIcon className="size-3 mr-2" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <CopyIcon className="size-3 mr-2" />
-                      Copy Merkle Root
-                    </>
-                  )}
-                </Button>
               </div>
-              <p className="text-sm text-muted-foreground">
-                This cryptographic hash proves your vote was included in the election ledger.
-                You can use it to independently verify your vote was counted.
-              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full print:hidden"
+                onClick={handleCopyMerkleRoot}
+              >
+                {copiedRoot ? (
+                  <>
+                    <Check className="mr-2 h-3 w-3" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-2 h-3 w-3" />
+                    Copy Merkle Root
+                  </>
+                )}
+              </Button>
             </CardContent>
           </Card>
         )}
 
-        {/* Failed Questions (if any) */}
+        {/* Failed Questions */}
         {failedResults.length > 0 && (
-          <Card className="border-destructive">
+          <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
             <CardHeader>
-              <CardTitle className="text-destructive">
-                Some Questions Failed to Submit
+              <CardTitle className="text-red-600">
+                Some Questions Failed
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2">
+              <ul className="space-y-2 text-sm">
                 {failedResults.map((result) => (
-                  <li key={result.questionId} className="text-sm">
+                  <li key={result.questionId}>
                     <span className="font-medium">Question {result.questionId}:</span>{" "}
-                    <span className="text-destructive">{result.error}</span>
+                    <span className="text-red-600">{result.error}</span>
                   </li>
                 ))}
               </ul>
@@ -273,39 +287,38 @@ export default function ConfirmationPage() {
           </Card>
         )}
 
-        {/* Next Steps */}
-        <Card className="bg-muted/50">
+        {/* What's Next */}
+        <Card className="bg-zinc-50 dark:bg-zinc-900">
           <CardHeader>
             <CardTitle>What Happens Next?</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="space-y-3 text-sm">
               <li className="flex gap-3">
-                <span className="font-bold text-primary">1.</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600 dark:bg-blue-900 dark:text-blue-400">
+                  1
+                </span>
                 <span>
-                  <strong>Save your confirmation code</strong> - You'll need it to verify
-                  your vote was counted in the final tally.
+                  <strong>Save your code</strong> - You'll need it to verify your
+                  vote was counted.
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="font-bold text-primary">2.</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600 dark:bg-blue-900 dark:text-blue-400">
+                  2
+                </span>
                 <span>
-                  <strong>Voting closes</strong> - Once the election period ends, the votes
-                  will be tallied using threshold decryption.
+                  <strong>Election closes</strong> - Votes are tallied using
+                  threshold decryption by trustees.
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="font-bold text-primary">3.</span>
-                <span>
-                  <strong>Results published</strong> - You can verify your vote was included
-                  using your confirmation code and the public ledger.
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600 dark:bg-blue-900 dark:text-blue-400">
+                  3
                 </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="font-bold text-primary">4.</span>
                 <span>
-                  <strong>Blockchain anchoring</strong> - The final Merkle root will be
-                  anchored to Bitcoin for permanent, tamper-proof verification.
+                  <strong>Verify your vote</strong> - Use your confirmation code
+                  to check it was included.
                 </span>
               </li>
             </ol>
@@ -313,17 +326,16 @@ export default function ConfirmationPage() {
         </Card>
 
         {/* Important Notice */}
-        <Card className="border-orange-500 bg-orange-50 print:bg-white print:border-black">
+        <Card className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950 print:bg-white print:border-black">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
-              <AlertCircleIcon className="size-5 text-orange-600 mt-0.5 print:text-black" />
-              <div className="text-sm space-y-2">
-                <p className="font-semibold text-foreground">Important:</p>
-                <ul className="space-y-1 list-disc list-inside text-muted-foreground">
-                  <li>Keep your confirmation code in a safe place</li>
-                  <li>You cannot vote again or change your vote</li>
-                  <li>Do not share your confirmation code with anyone</li>
-                  <li>Print or save this page for your records</li>
+              <AlertCircle className="mt-0.5 h-5 w-5 text-amber-600 dark:text-amber-400 print:text-black" />
+              <div className="text-sm">
+                <p className="mb-2 font-medium">Important:</p>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• Keep your confirmation code safe</li>
+                  <li>• You cannot vote again or change your vote</li>
+                  <li>• Do not share your confirmation code</li>
                 </ul>
               </div>
             </div>
@@ -331,20 +343,23 @@ export default function ConfirmationPage() {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 print:hidden">
-          <Button variant="outline" onClick={handlePrint} className="flex-1">
-            <PrinterIcon className="size-4 mr-2" />
-            Print Receipt
+        <div className="flex flex-col gap-3 sm:flex-row print:hidden">
+          <Button asChild variant="outline" className="flex-1">
+            <Link href="/verify">
+              <Search className="mr-2 h-4 w-4" />
+              Verify Vote
+            </Link>
           </Button>
           <Button onClick={handleFinish} className="flex-1" size="lg">
-            Finish
+            <Home className="mr-2 h-4 w-4" />
+            Finish & Return Home
           </Button>
         </div>
 
-        {/* Footer Message */}
+        {/* Footer */}
         <div className="text-center text-sm text-muted-foreground py-4">
           <p>Thank you for participating in this election.</p>
-          <p>Your vote has been securely recorded and will remain private.</p>
+          <p>Your vote is encrypted and anonymous.</p>
         </div>
       </div>
     </div>
