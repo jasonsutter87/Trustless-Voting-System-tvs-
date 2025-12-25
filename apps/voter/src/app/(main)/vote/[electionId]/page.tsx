@@ -1,5 +1,22 @@
 "use client";
 
+// =============================================================================
+// SECURITY WARNING: SESSION STORAGE CREDENTIAL HANDLING - MVP ONLY
+// =============================================================================
+// Credentials are currently stored in sessionStorage for simplicity during MVP.
+// This has security implications that MUST be addressed before production:
+//
+// 1. XSS VULNERABILITY: Any script on the page can access credentials via
+//    sessionStorage.getItem('votingCredential')
+// 2. VOTE SELLING: Voter can extract and share credential as proof of their vote
+// 3. CROSS-TAB LEAKAGE: Credential accessible from any tab on same origin
+//
+// PRODUCTION FIX: Use one of these approaches:
+// - In-memory Zustand/Context store cleared on navigation (recommended)
+// - HTTP-only SameSite=Strict cookies with server-side credential validation
+// - Encrypt credential client-side with session-derived key
+// =============================================================================
+
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
