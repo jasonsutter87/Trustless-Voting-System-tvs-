@@ -164,7 +164,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             </div>
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 }
