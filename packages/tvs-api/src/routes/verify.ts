@@ -194,11 +194,12 @@ export async function verifyRoutes(fastify: FastifyInstance) {
       electionName: election.name,
       merkleRoot: ledger.getRoot(),
       voteCount: entries.length,
-      // Return only public data (no encrypted votes for privacy)
+      // Return only public data - NO nullifiers (privacy violation)
+      // Nullifiers could be linked to voter identity
       votes: entries.map((e, i) => ({
         position: i,
         commitment: e.commitment,
-        nullifier: e.nullifier,
+        // nullifier: e.nullifier, // REMOVED - privacy risk
         timestamp: e.timestamp,
       })),
     };
