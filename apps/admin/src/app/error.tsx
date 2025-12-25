@@ -29,16 +29,17 @@ export default function Error({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md" role="alert" aria-live="assertive">
         <CardHeader>
           {/* Error Icon */}
           <div className="mb-4 flex justify-center">
-            <div className="rounded-full bg-red-100 p-3 dark:bg-red-900">
+            <div className="rounded-full bg-red-100 p-3 dark:bg-red-900" aria-hidden="true">
               <svg
                 className="h-8 w-8 text-red-600 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -59,7 +60,7 @@ export default function Error({
         <CardContent className="space-y-4">
           {/* Error Details - Only show in development */}
           {process.env.NODE_ENV === "development" && (
-            <div className="rounded-md bg-zinc-50 p-4 dark:bg-zinc-800">
+            <div className="rounded-md bg-zinc-50 p-4 dark:bg-zinc-800" role="region" aria-label="Error details">
               <p className="mb-2 text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 Error details:
               </p>

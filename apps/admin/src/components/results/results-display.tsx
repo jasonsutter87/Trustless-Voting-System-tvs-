@@ -63,10 +63,10 @@ export function ResultsDisplay({
     <div className="space-y-6">
       {/* Winner banner */}
       {isCertified && winner && (
-        <div className="rounded-lg border border-yellow-200 bg-gradient-to-r from-yellow-50 to-amber-50 p-6 dark:border-yellow-800 dark:from-yellow-950 dark:to-amber-950">
+        <div className="rounded-lg border border-yellow-200 bg-gradient-to-r from-yellow-50 to-amber-50 p-6 dark:border-yellow-800 dark:from-yellow-950 dark:to-amber-950" role="status" aria-live="polite" aria-label="Election winner announcement">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-yellow-400 dark:bg-yellow-600">
-              <Trophy className="h-8 w-8 text-yellow-900" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-yellow-400 dark:bg-yellow-600" aria-hidden="true">
+              <Trophy className="h-8 w-8 text-yellow-900" aria-hidden="true" />
             </div>
             <div>
               <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">
@@ -76,7 +76,7 @@ export function ResultsDisplay({
                 {winner.candidate.name}
               </h3>
               <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                {winner.votes.toLocaleString()} votes (
+                {winner.votes.toLocaleString()} votes (<span className="sr-only">Percentage: </span>
                 {totalVotes > 0 ? ((winner.votes / totalVotes) * 100).toFixed(1) : 0}%)
               </p>
             </div>
@@ -97,12 +97,14 @@ export function ResultsDisplay({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <div className="flex rounded-lg border border-zinc-200 dark:border-zinc-700" role="group" aria-label="View mode toggle">
               <Button
                 variant={viewMode === 'table' ? 'secondary' : 'ghost'}
                 size="sm"
                 className="rounded-r-none"
                 onClick={() => setViewMode('table')}
+                aria-label="Show results as table"
+                aria-pressed={viewMode === 'table'}
               >
                 Table
               </Button>
@@ -111,16 +113,19 @@ export function ResultsDisplay({
                 size="sm"
                 className="rounded-l-none"
                 onClick={() => setViewMode('chart')}
+                aria-label="Show results as chart"
+                aria-pressed={viewMode === 'chart'}
               >
-                <BarChart3 className="h-4 w-4" />
+                <BarChart3 className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">Chart view</span>
               </Button>
             </div>
-            <Button variant="outline" size="sm" onClick={handleExportCSV}>
-              <Download className="mr-2 h-4 w-4" />
+            <Button variant="outline" size="sm" onClick={handleExportCSV} aria-label="Export results as CSV file">
+              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
               Export CSV
             </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint}>
-              <Printer className="mr-2 h-4 w-4" />
+            <Button variant="outline" size="sm" onClick={handlePrint} aria-label="Print results">
+              <Printer className="mr-2 h-4 w-4" aria-hidden="true" />
               Print
             </Button>
           </div>
@@ -177,7 +182,7 @@ export function ResultsDisplay({
                           {result.candidate.name}
                         </span>
                         {index === 0 && isCertified && (
-                          <Trophy className="h-4 w-4 text-yellow-500" />
+                          <Trophy className="h-4 w-4 text-yellow-500" aria-label="Winner" />
                         )}
                       </div>
                       <span className="text-sm text-zinc-600 dark:text-zinc-400">

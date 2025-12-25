@@ -54,6 +54,7 @@ export default function DashboardHomePage() {
         <Link
           href="/elections/new"
           className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          aria-label="Create new election"
         >
           <PlusIcon className="h-4 w-4" aria-hidden="true" />
           New Election
@@ -121,6 +122,7 @@ export default function DashboardHomePage() {
                 key={election.id}
                 href={`/elections/${election.id}`}
                 className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                aria-label={`View ${election.title} election details`}
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
@@ -133,11 +135,11 @@ export default function DashboardHomePage() {
                     </span>
                   </div>
                   <div className="mt-1 flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-                    <span>{election.voters.toLocaleString()} voters</span>
+                    <span><span className="sr-only">Total </span>{election.voters.toLocaleString()} voters</span>
                     <span>
                       {election.totalVotes.toLocaleString()} votes cast
                     </span>
-                    <span>Ends {new Date(election.endDate).toLocaleDateString()}</span>
+                    <span><span className="sr-only">Election </span>Ends {new Date(election.endDate).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <ChevronRightIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />

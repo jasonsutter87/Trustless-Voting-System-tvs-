@@ -39,7 +39,7 @@ export default async function ResultsPage({ params }: Props) {
 
   if (error || !election) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-950">
+      <div className="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-950" role="alert" aria-live="assertive">
         <h2 className="text-lg font-semibold text-red-800 dark:text-red-200">
           Error Loading Results
         </h2>
@@ -49,8 +49,9 @@ export default async function ResultsPage({ params }: Props) {
         <Link
           href="/elections"
           className="mt-4 inline-block text-sm font-medium text-red-800 hover:text-red-900 dark:text-red-200 dark:hover:text-red-100"
+          aria-label="Return to elections list"
         >
-          ← Back to Elections
+          <span aria-hidden="true">←</span> Back to Elections
         </Link>
       </div>
     );
@@ -69,13 +70,14 @@ export default async function ResultsPage({ params }: Props) {
           </p>
         </div>
 
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700">
+        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center dark:border-zinc-800 dark:bg-zinc-900" role="status" aria-live="polite">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700" aria-hidden="true">
             <svg
               className="h-6 w-6 text-zinc-500 dark:text-zinc-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -142,7 +144,7 @@ export default async function ResultsPage({ params }: Props) {
           isCertified={election.status === 'complete'}
         />
       ) : election.status === 'tallying' ? (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 dark:border-amber-800 dark:bg-amber-950">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 dark:border-amber-800 dark:bg-amber-950" role="status" aria-live="polite">
           <h3 className="text-lg font-medium text-amber-800 dark:text-amber-200">
             Awaiting Decryption Shares
           </h3>
@@ -156,13 +158,14 @@ export default async function ResultsPage({ params }: Props) {
 
       {/* Election metadata */}
       {election.status === 'complete' && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-6 dark:border-green-800 dark:bg-green-950">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-6 dark:border-green-800 dark:bg-green-950" role="status" aria-live="polite">
           <div className="flex items-start gap-3">
             <svg
               className="h-6 w-6 text-green-600 dark:text-green-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"

@@ -92,12 +92,17 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       />
 
       {/* Slide-in menu */}
-      <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-zinc-900 lg:hidden">
+      <aside
+        className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-zinc-900 lg:hidden"
+        role="dialog"
+        aria-label="Mobile navigation menu"
+        aria-modal="true"
+      >
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex h-16 items-center justify-between border-b border-zinc-200 px-6 dark:border-zinc-800">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100" aria-hidden="true">
                 <span className="text-sm font-bold text-white dark:text-zinc-900">VS</span>
               </div>
               <div className="flex flex-col">
@@ -112,14 +117,14 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             <button
               onClick={onClose}
               className="rounded-lg p-2 text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-              aria-label="Close menu"
+              aria-label="Close navigation menu"
             >
-              <CloseIcon className="h-5 w-5" />
+              <CloseIcon className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 px-3 py-4">
+          <nav className="flex-1 space-y-1 px-3 py-4" aria-label="Mobile navigation">
             {navigation.map((item) => {
               const isActive = pathname === item.href ||
                               (item.href !== "/" && pathname.startsWith(item.href));
@@ -135,8 +140,9 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                       ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
                       : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                   )}
+                  aria-current={isActive ? "page" : undefined}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5" aria-hidden="true" />
                   {item.name}
                 </Link>
               );

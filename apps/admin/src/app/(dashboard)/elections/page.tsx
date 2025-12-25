@@ -85,6 +85,7 @@ export default function ElectionsPage() {
         <Link
           href="/elections/new"
           className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          aria-label="Create new election"
         >
           <PlusIcon className="h-4 w-4" aria-hidden="true" />
           New Election
@@ -92,7 +93,7 @@ export default function ElectionsPage() {
       </div>
 
       {/* Search and filters */}
-      <div className="flex gap-4">
+      <div className="flex gap-4" role="search">
         <div className="relative flex-1">
           <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" aria-hidden="true" />
           <label htmlFor="search-elections" className="sr-only">
@@ -103,13 +104,12 @@ export default function ElectionsPage() {
             type="search"
             placeholder="Search elections..."
             className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-10 pr-4 text-sm focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400/50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-            aria-label="Search elections"
           />
         </div>
         <button
           type="button"
           className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-400/50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Filter elections"
+          aria-label="Open filter options"
         >
           <FilterIcon className="h-4 w-4" aria-hidden="true" />
           Filter
@@ -195,8 +195,9 @@ export default function ElectionsPage() {
                       <Link
                         href={`/elections/${election.id}`}
                         className="text-sm font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300"
+                        aria-label={`View ${election.title} details`}
                       >
-                        View →
+                        View <span aria-hidden="true">→</span>
                       </Link>
                     </td>
                   </tr>

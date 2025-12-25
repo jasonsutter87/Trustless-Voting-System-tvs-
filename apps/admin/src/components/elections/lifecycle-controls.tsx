@@ -185,9 +185,9 @@ export function LifecycleControls({
 
   if (election.status === 'setup') {
     return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950" role="status" aria-live="polite">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+          <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" aria-hidden="true" />
           <div>
             <h3 className="font-medium text-amber-800 dark:text-amber-200">
               Key Ceremony Required
@@ -204,16 +204,16 @@ export function LifecycleControls({
   return (
     <div className="space-y-4">
       {error && (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
+        <Alert variant="destructive" role="alert" aria-live="assertive">
+          <AlertTriangle className="h-4 w-4" aria-hidden="true" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
       {bitcoinAnchorStatus && (
-        <Alert className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950">
-          <Bitcoin className="h-4 w-4 text-orange-600" />
+        <Alert className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950" role="status" aria-live="polite">
+          <Bitcoin className="h-4 w-4 text-orange-600" aria-hidden="true" />
           <AlertTitle className="text-orange-800 dark:text-orange-200">
             Bitcoin Anchor Status
           </AlertTitle>
@@ -243,16 +243,18 @@ export function LifecycleControls({
                   variant={transition.variant}
                   onClick={() => handleTransitionClick(transition)}
                   disabled={!check.allowed || isLoading}
+                  aria-label={`${transition.label} - ${transition.description}`}
+                  aria-disabled={!check.allowed || isLoading}
                 >
                   {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                   ) : (
-                    <span className="mr-2">{transition.icon}</span>
+                    <span className="mr-2" aria-hidden="true">{transition.icon}</span>
                   )}
                   {transition.label}
                 </Button>
                 {!check.allowed && (
-                  <span className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  <span className="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
                     {check.reason}
                   </span>
                 )}
@@ -269,9 +271,9 @@ export function LifecycleControls({
         </div>
 
         {election.status === 'tallying' && (
-          <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+          <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950" role="status" aria-live="polite">
             <div className="flex items-start gap-3">
-              <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+              <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" aria-hidden="true" />
               <div>
                 <h4 className="font-medium text-blue-800 dark:text-blue-200">
                   Tallying in Progress

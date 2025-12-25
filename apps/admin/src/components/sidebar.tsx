@@ -49,7 +49,7 @@ export function Sidebar() {
     <div className="flex h-full w-64 flex-col bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
       {/* Organization header */}
       <div className="flex h-16 items-center gap-3 px-6 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100" aria-hidden="true">
           <span className="text-sm font-bold text-white dark:text-zinc-900">VS</span>
         </div>
         <div className="flex flex-col">
@@ -63,7 +63,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-4" aria-label="Main navigation">
         {navigation.map((item) => {
           const isActive = pathname === item.href ||
                           (item.href !== "/" && pathname.startsWith(item.href));
@@ -79,8 +79,9 @@ export function Sidebar() {
                   ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
                   : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               )}
+              aria-current={isActive ? "page" : undefined}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-5 w-5" aria-hidden="true" />
               {item.name}
             </Link>
           );

@@ -34,9 +34,9 @@ export function Header({ onMenuClick }: HeaderProps) {
         <button
           onClick={onMenuClick}
           className="lg:hidden rounded-lg p-2 text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-          aria-label="Open menu"
+          aria-label="Open navigation menu"
         >
-          <MenuIcon className="h-6 w-6" />
+          <MenuIcon className="h-6 w-6" aria-hidden="true" />
         </button>
 
         <div className="hidden lg:block">
@@ -51,10 +51,12 @@ export function Header({ onMenuClick }: HeaderProps) {
         {/* Notifications */}
         <button
           className="relative rounded-lg p-2 text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-          aria-label="Notifications"
+          aria-label="Notifications (1 unread)"
         >
-          <BellIcon className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500"></span>
+          <BellIcon className="h-5 w-5" aria-hidden="true" />
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" aria-hidden="true">
+            <span className="sr-only">1 unread notification</span>
+          </span>
         </button>
 
         {/* User menu */}
@@ -63,9 +65,11 @@ export function Header({ onMenuClick }: HeaderProps) {
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
             aria-label="User menu"
+            aria-expanded={showUserMenu}
+            aria-haspopup="true"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100">
-              <UserIcon className="h-4 w-4 text-white dark:text-zinc-900" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100" aria-hidden="true">
+              <UserIcon className="h-4 w-4 text-white dark:text-zinc-900" aria-hidden="true" />
             </div>
             <div className="hidden text-left md:block">
               <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
@@ -75,7 +79,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                 admin@veilsuite.com
               </p>
             </div>
-            <svg className="h-4 w-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-4 w-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -86,28 +90,36 @@ export function Header({ onMenuClick }: HeaderProps) {
               <div
                 className="fixed inset-0 z-10"
                 onClick={() => setShowUserMenu(false)}
+                aria-hidden="true"
               />
-              <div className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+              <nav
+                className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
+                role="menu"
+                aria-label="User menu options"
+              >
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  role="menuitem"
                 >
                   Your Profile
                 </a>
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  role="menuitem"
                 >
                   Organization Settings
                 </a>
-                <div className="my-1 border-t border-zinc-200 dark:border-zinc-800" />
+                <div className="my-1 border-t border-zinc-200 dark:border-zinc-800" role="separator" />
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  role="menuitem"
                 >
                   Sign out
                 </a>
-              </div>
+              </nav>
             </>
           )}
         </div>
