@@ -16,6 +16,25 @@ import { config } from '../config.js';
 import { bitcoinAnchor } from '../services/bitcoin-anchor.js';
 import * as anchorsDb from '../db/anchors.js';
 
+// =============================================================================
+// SECURITY WARNING: IN-MEMORY STORAGE - MVP ONLY
+// =============================================================================
+// The following data structures use in-memory storage which has critical
+// limitations that MUST be addressed before production deployment:
+//
+// 1. DATA LOSS ON RESTART: All votes and nullifiers are lost if server restarts
+// 2. DOUBLE VOTING: After restart, same credential can vote again
+// 3. RACE CONDITIONS: In-memory checks are not atomic, allowing concurrent
+//    double-voting via parallel requests
+// 4. NO HORIZONTAL SCALING: Cannot run multiple API instances
+//
+// PRODUCTION FIX: Migrate to PostgreSQL with:
+// - Votes stored in 'votes' table with UNIQUE(election_id, nullifier)
+// - Nullifiers stored in 'used_nullifiers' table
+// - Use database transactions with row-level locking (FOR UPDATE)
+// - Rebuild Merkle trees from persistent vote entries on startup
+// =============================================================================
+
 // Vote ledgers per election (legacy)
 const voteLedgers = new Map<string, VoteLedger>();
 
@@ -23,10 +42,12 @@ const voteLedgers = new Map<string, VoteLedger>();
 const questionLedgers = new Map<string, VoteLedger>();
 
 // Used nullifiers (prevents double voting) - legacy per-election
+// SECURITY: Must be persisted to database for production (see warning above)
 const usedNullifiers = new Set<string>();
 
 // Used nullifiers per question - allows same credential for multiple questions
 // Key format: "questionId:nullifier"
+// SECURITY: Must be persisted to database for production (see warning above)
 const questionNullifiers = new Set<string>();
 
 // Decryption ceremony tracking
