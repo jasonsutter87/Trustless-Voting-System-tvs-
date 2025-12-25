@@ -56,17 +56,18 @@ interface TallyResult {
 
 const decryptionCeremonies = new Map<string, DecryptionCeremony>();
 
+// Input validation with size limits to prevent DoS attacks
 const VoteSchema = z.object({
   electionId: z.string().uuid(),
   credential: z.object({
-    electionId: z.string(),
-    nullifier: z.string(),
-    message: z.string(),
-    signature: z.string(),
+    electionId: z.string().max(100),
+    nullifier: z.string().regex(/^[a-f0-9]{64}$/, 'Nullifier must be 32 bytes hex'),
+    message: z.string().max(256),
+    signature: z.string().max(1024), // RSA signature max size
   }),
-  encryptedVote: z.string(), // Encrypted via VeilForms
-  commitment: z.string(),     // Hash of vote for verification
-  zkProof: z.string(),        // ZK proof of vote validity
+  encryptedVote: z.string().max(10000), // Reasonable max for encrypted ballot
+  commitment: z.string().regex(/^[a-f0-9]{64}$/, 'Commitment must be SHA-256 hash'),
+  zkProof: z.string().max(50000), // ZK proof max size
 });
 
 export async function votingRoutes(fastify: FastifyInstance) {
@@ -104,8 +105,10 @@ export async function votingRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: 'Credential is for different election' });
     }
 
-    // TODO: Adapt verifyCredential to work with threshold public key
-    // For now, we trust credentials in MVP
+    // SECURITY WARNING: Credential verification is disabled in MVP
+    // TODO: Implement verifyThresholdCredential before production
+    // This allows anyone with a well-formed credential to vote
+    // Production fix: Uncomment and adapt verifyCredential
     // const isValidCredential = verifyCredential(credential, ceremonyResult.publicKey);
     // if (!isValidCredential) {
     //   return reply.status(400).send({ error: 'Invalid credential signature' });
@@ -116,9 +119,10 @@ export async function votingRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: 'Credential already used to vote' });
     }
 
-    // TODO: Verify ZK proof
-    // For MVP, we trust the proof structure
-    // In production: await verifyVoteProof(body.zkProof)
+    // SECURITY WARNING: ZK proof verification is disabled in MVP
+    // TODO: Implement verifyVoteProof using snarkjs before production
+    // This allows submission of invalid votes outside valid range
+    // Production fix: Implement and call verifyVoteProof(body.zkProof, electionPublicInputs)
 
     // Get or create vote ledger
     let ledger = voteLedgers.get(body.electionId);
@@ -160,20 +164,21 @@ export async function votingRoutes(fastify: FastifyInstance) {
   // Multi-Question Ballot Submission (Jurisdiction-based)
   // =========================================================================
 
+  // Input validation with size limits for multi-question ballots
   const BallotSubmissionSchema = z.object({
     electionId: z.string().uuid(),
     credential: z.object({
-      electionId: z.string(),
-      nullifier: z.string(),
-      message: z.string(),
-      signature: z.string(),
+      electionId: z.string().max(100),
+      nullifier: z.string().regex(/^[a-f0-9]{64}$/, 'Nullifier must be 32 bytes hex'),
+      message: z.string().max(256),
+      signature: z.string().max(1024),
     }),
     answers: z.array(z.object({
       questionId: z.string().uuid(),
-      encryptedVote: z.string(),
-      commitment: z.string(),
-      zkProof: z.string(),
-    })).min(1),
+      encryptedVote: z.string().max(10000),
+      commitment: z.string().regex(/^[a-f0-9]{64}$/, 'Commitment must be SHA-256 hash'),
+      zkProof: z.string().max(50000),
+    })).min(1).max(100), // Limit number of questions per ballot
   });
 
   /**
