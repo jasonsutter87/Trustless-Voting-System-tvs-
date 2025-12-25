@@ -16,7 +16,20 @@ export const config = {
   veilformsFormId: process.env['VEILFORMS_FORM_ID'] || '',
 
   // Encryption (for storing private keys)
-  masterKey: process.env['MASTER_KEY'] || 'dev-key-replace-in-production',
+  masterKey: (() => {
+    const key = process.env['MASTER_KEY'];
+    if (!key) {
+      if (process.env['NODE_ENV'] === 'production') {
+        throw new Error('MASTER_KEY must be set in production');
+      }
+      return 'dev-key-replace-in-production';
+    }
+    // Validate key strength (at least 32 bytes hex = 64 chars)
+    if (process.env['NODE_ENV'] === 'production' && !/^[a-f0-9]{64,}$/i.test(key)) {
+      throw new Error('MASTER_KEY must be at least 32 bytes hex in production');
+    }
+    return key;
+  })(),
 
   // Feature flags
   useDatabase: process.env['USE_DATABASE'] === 'true',
