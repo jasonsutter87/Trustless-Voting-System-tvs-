@@ -71,15 +71,17 @@ export async function registrationRoutes(fastify: FastifyInstance) {
       });
     }
 
-    // TODO: Integrate threshold signing for credentials
-    // For now, issue placeholder credential
+    // SECURITY WARNING: Placeholder signatures - NOT PRODUCTION READY
+    // TODO: Implement threshold blind signing before production
+    // Current implementation allows anyone to forge credentials
+    // Production fix: Integrate VeilSign with VeilKey threshold RSA
     const nullifier = randomBytesHex(32);
     const message = `vote:${body.electionId}:${nullifier}`;
     const credential: PlaceholderCredential = {
       electionId: body.electionId,
       nullifier,
       message,
-      signature: 'placeholder-signature', // TODO: Threshold RSA signature
+      signature: 'placeholder-signature', // INSECURE - replace with threshold signature
     };
 
     // Mark as registered
