@@ -1,9 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ChevronLeftIcon, SendIcon, LoaderIcon, AlertCircleIcon, LockIcon } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import {
+  ChevronLeft,
+  Send,
+  Loader2,
+  AlertCircle,
+  Lock,
+  ShieldCheck,
+  CheckCircle2,
+  RefreshCw,
+  Home,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +33,8 @@ import {
 } from "@/lib/actions/voting";
 import { encryptBallot } from "@/lib/encryption";
 
+type SubmitStep = "idle" | "encrypting" | "submitting" | "success" | "error";
+
 export default function ReviewPage() {
   const router = useRouter();
   const params = useParams();
@@ -26,20 +45,14 @@ export default function ReviewPage() {
   const [selections, setSelections] = useState<Record<string, string | string[]>>({});
   const [credential, setCredential] = useState<Credential | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [encryptionStatus, setEncryptionStatus] = useState("");
+  const [submitStep, setSubmitStep] = useState<SubmitStep>("idle");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    loadReviewData();
-  }, [electionId]);
-
-  const loadReviewData = async () => {
+  const loadReviewData = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
     try {
-      // Get credential and selections from sessionStorage
       const credentialString = sessionStorage.getItem("votingCredential");
       const selectionsString = sessionStorage.getItem("ballotSelections");
 
@@ -55,10 +68,11 @@ export default function ReviewPage() {
       setCredential(parsedCredential);
       setSelections(parsedSelections);
 
-      // Fetch election and ballot for display
+      const jurisdictionId = parsedCredential.jurisdictionId || "US";
+
       const [electionResult, ballotResult] = await Promise.all([
         fetchElection(electionId),
-        fetchBallot(electionId, "US"), // Default jurisdiction
+        fetchBallot(electionId, jurisdictionId),
       ]);
 
       if (!electionResult.success || !electionResult.election) {
@@ -80,28 +94,28 @@ export default function ReviewPage() {
       setError(err instanceof Error ? err.message : "Failed to load review data");
       setIsLoading(false);
     }
-  };
+  }, [electionId]);
+
+  useEffect(() => {
+    loadReviewData();
+  }, [loadReviewData]);
 
   const handleSubmitVote = async () => {
     if (!credential || !ballot || !election) return;
 
-    setIsSubmitting(true);
+    setSubmitStep("encrypting");
     setError("");
 
     try {
-      // Prepare answers array
       const answers = Object.entries(selections).map(([questionId, selection]) => ({
         questionId,
         selection,
       }));
 
-      // Encrypt ballot
-      setEncryptionStatus("Encrypting your votes...");
       const publicKey = election.publicKey || "default-public-key";
       const encryptedAnswers = await encryptBallot(answers, publicKey);
 
-      // Submit vote
-      setEncryptionStatus("Submitting your ballot...");
+      setSubmitStep("submitting");
       const result = await submitVote({
         electionId,
         credential,
@@ -110,35 +124,33 @@ export default function ReviewPage() {
 
       if (!result.success || !result.result) {
         setError(result.error || "Failed to submit vote");
-        setIsSubmitting(false);
-        setEncryptionStatus("");
+        setSubmitStep("error");
         return;
       }
 
-      // Store confirmation data and navigate to confirmation page
+      setSubmitStep("success");
       sessionStorage.setItem("voteConfirmation", JSON.stringify(result.result));
-      sessionStorage.removeItem("ballotSelections"); // Clear selections
-      router.push(`/vote/${electionId}/confirm`);
+      sessionStorage.removeItem("ballotSelections");
+
+      // Brief delay to show success before navigating
+      setTimeout(() => {
+        router.push(`/vote/${electionId}/confirm`);
+      }, 500);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit vote");
-      setIsSubmitting(false);
-      setEncryptionStatus("");
+      setSubmitStep("error");
     }
-  };
-
-  const handleGoBack = () => {
-    router.back();
   };
 
   const getCandidateName = (questionId: string, candidateId: string): string => {
     if (!ballot) return candidateId;
 
     for (const section of ballot.sections) {
-      const question = section.questions.find(q => q.id === questionId);
+      const question = section.questions.find((q) => q.id === questionId);
       if (question) {
-        const candidate = question.candidates.find(c => c.id === candidateId);
+        const candidate = question.candidates.find((c) => c.id === candidateId);
         if (candidate) {
-          return candidate.name + (candidate.party ? ` (${candidate.party})` : '');
+          return candidate.name + (candidate.party ? ` (${candidate.party})` : "");
         }
       }
     }
@@ -149,7 +161,7 @@ export default function ReviewPage() {
     if (!ballot) return questionId;
 
     for (const section of ballot.sections) {
-      const question = section.questions.find(q => q.id === questionId);
+      const question = section.questions.find((q) => q.id === questionId);
       if (question) return question.title;
     }
     return questionId;
@@ -159,38 +171,49 @@ export default function ReviewPage() {
     if (!ballot) return "";
 
     for (const section of ballot.sections) {
-      const question = section.questions.find(q => q.id === questionId);
+      const question = section.questions.find((q) => q.id === questionId);
       if (question) return section.jurisdiction.name;
     }
     return "";
   };
 
+  // Loading state
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center space-y-4">
-          <LoaderIcon className="size-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading review...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto" />
+          <p className="text-muted-foreground">Loading your selections...</p>
         </div>
       </div>
     );
   }
 
-  if (error && !isSubmitting) {
+  // Error state (not during submission)
+  if (error && submitStep === "idle") {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <Card className="max-w-md">
+      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
+        <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircleIcon className="size-5" />
-              Error
+            <CardTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              Unable to Load Review
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="mb-4">{error}</p>
-            <Button onClick={() => router.push("/")} variant="outline">
-              Return to Home
-            </Button>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">{error}</p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button onClick={loadReviewData} variant="outline" className="flex-1">
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Try Again
+              </Button>
+              <Button asChild variant="outline" className="flex-1">
+                <Link href="/">
+                  <Home className="mr-2 h-4 w-4" />
+                  Return Home
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -201,12 +224,14 @@ export default function ReviewPage() {
     return null;
   }
 
+  const isSubmitting = submitStep !== "idle" && submitStep !== "error";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-8">
-      <div className="container max-w-4xl mx-auto px-4 space-y-6">
+    <div className="container mx-auto px-4 py-6 pb-32">
+      <div className="mx-auto max-w-3xl space-y-6">
         {/* Header */}
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">Review Your Ballot</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Review Your Ballot</h1>
           <p className="text-muted-foreground">
             Please review your selections carefully before submitting.
           </p>
@@ -215,30 +240,33 @@ export default function ReviewPage() {
         {/* Selections Review */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Selections</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
+              Your Selections
+            </CardTitle>
             <CardDescription>
-              {Object.keys(selections).length} question(s) answered
+              {Object.keys(selections).length} question
+              {Object.keys(selections).length !== 1 ? "s" : ""} answered
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {Object.entries(selections).map(([questionId, selection]) => (
-              <div key={questionId} className="pb-4 border-b last:border-b-0 last:pb-0">
-                <div className="flex items-start justify-between gap-4 mb-2">
-                  <div className="flex-1">
-                    <div className="font-semibold">{getQuestionTitle(questionId)}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {getJurisdictionName(questionId)}
-                    </div>
+              <div
+                key={questionId}
+                className="border-b pb-4 last:border-b-0 last:pb-0"
+              >
+                <div className="mb-2">
+                  <div className="font-medium">{getQuestionTitle(questionId)}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {getJurisdictionName(questionId)}
                   </div>
                 </div>
-                <div className="mt-2 space-y-1">
+                <div className="flex flex-wrap gap-2">
                   {Array.isArray(selection) ? (
-                    selection.map(candidateId => (
-                      <div key={candidateId} className="flex items-center gap-2">
-                        <Badge variant="secondary">
-                          {getCandidateName(questionId, candidateId)}
-                        </Badge>
-                      </div>
+                    selection.map((candidateId) => (
+                      <Badge key={candidateId} variant="secondary">
+                        {getCandidateName(questionId, candidateId)}
+                      </Badge>
                     ))
                   ) : (
                     <Badge variant="secondary">
@@ -251,32 +279,81 @@ export default function ReviewPage() {
           </CardContent>
         </Card>
 
-        {/* Encryption Status */}
-        {isSubmitting && (
-          <Card className="border-primary">
+        {/* Submission Progress */}
+        {(submitStep === "encrypting" || submitStep === "submitting" || submitStep === "success") && (
+          <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
             <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <LoaderIcon className="size-5 animate-spin text-primary" />
-                <div className="flex-1">
-                  <div className="font-semibold">{encryptionStatus}</div>
-                  <div className="text-sm text-muted-foreground">
-                    Please wait while we securely process your ballot...
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  {submitStep === "success" ? (
+                    <CheckCircle2 className="h-6 w-6 text-green-600" />
+                  ) : (
+                    <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                  )}
+                  <div>
+                    <p className="font-medium">
+                      {submitStep === "encrypting" && "Encrypting your ballot..."}
+                      {submitStep === "submitting" && "Submitting your vote..."}
+                      {submitStep === "success" && "Vote submitted successfully!"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {submitStep === "encrypting" &&
+                        "Your votes are being encrypted in your browser"}
+                      {submitStep === "submitting" &&
+                        "Securely transmitting your encrypted ballot"}
+                      {submitStep === "success" && "Redirecting to confirmation..."}
+                    </p>
                   </div>
+                </div>
+                {/* Progress steps */}
+                <div className="flex gap-2">
+                  <div
+                    className={`h-1 flex-1 rounded-full ${
+                      submitStep === "encrypting" ||
+                      submitStep === "submitting" ||
+                      submitStep === "success"
+                        ? "bg-blue-600"
+                        : "bg-zinc-200"
+                    }`}
+                  />
+                  <div
+                    className={`h-1 flex-1 rounded-full ${
+                      submitStep === "submitting" || submitStep === "success"
+                        ? "bg-blue-600"
+                        : "bg-zinc-200"
+                    }`}
+                  />
+                  <div
+                    className={`h-1 flex-1 rounded-full ${
+                      submitStep === "success" ? "bg-green-600" : "bg-zinc-200"
+                    }`}
+                  />
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Error Display */}
-        {error && isSubmitting && (
-          <Card className="border-destructive">
+        {/* Error during submission */}
+        {submitStep === "error" && error && (
+          <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
-                <AlertCircleIcon className="size-5 text-destructive mt-0.5" />
-                <div className="flex-1">
-                  <div className="font-semibold text-destructive">Submission Failed</div>
-                  <div className="text-sm mt-1">{error}</div>
+                <AlertCircle className="mt-0.5 h-5 w-5 text-red-600" />
+                <div>
+                  <p className="font-medium text-red-800 dark:text-red-200">
+                    Submission Failed
+                  </p>
+                  <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                  <Button
+                    onClick={handleSubmitVote}
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Try Again
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -284,47 +361,65 @@ export default function ReviewPage() {
         )}
 
         {/* Security Notice */}
-        <Card className="bg-muted/50">
+        <Card className="bg-zinc-50 dark:bg-zinc-900">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
-              <LockIcon className="size-5 text-muted-foreground mt-0.5" />
-              <div className="text-sm text-muted-foreground space-y-2">
-                <p className="font-semibold text-foreground">Before you submit:</p>
-                <ul className="space-y-1 list-disc list-inside">
-                  <li>Your votes will be encrypted before submission</li>
-                  <li>Once submitted, you cannot change your vote</li>
-                  <li>You will receive a confirmation code to verify your vote later</li>
-                  <li>Your vote is anonymous and cannot be traced back to you</li>
+              <ShieldCheck className="mt-0.5 h-5 w-5 text-green-600" />
+              <div className="text-sm">
+                <p className="mb-2 font-medium">Before you submit:</p>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <Lock className="mt-0.5 h-3 w-3 shrink-0" />
+                    Your votes are encrypted before leaving your device
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Lock className="mt-0.5 h-3 w-3 shrink-0" />
+                    Once submitted, you cannot change your vote
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Lock className="mt-0.5 h-3 w-3 shrink-0" />
+                    You will receive a confirmation code to verify later
+                  </li>
                 </ul>
               </div>
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Action Buttons */}
-        <Card className="sticky bottom-4 shadow-lg">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between gap-4">
-              <Button
-                variant="outline"
-                onClick={handleGoBack}
-                disabled={isSubmitting}
-              >
-                <ChevronLeftIcon className="size-4 mr-2" />
-                Go Back to Edit
-              </Button>
-              <Button
-                size="lg"
-                onClick={handleSubmitVote}
-                disabled={isSubmitting}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                <SendIcon className="size-4 mr-2" />
-                {isSubmitting ? "Submitting..." : "Submit My Ballot"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Sticky Footer */}
+      <div className="fixed inset-x-0 bottom-0 border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-zinc-950/95 dark:supports-[backdrop-filter]:bg-zinc-950/80">
+        <div className="container mx-auto px-4 py-4">
+          <div className="mx-auto flex max-w-3xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <Button
+              variant="outline"
+              onClick={() => router.back()}
+              disabled={isSubmitting}
+              className="order-2 sm:order-1"
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Go Back to Edit
+            </Button>
+            <Button
+              size="lg"
+              onClick={handleSubmitVote}
+              disabled={isSubmitting}
+              className="order-1 bg-green-600 hover:bg-green-700 sm:order-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Submit My Ballot
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
