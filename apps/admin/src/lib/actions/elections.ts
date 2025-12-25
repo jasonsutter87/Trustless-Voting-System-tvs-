@@ -81,3 +81,28 @@ export async function getElectionResults(id: string): Promise<{
 }> {
   return apiFetch(`/api/elections/${id}/results`);
 }
+
+export async function updateElection(
+  id: string,
+  data: Partial<Pick<Election, 'name' | 'description' | 'startTime' | 'endTime'>>
+): Promise<{ election: Election }> {
+  return apiFetch(`/api/elections/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function archiveElection(id: string): Promise<{ success: boolean }> {
+  return apiFetch(`/api/elections/${id}/archive`, {
+    method: 'POST',
+  });
+}
+
+export async function getDashboardStats(): Promise<{
+  activeElections: number;
+  totalVoters: number;
+  participationRate: number;
+  recentElections: Election[];
+}> {
+  return apiFetch('/api/dashboard/stats');
+}

@@ -9,6 +9,7 @@ const navItems = [
   { name: 'Ballot', href: '/ballot' },
   { name: 'Voters', href: '/voters' },
   { name: 'Trustees', href: '/trustees' },
+  { name: 'Results', href: '/results' },
   { name: 'Settings', href: '/settings' },
   { name: 'Preview', href: '/preview' },
 ];
