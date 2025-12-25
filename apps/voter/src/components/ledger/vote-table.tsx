@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 /**
  * Vote Table Component
@@ -6,8 +6,8 @@
  * Displays votes in a paginated table with search functionality
  */
 
-import { useState, useMemo } from "react"
-import { Search, Download, Copy, Check } from "lucide-react"
+import { useState, useMemo } from "react";
+import { Search, Download, Copy, Check } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,88 +15,88 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { formatTimestamp, truncateHash, copyToClipboard } from "@/lib/utils"
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { formatTimestamp, truncateHash, copyToClipboard } from "@/lib/utils";
 
 interface Vote {
-  position: number
-  commitment: string
-  nullifier: string
-  timestamp: number
+  position: number;
+  commitment: string;
+  nullifier: string;
+  timestamp: number;
 }
 
 interface VoteTableProps {
-  votes: Vote[]
-  electionName: string
-  merkleRoot: string
+  votes: Vote[];
+  electionName: string;
+  merkleRoot: string;
 }
 
-const VOTES_PER_PAGE = 50
+const VOTES_PER_PAGE = 50;
 
 export function VoteTable({ votes, electionName, merkleRoot }: VoteTableProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   // Filter votes based on search
   const filteredVotes = useMemo(() => {
-    if (!searchTerm) return votes
+    if (!searchTerm) return votes;
 
-    const term = searchTerm.toLowerCase()
+    const term = searchTerm.toLowerCase();
     return votes.filter(
       (vote) =>
         vote.position.toString().includes(term) ||
         vote.commitment.toLowerCase().includes(term) ||
         vote.nullifier.toLowerCase().includes(term)
-    )
-  }, [votes, searchTerm])
+    );
+  }, [votes, searchTerm]);
 
   // Paginate
-  const totalPages = Math.ceil(filteredVotes.length / VOTES_PER_PAGE)
+  const totalPages = Math.ceil(filteredVotes.length / VOTES_PER_PAGE);
   const paginatedVotes = useMemo(() => {
-    const start = (currentPage - 1) * VOTES_PER_PAGE
-    return filteredVotes.slice(start, start + VOTES_PER_PAGE)
-  }, [filteredVotes, currentPage])
+    const start = (currentPage - 1) * VOTES_PER_PAGE;
+    return filteredVotes.slice(start, start + VOTES_PER_PAGE);
+  }, [filteredVotes, currentPage]);
 
   // Handle copy
   const handleCopy = async (text: string, field: string) => {
-    const success = await copyToClipboard(text)
+    const success = await copyToClipboard(text);
     if (success) {
-      setCopiedField(field)
-      setTimeout(() => setCopiedField(null), 2000)
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
     }
-  }
+  };
 
   // Export to CSV
   const exportToCSV = () => {
-    const headers = ["Position", "Commitment", "Nullifier", "Timestamp"]
+    const headers = ["Position", "Commitment", "Nullifier", "Timestamp"];
     const rows = votes.map((vote) => [
       vote.position,
       vote.commitment,
       vote.nullifier,
       new Date(vote.timestamp).toISOString(),
-    ])
+    ]);
 
     const csv = [
       headers.join(","),
       ...rows.map((row) => row.join(",")),
-    ].join("\n")
+    ].join("\n");
 
-    const blob = new Blob([csv], { type: "text/csv" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `${electionName.replace(/\s+/g, "_")}_ledger.csv`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${electionName.replace(/\s+/g, "_")}_ledger.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-4">
       {/* Controls */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -104,13 +104,13 @@ export function VoteTable({ votes, electionName, merkleRoot }: VoteTableProps) {
             placeholder="Search by position, commitment, or nullifier..."
             value={searchTerm}
             onChange={(e) => {
-              setSearchTerm(e.target.value)
-              setCurrentPage(1) // Reset to first page on search
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page on search
             }}
             className="pl-9"
           />
         </div>
-        <Button onClick={exportToCSV} variant="outline">
+        <Button onClick={exportToCSV} variant="outline" className="sm:w-auto">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
         </Button>
@@ -198,7 +198,7 @@ export function VoteTable({ votes, electionName, merkleRoot }: VoteTableProps) {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-sm text-muted-foreground">
             Page {currentPage} of {totalPages}
           </div>
@@ -224,21 +224,28 @@ export function VoteTable({ votes, electionName, merkleRoot }: VoteTableProps) {
       )}
 
       {/* Merkle Root Display */}
-      <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4 border border-blue-200 dark:border-blue-800">
+      <div className="rounded-lg bg-zinc-50 dark:bg-zinc-900 p-4 border border-zinc-200 dark:border-zinc-800">
         <div className="text-sm font-medium mb-2">Merkle Root</div>
-        <div className="flex items-center gap-2">
-          <code className="flex-1 rounded bg-white dark:bg-gray-800 px-3 py-2 text-xs break-all">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <code className="flex-1 rounded bg-white dark:bg-zinc-800 px-3 py-2 text-xs break-all">
             {merkleRoot}
           </code>
           <Button
             variant="outline"
             size="sm"
             onClick={() => handleCopy(merkleRoot, "merkle-root")}
+            className="sm:w-auto"
           >
             {copiedField === "merkle-root" ? (
-              <Check className="h-4 w-4 text-green-600" />
+              <>
+                <Check className="h-4 w-4 mr-2 text-green-600" />
+                Copied
+              </>
             ) : (
-              <Copy className="h-4 w-4" />
+              <>
+                <Copy className="h-4 w-4 mr-2" />
+                Copy
+              </>
             )}
           </Button>
         </div>
@@ -248,5 +255,5 @@ export function VoteTable({ votes, electionName, merkleRoot }: VoteTableProps) {
         </p>
       </div>
     </div>
-  )
+  );
 }
