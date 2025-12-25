@@ -30,10 +30,25 @@ export function uuid(): string {
 
 /**
  * Concatenate and hash two hex strings (for Merkle tree)
+ * Uses position-aware hashing to prevent second-preimage attacks
+ * Left and right positions are preserved, not sorted
  */
 export function hashPair(left: string, right: string): string {
-  // Sort to ensure consistent ordering
-  const sorted = left < right ? left + right : right + left;
+  // Use position-aware hashing - do NOT sort
+  // Sorting loses position information and enables second-preimage attacks
+  const concatenated = Buffer.concat([
+    Buffer.from(left, 'hex'),
+    Buffer.from(right, 'hex'),
+  ]);
+  return sha256(concatenated);
+}
+
+/**
+ * Legacy sorted hash pair - DEPRECATED, use hashPair instead
+ * @deprecated Use hashPair for secure position-aware hashing
+ */
+export function hashPairSorted(a: string, b: string): string {
+  const sorted = a < b ? a + b : b + a;
   return sha256(Buffer.from(sorted, 'hex'));
 }
 
