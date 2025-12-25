@@ -7,6 +7,7 @@
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
 import { electionRoutes } from './routes/elections.js';
 import { trusteeRoutes } from './routes/trustees.js';
 import { registrationRoutes } from './routes/registration.js';
@@ -31,6 +32,17 @@ await fastify.register(cors, {
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   maxAge: 86400,
+});
+
+// Rate limiting - prevents brute force and DoS attacks
+await fastify.register(rateLimit, {
+  max: 100, // Max 100 requests per window
+  timeWindow: '1 minute',
+  errorResponseBuilder: () => ({
+    statusCode: 429,
+    error: 'Too Many Requests',
+    message: 'Rate limit exceeded. Please try again later.',
+  }),
 });
 
 // Custom error handler - sanitize errors in production
