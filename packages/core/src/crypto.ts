@@ -54,13 +54,17 @@ export function hexToBigint(hex: string): bigint {
 
 /**
  * Constant-time comparison to prevent timing attacks
+ * Pads strings to prevent length-based timing leaks
  */
 export function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
+  // Pad to prevent length-based timing attacks
+  const maxLen = Math.max(a.length, b.length);
+  const aPadded = a.padEnd(maxLen, '\0');
+  const bPadded = b.padEnd(maxLen, '\0');
 
   let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < maxLen; i++) {
+    result |= aPadded.charCodeAt(i) ^ bPadded.charCodeAt(i);
   }
-  return result === 0;
+  return result === 0 && a.length === b.length;
 }
