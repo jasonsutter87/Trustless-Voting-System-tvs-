@@ -12,6 +12,8 @@ function createEmailProvider() {
     // Use dummy server config - we override sendVerificationRequest anyway
     server: { host: "localhost", port: 25, auth: { user: "", pass: "" } },
     from: process.env.EMAIL_FROM || "noreply@veilsuite.com",
+    // Magic link expires in 15 minutes (prevents replay attacks)
+    maxAge: 15 * 60,
     // Custom sendVerificationRequest for MVP (console logging)
     async sendVerificationRequest({ identifier: email, url, provider }) {
       const { host } = new URL(url);
