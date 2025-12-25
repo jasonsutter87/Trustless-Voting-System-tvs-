@@ -23,7 +23,24 @@ const fastify = Fastify({
 
 // Register plugins
 await fastify.register(cors, {
-  origin: true,
+  origin: process.env['ALLOWED_ORIGINS']?.split(',') || [
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400,
+});
+
+// Custom error handler - sanitize errors in production
+fastify.setErrorHandler((error, request, reply) => {
+  fastify.log.error(error);
+  const isProd = process.env['NODE_ENV'] === 'production';
+  reply.status(error.statusCode || 500).send({
+    error: isProd ? 'Internal server error' : error.message,
+    ...(isProd ? {} : { stack: error.stack }),
+  });
 });
 
 // Health check
