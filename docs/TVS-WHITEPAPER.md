@@ -1,6 +1,6 @@
 # TVS: A Trustless Voting System
 
-**Version 1.3 — December 2025**
+**Version 1.4 — December 2025**
 
 > **GitHub**: [github.com/jasonsutter87/Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-)
 
@@ -26,7 +26,8 @@ We propose a cryptographic voting system that achieves voter privacy, vote integ
 10. [What the Database Sees](#10-what-the-database-sees)
 11. [Verification and Auditability](#11-verification-and-auditability)
 12. [Threat Analysis](#12-threat-analysis)
-13. [Conclusion](#13-conclusion)
+13. [Production Scaling via VeilCloud](#13-production-scaling-via-veilcloud)
+14. [Conclusion](#14-conclusion)
 
 ---
 
@@ -97,6 +98,11 @@ TVS consists of five core components:
 │       └─────────────┴─────────────┴─────────────┴─────────────┘             │
 │                                   │                                          │
 │                           ┌───────┴───────┐                                 │
+│                           │   VeilCloud   │                                 │
+│                           │ (Infra Layer) │                                 │
+│                           └───────┬───────┘                                 │
+│                                   │                                          │
+│                           ┌───────┴───────┐                                 │
 │                           │    TVS API    │                                 │
 │                           └───────────────┘                                 │
 │                                                                              │
@@ -110,6 +116,7 @@ TVS consists of five core components:
 | **VeilChain** | Immutable vote storage | SHA-256 Merkle tree |
 | **VeilProof** | Vote validity proofs | Groth16 zk-SNARKs |
 | **VeilKey** | Distributed key management | Shamir SS + Threshold RSA |
+| **VeilCloud** | Zero-knowledge infrastructure | Client-side encryption + horizontal scaling |
 
 ---
 
@@ -524,7 +531,104 @@ External Anchoring:
 
 ---
 
-### 5.5 Product Integration Summary
+### 5.5 VeilCloud — Zero-Knowledge Cloud Infrastructure
+
+> **GitHub**: [github.com/jasonsutter87/VeilCloud](https://github.com/jasonsutter87/VeilCloud)
+
+**The Problem VeilCloud Solves:**
+
+TVS faces a fundamental scaling challenge: processing 100,000 voters currently takes ~83 minutes due to single-node Merkle tree bottlenecks. Scaling to handle 350+ million votes (U.S. national election scale) requires distributed infrastructure—but traditional cloud providers see all your data.
+
+**VeilCloud's Solution:**
+
+VeilCloud is a zero-knowledge cloud infrastructure layer designed specifically for the VeilSuite ecosystem. The core principle: **"Store secrets. Not trust."**
+
+| Feature | Description |
+|---------|-------------|
+| **Zero-Trust Storage** | Server never sees plaintext data (client-side encryption enforced) |
+| **VeilSuite Native** | Built-in integration with VeilKey, VeilChain, VeilSign |
+| **Horizontal Scaling** | Stateless API design enables Kubernetes deployment |
+| **Audit Integration** | All operations logged to VeilChain with Merkle proofs |
+| **SDK Available** | `@veilcloud/sdk` for TypeScript/JavaScript integration |
+
+**Architecture:**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           VEILCLOUD ARCHITECTURE                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                        REST API (Fastify)                               │ │
+│  │    /v1/storage   /v1/projects   /v1/teams   /v1/audit   /v1/access     │ │
+│  └───────────────────────────────┬────────────────────────────────────────┘ │
+│                                  │                                           │
+│           ┌──────────────────────┼──────────────────────┐                   │
+│           │                      │                      │                   │
+│           ▼                      ▼                      ▼                   │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐             │
+│  │  StorageService │  │  AuditService   │  │  AccessService  │             │
+│  │  (S3/MinIO)     │  │  (VeilChain)    │  │  (VeilSign)     │             │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘             │
+│           │                    │                    │                       │
+│           └────────────────────┼────────────────────┘                       │
+│                                │                                             │
+│                    ┌───────────┴───────────┐                                │
+│                    │   VeilKey (Threshold) │                                │
+│                    │   Team Cryptography   │                                │
+│                    └───────────────────────┘                                │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**How TVS Uses VeilCloud:**
+
+```typescript
+import { VeilCloudClient } from '@veilcloud/sdk';
+
+const veilcloud = new VeilCloudClient({
+  baseUrl: 'https://api.veilcloud.io',
+  credential: tvsCredential,
+  signature: tvsSignature
+});
+
+// Batch vote submission (1000 votes per API call)
+await veilcloud.storage.put(
+  `election-${electionId}`,
+  `votes-batch-${batchNumber}`,
+  {
+    data: btoa(encryptedVotesBatch),
+    metadata: JSON.stringify({
+      batchNumber: batchNumber,
+      voteCount: 1000,
+      merkleRoot: batchMerkleRoot
+    })
+  }
+);
+
+// Retrieve audit trail with Merkle proofs
+const auditTrail = await veilcloud.audit.getTrail(
+  `election-${electionId}`,
+  { action: 'blob.write', limit: 1000 }
+);
+
+// Verify proof independently
+const valid = await veilcloud.audit.verifyProof(proof);
+```
+
+**Scaling Benefits:**
+
+| Metric | Current (Direct) | With VeilCloud |
+|--------|------------------|----------------|
+| 100K voters | ~83 minutes | Target: <5 minutes |
+| Architecture | Single-node | Horizontal (K8s) |
+| Vote ingestion | Synchronous | Async (Kafka queue) |
+| Storage | PostgreSQL | S3 + Citus sharding |
+| Availability | 99.9% | 99.99% |
+
+---
+
+### 5.6 Product Integration Summary
 
 | Product | TVS Function | Problem Solved |
 |---------|--------------|----------------|
@@ -533,6 +637,7 @@ External Anchoring:
 | **VeilForms** | Client-side vote encryption | Server never sees plaintext votes |
 | **VeilChain** | Immutable vote storage | Tamper-evident, verifiable ledger |
 | **VeilProof** | Zero-knowledge vote validity | Prove validity without revealing vote |
+| **VeilCloud** | Zero-knowledge infrastructure | Horizontal scaling without trust |
 
 Together, these products ensure that **mathematical proof replaces institutional trust**.
 
@@ -1505,7 +1610,138 @@ Once anchored, any modification to votes would require:
 
 ---
 
-## 13. Conclusion
+## 13. Production Scaling via VeilCloud
+
+### 13.1 The Scaling Challenge
+
+TVS currently processes votes through a single-node architecture:
+
+```
+Current Performance (Single Node):
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  Voters      │  Registration  │  Vote Casting  │  Total Time               │
+│  ────────────┼────────────────┼────────────────┼─────────────               │
+│  10,000      │  ~1.3 min      │  ~5 min        │  ~6 min                   │
+│  50,000      │  ~6.5 min      │  ~25 min       │  ~32 min                  │
+│  100,000     │  ~13 min       │  ~70 min       │  ~83 min                  │
+│  350,000,000 │  N/A           │  N/A           │  Infeasible               │
+│                                                                              │
+│  Bottleneck: Single-node Merkle tree updates degrade O(n log n)            │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 13.2 VeilCloud as the Scaling Solution
+
+Instead of building custom scaling infrastructure, TVS becomes a **VeilCloud consumer application**, inheriting horizontal scaling automatically:
+
+```
+VeilCloud Production Architecture:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                         LOAD BALANCER                                │   │
+│  │                    (Geographic Distribution)                         │   │
+│  └────────────────────────────┬────────────────────────────────────────┘   │
+│                               │                                             │
+│          ┌────────────────────┼────────────────────┐                       │
+│          ▼                    ▼                    ▼                       │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐                 │
+│  │  VeilCloud   │    │  VeilCloud   │    │  VeilCloud   │                 │
+│  │  Instance 1  │    │  Instance 2  │    │  Instance N  │                 │
+│  │  (Region A)  │    │  (Region B)  │    │  (Region N)  │                 │
+│  └──────┬───────┘    └──────┬───────┘    └──────┬───────┘                 │
+│         │                   │                   │                          │
+│         └───────────────────┼───────────────────┘                          │
+│                             ▼                                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                     KAFKA MESSAGE QUEUE                              │   │
+│  │              (Async Vote Ingestion - 100K votes/sec)                 │   │
+│  └────────────────────────────┬────────────────────────────────────────┘   │
+│                               │                                             │
+│          ┌────────────────────┼────────────────────┐                       │
+│          ▼                    ▼                    ▼                       │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐                 │
+│  │   Worker 1   │    │   Worker 2   │    │   Worker N   │                 │
+│  │  (Merkle)    │    │  (Merkle)    │    │  (Merkle)    │                 │
+│  └──────┬───────┘    └──────┬───────┘    └──────┬───────┘                 │
+│         │                   │                   │                          │
+│         └───────────────────┼───────────────────┘                          │
+│                             ▼                                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │              POSTGRESQL CITUS (Sharded by election_id)               │   │
+│  │                    + S3/MinIO (Encrypted Blobs)                      │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 13.3 Scaling Targets
+
+| Metric | Current | With VeilCloud | Improvement |
+|--------|---------|----------------|-------------|
+| Vote throughput | ~20/sec | 100,000/sec | 5,000x |
+| 100K election | 83 min | <5 min | 16x faster |
+| Max voters | ~100K | 350M+ | 3,500x |
+| Availability | 99.9% | 99.99% | 10x uptime |
+| Geographic | Single region | Multi-region | Global |
+
+### 13.4 TVS Integration with VeilCloud
+
+TVS becomes a "thin client" that delegates infrastructure concerns to VeilCloud:
+
+**What TVS Handles (Unchanged):**
+- Voter registration UI
+- Ballot rendering
+- Client-side vote encryption (VeilForms)
+- ZK proof generation (VeilProof)
+- Results display
+
+**What VeilCloud Handles (New):**
+- Encrypted vote storage at scale
+- Merkle tree management (distributed)
+- Audit logging with VeilChain
+- Credential verification with VeilSign
+- Threshold operations with VeilKey
+
+**Migration Path:**
+
+```typescript
+// BEFORE: Direct database operations
+const vote = await db.votes.insert({
+  encrypted_vote: encryptedVote,
+  nullifier: nullifier,
+  merkle_position: await merkleTree.append(voteHash)
+});
+
+// AFTER: VeilCloud API
+const vote = await veilcloud.storage.put(
+  `election-${electionId}`,
+  `vote-${nullifier}`,
+  {
+    data: btoa(encryptedVote),
+    metadata: JSON.stringify({ nullifier, timestamp: Date.now() })
+  }
+);
+// Merkle tree update handled by VeilCloud workers
+```
+
+### 13.5 Security Preservation
+
+VeilCloud maintains all TVS security guarantees:
+
+| Property | How VeilCloud Preserves It |
+|----------|---------------------------|
+| Vote privacy | Client-side encryption; VeilCloud never sees plaintext |
+| Voter unlinkability | Blind signatures unchanged; VeilCloud sees only nullifiers |
+| Vote integrity | Merkle proofs via VeilChain audit service |
+| Threshold security | VeilKey integration for distributed decryption |
+| Verifiability | All proofs publicly verifiable via SDK |
+
+---
+
+## 14. Conclusion
 
 TVS demonstrates that it is possible to build an electronic voting system that:
 
@@ -1514,6 +1750,7 @@ TVS demonstrates that it is possible to build an electronic voting system that:
 3. **Enables verification** through zero-knowledge proofs and inclusion proofs
 4. **Minimizes trust** by ensuring no single party can compromise the election
 5. **Eliminates single points of failure** through VeilKey threshold cryptography
+6. **Scales to national elections** through VeilCloud's zero-knowledge infrastructure
 
 The system achieves these properties through careful composition of well-understood cryptographic primitives, each providing a specific security guarantee that combines to create a trustless voting system.
 
@@ -1526,8 +1763,9 @@ This represents a fundamental shift from traditional voting systems where trust 
 - **VeilChain** stores votes in a tamper-evident Merkle tree
 - **VeilProof** proves vote validity without revealing the choice
 - **VeilKey** ensures no single party can ever decrypt all votes
+- **VeilCloud** provides horizontal scaling while maintaining zero-knowledge guarantees
 
-Together, these five components create a system where mathematical proof replaces institutional trust.
+Together, these six components create a system where mathematical proof replaces institutional trust.
 
 ---
 
@@ -1585,10 +1823,11 @@ All TVS components are open source and available on GitHub:
 | **VeilSign** | Blind signatures | [github.com/jasonsutter87/VeilSign](https://github.com/jasonsutter87/VeilSign) |
 | **VeilForms** | Client-side encryption | [github.com/jasonsutter87/veilforms](https://github.com/jasonsutter87/veilforms) |
 | **VeilChain** | Merkle tree ledger | [github.com/jasonsutter87/veilchain](https://github.com/jasonsutter87/veilchain) |
+| **VeilCloud** | Zero-knowledge cloud infrastructure | [github.com/jasonsutter87/VeilCloud](https://github.com/jasonsutter87/VeilCloud) |
 
 ---
 
-*Document version: 1.3*
+*Document version: 1.4*
 *Last updated: December 2025*
 *Authors: TVS Development Team*
 
@@ -1596,6 +1835,7 @@ All TVS components are open source and available on GitHub:
 
 ## Changelog
 
+- **v1.4** (December 2025): Added VeilCloud zero-knowledge infrastructure (Section 5.5), new Production Scaling section (Section 13) with architecture diagrams and scaling targets
 - **v1.3** (December 2025): Enhanced Bitcoin anchoring protocol (Section 11.3) with two-transaction specification, added Hashcash citation
 - **v1.2** (December 2025): Added comprehensive Veil Product Suite section (Section 5) with GitHub links, detailed each product's problem/solution
 - **v1.1** (December 2025): Added VeilKey threshold cryptography (Section 6), updated all protocols to use distributed key management, added key ceremony specification
