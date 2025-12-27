@@ -183,7 +183,9 @@ export class VeilCloudStorageService {
 
     // Write each question's votes to a JSONL file
     for (const [key, questionVotes] of byQuestion) {
-      const [electionId, questionId] = key.split(':');
+      const parts = key.split(':');
+      const electionId = parts[0]!;
+      const questionId = parts[1]!;
       const jsonlPath = join(this.getQuestionPath(electionId, questionId), 'votes.jsonl');
       await this.ensureDir(jsonlPath);
 

@@ -52,9 +52,10 @@ export interface VoteResult {
   position: number;
   merkleRoot: string;
   proof: {
+    leaf: string;
+    proof: string[];
+    positions: ('left' | 'right')[];
     root: string;
-    path: string[];
-    indices: number[];
   };
 }
 
@@ -222,8 +223,8 @@ export class VoteBatchQueue {
 
       // Prepare storage and resolve promises
       for (let i = 0; i < votes.length; i++) {
-        const vote = votes[i];
-        const result = results[i];
+        const vote = votes[i]!;
+        const result = results[i]!;
 
         // Prepare VeilCloud storage
         if (veilcloud.isEnabled()) {

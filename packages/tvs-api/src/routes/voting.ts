@@ -16,6 +16,7 @@ import { config } from '../config.js';
 import { bitcoinAnchor } from '../services/bitcoin-anchor.js';
 import * as anchorsDb from '../db/anchors.js';
 import { getVeilCloudStorage, type StoredVote } from '../services/veilcloud-storage.js';
+import { getVoteBatchQueue, type VoteResult } from '../services/vote-batch-queue.js';
 
 // =============================================================================
 // SECURITY WARNING: IN-MEMORY STORAGE - MVP ONLY
@@ -209,6 +210,8 @@ export async function votingRoutes(fastify: FastifyInstance) {
    * POST /api/vote/ballot
    * Body: { electionId, credential, answers: [{ questionId, encryptedVote, commitment, zkProof }] }
    * Returns: { confirmationCode, results: [{ questionId, position, merkleRoot }] }
+   *
+   * Uses batch processing for improved throughput when batching is enabled.
    */
   fastify.post('/ballot', async (request, reply) => {
     const body = BallotSubmissionSchema.parse(request.body);
@@ -233,7 +236,7 @@ export async function votingRoutes(fastify: FastifyInstance) {
 
     // TODO: Verify credential signature with threshold public key
 
-    // Process each answer
+    const batchQueue = getVoteBatchQueue();
     const results: Array<{
       questionId: string;
       success: boolean;
@@ -242,6 +245,15 @@ export async function votingRoutes(fastify: FastifyInstance) {
       error?: string;
     }> = [];
 
+    // Collect valid votes for batch processing
+    const validVotes: Array<{
+      answer: typeof body.answers[0];
+      entry: VoteEntry;
+      ledger: VoteLedger;
+      nullifierKey: string;
+    }> = [];
+
+    // Phase 1: Validate all answers and collect valid ones
     for (const answer of body.answers) {
       // Verify question exists and belongs to this election
       const question = ballotQuestions.get(answer.questionId);
@@ -291,60 +303,98 @@ export async function votingRoutes(fastify: FastifyInstance) {
         timestamp: Date.now(),
       };
 
-      // Append to ledger
-      const { position, proof } = ledger.append(voteEntry);
-
-      // Mark nullifier as used for this question
+      // Mark nullifier as used immediately (prevent double-voting during batch)
       questionNullifiers.add(nullifierKey);
 
-      // Store to VeilCloud if enabled
-      const veilcloud = getVeilCloudStorage();
-      if (veilcloud.isEnabled()) {
-        const storedVote: StoredVote = {
-          id: voteEntry.id,
-          questionId: answer.questionId,
-          electionId: body.electionId,
-          encryptedVote: answer.encryptedVote,
-          commitment: answer.commitment,
-          zkProof: answer.zkProof,
-          nullifier: credential.nullifier,
-          timestamp: voteEntry.timestamp,
-          position,
-          merkleRoot: proof.root,
-        };
-
-        // Fire and forget - don't block on storage
-        veilcloud.storeVote(storedVote).catch(err => {
-          console.error('VeilCloud storage error:', err);
-        });
-
-        // Store nullifier
-        veilcloud.storeNullifier(body.electionId, {
-          nullifier: credential.nullifier,
-          questionId: answer.questionId,
-          timestamp: Date.now(),
-        }).catch(err => {
-          console.error('VeilCloud nullifier storage error:', err);
-        });
-
-        // Store snapshot
-        veilcloud.storeSnapshot({
-          electionId: body.electionId,
-          questionId: answer.questionId,
-          voteCount: ledger.getVoteCount(),
-          merkleRoot: proof.root,
-          lastUpdated: Date.now(),
-        }).catch(err => {
-          console.error('VeilCloud snapshot storage error:', err);
-        });
-      }
-
-      results.push({
-        questionId: answer.questionId,
-        success: true,
-        position,
-        merkleRoot: proof.root,
+      validVotes.push({
+        answer,
+        entry: voteEntry,
+        ledger,
+        nullifierKey,
       });
+    }
+
+    // Phase 2: Process valid votes through batch queue
+    if (validVotes.length > 0) {
+      // If batch queue is enabled, enqueue all votes
+      if (batchQueue.isEnabled()) {
+        // Enqueue all votes and wait for results
+        const votePromises = validVotes.map(vote =>
+          batchQueue.enqueue(
+            vote.entry,
+            vote.answer.questionId,
+            body.electionId,
+            vote.ledger
+          ).then(result => ({
+            questionId: vote.answer.questionId,
+            success: true,
+            position: result.position,
+            merkleRoot: result.merkleRoot,
+          })).catch(err => ({
+            questionId: vote.answer.questionId,
+            success: false,
+            error: err.message,
+          }))
+        );
+
+        const batchResults = await Promise.all(votePromises);
+        results.push(...batchResults);
+      } else {
+        // Process immediately (original behavior)
+        const veilcloud = getVeilCloudStorage();
+
+        for (const vote of validVotes) {
+          const { position, proof } = vote.ledger.append(vote.entry);
+
+          // Store to VeilCloud if enabled
+          if (veilcloud.isEnabled()) {
+            const storedVote: StoredVote = {
+              id: vote.entry.id,
+              questionId: vote.answer.questionId,
+              electionId: body.electionId,
+              encryptedVote: vote.answer.encryptedVote,
+              commitment: vote.answer.commitment,
+              zkProof: vote.answer.zkProof,
+              nullifier: credential.nullifier,
+              timestamp: vote.entry.timestamp,
+              position,
+              merkleRoot: proof.root,
+            };
+
+            // Fire and forget - don't block on storage
+            veilcloud.storeVote(storedVote).catch(err => {
+              console.error('VeilCloud storage error:', err);
+            });
+
+            // Store nullifier
+            veilcloud.storeNullifier(body.electionId, {
+              nullifier: credential.nullifier,
+              questionId: vote.answer.questionId,
+              timestamp: Date.now(),
+            }).catch(err => {
+              console.error('VeilCloud nullifier storage error:', err);
+            });
+
+            // Store snapshot
+            veilcloud.storeSnapshot({
+              electionId: body.electionId,
+              questionId: vote.answer.questionId,
+              voteCount: vote.ledger.getVoteCount(),
+              merkleRoot: proof.root,
+              lastUpdated: Date.now(),
+            }).catch(err => {
+              console.error('VeilCloud snapshot storage error:', err);
+            });
+          }
+
+          results.push({
+            questionId: vote.answer.questionId,
+            success: true,
+            position,
+            merkleRoot: proof.root,
+          });
+        }
+      }
     }
 
     // Generate single confirmation code for entire ballot
@@ -651,6 +701,35 @@ export async function votingRoutes(fastify: FastifyInstance) {
       received: uniqueTrustees,
       required: ceremony.requiredShares,
       result: ceremony.result,
+    };
+  });
+
+  // =========================================================================
+  // Batch Processing Stats
+  // =========================================================================
+
+  /**
+   * Get batch queue statistics
+   *
+   * GET /api/vote/batch/stats
+   */
+  fastify.get('/batch/stats', async () => {
+    const batchQueue = getVoteBatchQueue();
+    return batchQueue.getStats();
+  });
+
+  /**
+   * Drain batch queue (flush all pending votes)
+   *
+   * POST /api/vote/batch/drain
+   */
+  fastify.post('/batch/drain', async () => {
+    const batchQueue = getVoteBatchQueue();
+    await batchQueue.drain();
+    return {
+      success: true,
+      message: 'Batch queue drained',
+      stats: batchQueue.getStats(),
     };
   });
 }
