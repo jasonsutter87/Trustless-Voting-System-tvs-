@@ -32,9 +32,13 @@ baseURL = 'https://tvs.vote/'
     url = '/docs/'
     weight = 4
   [[menu.main]]
+    name = 'Milestones'
+    url = '/milestones/'
+    weight = 5
+  [[menu.main]]
     name = 'GitHub'
     url = 'https://github.com/jasonsutter87/Trustless-Voting-System-tvs-'
-    weight = 5
+    weight = 6
 
 [markup]
   [markup.highlight]

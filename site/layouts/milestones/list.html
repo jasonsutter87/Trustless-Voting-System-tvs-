@@ -1,0 +1,157 @@
+{{ define "main" }}
+<div class="container py-12">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Project Milestones</h1>
+      <p class="text-xl text-gray-600 mb-8">Tracking TVS performance, scalability, and development progress over time.</p>
+    </div>
+  </div>
+
+  <!-- All Runs Overview Chart -->
+  <div class="row mb-12">
+    <div class="col-12">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Stress Test History</h2>
+        <p class="text-gray-600 mb-6">Performance comparison across all stress test runs.</p>
+        <div style="height: 400px;">
+          <canvas id="allRunsChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="row mb-12">
+    <div class="col-12 col-md-3 mb-4">
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-4xl font-bold text-emerald-600 mb-2">252K</div>
+        <div class="text-gray-600">Max Voters Tested</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 mb-4">
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-4xl font-bold text-emerald-600 mb-2">1.26M</div>
+        <div class="text-gray-600">Encrypted Answers</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 mb-4">
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-4xl font-bold text-emerald-600 mb-2">975 MB</div>
+        <div class="text-gray-600">VeilCloud Storage</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 mb-4">
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-4xl font-bold text-emerald-600 mb-2">100%</div>
+        <div class="text-gray-600">ZK Verified</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Milestone List -->
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Individual Test Runs</h2>
+    </div>
+    {{ range .Pages.ByDate.Reverse }}
+    <div class="col-12 col-lg-6 mb-6">
+      <a href="{{ .Permalink }}" class="text-decoration-none">
+        <div class="bg-white rounded-xl shadow-sm p-6 h-100 hover:shadow-md transition-shadow">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="badge bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm">{{ .Params.testType | default "Stress Test" }}</span>
+            <span class="text-gray-500 text-sm">{{ .Date.Format "Jan 2, 2006" }}</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">{{ .Title }}</h3>
+          <p class="text-gray-600 mb-4">{{ .Description }}</p>
+          <div class="d-flex gap-4 text-sm text-gray-500">
+            {{ with .Params.voters }}<span><strong>{{ . }}</strong> voters</span>{{ end }}
+            {{ with .Params.peakSpeed }}<span><strong>{{ . }}</strong> voters/sec peak</span>{{ end }}
+            {{ with .Params.duration }}<span><strong>{{ . }}</strong></span>{{ end }}
+          </div>
+        </div>
+      </a>
+    </div>
+    {{ end }}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // All Runs Comparison Chart
+  const ctx = document.getElementById('allRunsChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['0', '25K', '50K', '75K', '100K', '125K', '150K', '175K', '200K', '225K', '250K'],
+      datasets: [
+        {
+          label: '250K Test (Dec 27) - 8GB Heap',
+          data: [null, 27, 24, 22, 21, 20, 22, 21, 21, 22, 21],
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          fill: true,
+          tension: 0.3
+        },
+        {
+          label: '186K Test (Crashed) - 4GB Heap',
+          data: [null, 900, 350, 150, 80, 50, 40, 35, null, null, null],
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          borderDash: [5, 5],
+          fill: false,
+          tension: 0.3
+        },
+        {
+          label: '100K Test (Dec 26) - FastMerkle',
+          data: [null, 250, 180, 140, 120, null, null, null, null, null, null],
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          fill: false,
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + context.parsed.y + ' voters/sec';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Voters Processed'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Throughput (voters/sec)'
+          },
+          min: 0
+        }
+      }
+    }
+  });
+});
+</script>
+{{ end }}
