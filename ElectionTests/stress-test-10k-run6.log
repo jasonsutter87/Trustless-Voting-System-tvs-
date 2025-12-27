@@ -1,28 +1,0 @@
-╔════════════════════════════════════════════════════════════════╗
-║  TVS 10,000 Voter Multi-Jurisdiction Stress Test               ║
-║  Scenario: Placer County, California - 5 Questions             ║
-╚════════════════════════════════════════════════════════════════╝
-
-1. Checking API health...
-   Status: ok
-
-2. Verifying jurisdiction hierarchy...
-   Chain: US → US-CA → US-CA-PLACER
-
-3. Creating election with 3-of-5 threshold...
-   Election ID: baece27b-5350-41b9-8e26-8b124a7546ea
-
-4. Running threshold key ceremony...
-   Key ceremony complete (35ms)
-
-5. Creating ballot questions at each jurisdiction level...
-   Federal: President of the United States
-   State: California Governor
-   State: Proposition 99: State Parks Funding
-   County: Placer County Sheriff
-   County: Measure A: Road Improvements
-
-6. Casting votes for 10,000 voters...
-   Each voter answers 5 questions = 50,000 encrypted answers
-
-   Progress: 100/10,000 (1.0%) | 746 voters/sec | ETA: 13s      Progress: 200/10,000 (2.0%) | 495 voters/sec | ETA: 20s      Progress: 300/10,000 (3.0%) | 481 voters/sec | ETA: 20s      Progress: 400/10,000 (4.0%) | 391 voters/sec | ETA: 25s      Progress: 500/10,000 (5.0%) | 317 voters/sec | ETA: 30s      Progress: 600/10,000 (6.0%) | 301 voters/sec | ETA: 31s      Progress: 700/10,000 (7.0%) | 266 voters/sec | ETA: 35s      Progress: 800/10,000 (8.0%) | 238 voters/sec | ETA: 39s      Progress: 900/10,000 (9.0%) | 212 voters/sec | ETA: 43s      Progress: 1,000/10,000 (10.0%) | 197 voters/sec | ETA: 46s      Progress: 1,100/10,000 (11.0%) | 185 voters/sec | ETA: 48s      Progress: 1,200/10,000 (12.0%) | 173 voters/sec | ETA: 51s      Progress: 1,300/10,000 (13.0%) | 163 voters/sec | ETA: 53s      Progress: 1,400/10,000 (14.0%) | 150 voters/sec | ETA: 57s      Progress: 1,500/10,000 (15.0%) | 143 voters/sec | ETA: 59s      Progress: 1,600/10,000 (16.0%) | 138 voters/sec | ETA: 61s      Progress: 1,700/10,000 (17.0%) | 129 voters/sec | ETA: 64s      Progress: 1,800/10,000 (18.0%) | 123 voters/sec | ETA: 67s      Progress: 1,900/10,000 (19.0%) | 119 voters/sec | ETA: 68s      Progress: 2,000/10,000 (20.0%) | 114 voters/sec | ETA: 70s      Progress: 2,100/10,000 (21.0%) | 109 voters/sec | ETA: 72s      Progress: 2,200/10,000 (22.0%) | 85 voters/sec | ETA: 92s      Progress: 2,300/10,000 (23.0%) | 99 voters/sec | ETA: 78s      Progress: 2,400/10,000 (24.0%) | 95 voters/sec | ETA: 80s      Progress: 2,500/10,000 (25.0%) | 89 voters/sec | ETA: 84s      Progress: 2,600/10,000 (26.0%) | 87 voters/sec | ETA: 85s      Progress: 2,700/10,000 (27.0%) | 84 voters/sec | ETA: 87s      Progress: 2,800/10,000 (28.0%) | 80 voters/sec | ETA: 90s      Progress: 2,900/10,000 (29.0%) | 79 voters/sec | ETA: 90s      Progress: 3,000/10,000 (30.0%) | 75 voters/sec | ETA: 93s      Progress: 3,100/10,000 (31.0%) | 74 voters/sec | ETA: 93s      Progress: 3,200/10,000 (32.0%) | 72 voters/sec | ETA: 94s      Progress: 3,300/10,000 (33.0%) | 70 voters/sec | ETA: 96s      Progress: 3,400/10,000 (34.0%) | 70 voters/sec | ETA: 94s      Progress: 3,500/10,000 (35.0%) | 71 voters/sec | ETA: 92s      Progress: 3,600/10,000 (36.0%) | 69 voters/sec | ETA: 93s      Progress: 3,700/10,000 (37.0%) | 67 voters/sec | ETA: 94s      Progress: 3,800/10,000 (38.0%) | 65 voters/sec | ETA: 95s      Progress: 3,900/10,000 (39.0%) | 64 voters/sec | ETA: 95s      Progress: 4,000/10,000 (40.0%) | 63 voters/sec | ETA: 95s      Progress: 4,100/10,000 (41.0%) | 61 voters/sec | ETA: 97s      Progress: 4,200/10,000 (42.0%) | 59 voters/sec | ETA: 98s      Progress: 4,300/10,000 (43.0%) | 58 voters/sec | ETA: 98s      Progress: 4,400/10,000 (44.0%) | 56 voters/sec | ETA: 100s      Progress: 4,500/10,000 (45.0%) | 53 voters/sec | ETA: 104s      Progress: 4,600/10,000 (46.0%) | 48 voters/sec | ETA: 113s      Progress: 4,700/10,000 (47.0%) | 44 voters/sec | ETA: 120s      Progress: 4,800/10,000 (48.0%) | 49 voters/sec | ETA: 106s      Progress: 4,900/10,000 (49.0%) | 49 voters/sec | ETA: 104s      Progress: 5,000/10,000 (50.0%) | 47 voters/sec | ETA: 106s      Progress: 5,100/10,000 (51.0%) | 46 voters/sec | ETA: 107s      Progress: 5,200/10,000 (52.0%) | 44 voters/sec | ETA: 109s      Progress: 5,300/10,000 (53.0%) | 43 voters/sec | ETA: 109s      Progress: 5,400/10,000 (54.0%) | 42 voters/sec | ETA: 110s      Progress: 5,500/10,000 (55.0%) | 44 voters/sec | ETA: 102s      Progress: 5,600/10,000 (56.0%) | 45 voters/sec | ETA: 98s      Progress: 5,700/10,000 (57.0%) | 42 voters/sec | ETA: 102s      Progress: 5,800/10,000 (58.0%) | 39 voters/sec | ETA: 108s      Progress: 5,900/10,000 (59.0%) | 42 voters/sec | ETA: 98s      Progress: 6,000/10,000 (60.0%) | 42 voters/sec | ETA: 95s      Progress: 6,100/10,000 (61.0%) | 41 voters/sec | ETA: 95s      Progress: 6,200/10,000 (62.0%) | 40 voters/sec | ETA: 95s      Progress: 6,300/10,000 (63.0%) | 40 voters/sec | ETA: 93s      Progress: 6,400/10,000 (64.0%) | 39 voters/sec | ETA: 92s      Progress: 6,500/10,000 (65.0%) | 37 voters/sec | ETA: 95s   

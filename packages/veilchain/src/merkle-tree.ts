@@ -94,6 +94,51 @@ export class VoteLedger {
   }
 
   /**
+   * Append multiple votes to the ledger in batch (more efficient for bulk operations)
+   * Returns results for each entry with position and proof
+   */
+  appendBatch(entries: VoteEntry[]): Array<{ position: number; proof: MerkleProof }> {
+    // Check for duplicate nullifiers within batch
+    const nullifiersInBatch = new Set<string>();
+    for (const entry of entries) {
+      if (nullifiersInBatch.has(entry.nullifier)) {
+        throw new Error(`Duplicate nullifier in batch: ${entry.nullifier}`);
+      }
+      nullifiersInBatch.add(entry.nullifier);
+    }
+
+    // Check for duplicates against existing entries
+    for (const entry of entries) {
+      const existing = this.entries.find(e => e.nullifier === entry.nullifier);
+      if (existing) {
+        throw new Error('Duplicate nullifier - vote already cast with this credential');
+      }
+    }
+
+    // Hash all entries
+    const hashes = entries.map(entry => this.hashEntry(entry));
+
+    // Record start position
+    const startPosition = this.entries.length;
+
+    // Append all entries
+    this.entries.push(...entries);
+
+    // Batch append to tree
+    this.tree.appendBatch(hashes);
+
+    // Generate proofs for each entry
+    const results: Array<{ position: number; proof: MerkleProof }> = [];
+    for (let i = 0; i < entries.length; i++) {
+      const position = startPosition + i;
+      const proof = this.getProof(position);
+      results.push({ position, proof });
+    }
+
+    return results;
+  }
+
+  /**
    * Get inclusion proof for a vote at given position
    */
   getProof(position: number): MerkleProof {

@@ -143,7 +143,7 @@ export class VeilCloudStorageService {
   }
 
   /**
-   * Store multiple votes in batch
+   * Store multiple votes in batch (legacy - individual files)
    */
   async storeVotesBatch(votes: StoredVote[]): Promise<void> {
     if (!this.enabled || votes.length === 0) return;
@@ -162,6 +162,57 @@ export class VeilCloudStorageService {
       for (const vote of questionVotes) {
         await this.storeVote(vote);
       }
+    }
+  }
+
+  /**
+   * Store multiple votes using streaming JSONL format (much faster)
+   * Appends to a single votes.jsonl file per question
+   */
+  async storeVotesBatchStream(votes: StoredVote[]): Promise<void> {
+    if (!this.enabled || votes.length === 0) return;
+
+    // Group by question for efficient writing
+    const byQuestion = new Map<string, StoredVote[]>();
+    for (const vote of votes) {
+      const key = `${vote.electionId}:${vote.questionId}`;
+      const list = byQuestion.get(key) || [];
+      list.push(vote);
+      byQuestion.set(key, list);
+    }
+
+    // Write each question's votes to a JSONL file
+    for (const [key, questionVotes] of byQuestion) {
+      const [electionId, questionId] = key.split(':');
+      const jsonlPath = join(this.getQuestionPath(electionId, questionId), 'votes.jsonl');
+      await this.ensureDir(jsonlPath);
+
+      // Build JSONL content (one JSON object per line)
+      const lines = questionVotes.map(vote => JSON.stringify(vote)).join('\n') + '\n';
+
+      // Append to file
+      await fs.appendFile(jsonlPath, lines);
+    }
+  }
+
+  /**
+   * Load votes from JSONL format
+   */
+  async loadVotesStream(electionId: string, questionId: string): Promise<StoredVote[]> {
+    if (!this.enabled) return [];
+
+    const jsonlPath = join(this.getQuestionPath(electionId, questionId), 'votes.jsonl');
+
+    try {
+      const content = await fs.readFile(jsonlPath, 'utf-8');
+      const lines = content.trim().split('\n').filter(line => line.length > 0);
+      return lines.map(line => JSON.parse(line));
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        // Fall back to individual files
+        return this.loadVotes(electionId, questionId);
+      }
+      throw error;
     }
   }
 
@@ -234,6 +285,44 @@ export class VeilCloudStorageService {
 
     // Write back
     await fs.writeFile(nullifiersPath, JSON.stringify(nullifiers, null, 2));
+  }
+
+  /**
+   * Store multiple nullifiers in batch using JSONL append
+   */
+  async storeNullifiersBatch(electionId: string, nullifiers: StoredNullifier[]): Promise<void> {
+    if (!this.enabled || nullifiers.length === 0) return;
+
+    const nullifiersJsonlPath = join(this.getElectionPath(electionId), 'nullifiers.jsonl');
+    await this.ensureDir(nullifiersJsonlPath);
+
+    // Build JSONL content
+    const lines = nullifiers.map(n => JSON.stringify(n)).join('\n') + '\n';
+
+    // Append to file
+    await fs.appendFile(nullifiersJsonlPath, lines);
+  }
+
+  /**
+   * Load nullifiers from JSONL format
+   */
+  async loadNullifiersStream(electionId: string): Promise<Set<string>> {
+    if (!this.enabled) return new Set();
+
+    const nullifiersJsonlPath = join(this.getElectionPath(electionId), 'nullifiers.jsonl');
+
+    try {
+      const content = await fs.readFile(nullifiersJsonlPath, 'utf-8');
+      const lines = content.trim().split('\n').filter(line => line.length > 0);
+      const nullifiers: StoredNullifier[] = lines.map(line => JSON.parse(line));
+      return new Set(nullifiers.map(n => `${n.questionId}:${n.nullifier}`));
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        // Fall back to JSON format
+        return this.loadNullifiers(electionId);
+      }
+      throw error;
+    }
   }
 
   /**
