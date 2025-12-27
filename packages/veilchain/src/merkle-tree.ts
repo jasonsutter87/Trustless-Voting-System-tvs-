@@ -6,6 +6,7 @@
  */
 
 import {
+  FastMerkleTree,
   MerkleTree,
   sha256 as veilchainSha256,
   type MerkleProof as VeilChainProof,
@@ -44,15 +45,17 @@ export interface LedgerSnapshot {
 /**
  * Vote Ledger - append-only Merkle tree for vote storage
  * Wraps @veilchain/core for TVS-specific functionality
+ *
+ * Uses FastMerkleTree for O(log n) appends instead of O(n)
  */
 export class VoteLedger {
   private entries: VoteEntry[] = [];
-  private tree: MerkleTree;
+  private tree: FastMerkleTree;
   private electionId: string;
 
   constructor(electionId: string) {
     this.electionId = electionId;
-    this.tree = new MerkleTree();
+    this.tree = new FastMerkleTree();
   }
 
   /**
@@ -128,7 +131,7 @@ export class VoteLedger {
       root: proof.root,
     };
 
-    return MerkleTree.verify(veilchainProof);
+    return FastMerkleTree.verify(veilchainProof);
   }
 
   /**
@@ -177,12 +180,13 @@ export class VoteLedger {
    */
   import(entries: VoteEntry[]): void {
     this.entries = [];
-    this.tree = new MerkleTree();
+    this.tree = new FastMerkleTree();
 
-    for (const entry of entries) {
-      this.entries.push(entry);
-      const hash = this.hashEntry(entry);
-      this.tree.append(hash);
+    // Use batch append for efficiency
+    const hashes = entries.map(entry => this.hashEntry(entry));
+    this.entries = [...entries];
+    if (hashes.length > 0) {
+      this.tree.appendBatch(hashes);
     }
   }
 }

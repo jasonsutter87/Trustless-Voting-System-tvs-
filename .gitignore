@@ -39,3 +39,6 @@ packages/veilproof/build/
 # Database
 *.sqlite
 *.db
+
+# VeilCloud test storage (contains generated vote data)
+ElectionTests/veilcloud/

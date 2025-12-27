@@ -15,6 +15,7 @@ import { ballotQuestions } from './ballot.js';
 import { config } from '../config.js';
 import { bitcoinAnchor } from '../services/bitcoin-anchor.js';
 import * as anchorsDb from '../db/anchors.js';
+import { getVeilCloudStorage, type StoredVote } from '../services/veilcloud-storage.js';
 
 // =============================================================================
 // SECURITY WARNING: IN-MEMORY STORAGE - MVP ONLY
@@ -295,6 +296,48 @@ export async function votingRoutes(fastify: FastifyInstance) {
 
       // Mark nullifier as used for this question
       questionNullifiers.add(nullifierKey);
+
+      // Store to VeilCloud if enabled
+      const veilcloud = getVeilCloudStorage();
+      if (veilcloud.isEnabled()) {
+        const storedVote: StoredVote = {
+          id: voteEntry.id,
+          questionId: answer.questionId,
+          electionId: body.electionId,
+          encryptedVote: answer.encryptedVote,
+          commitment: answer.commitment,
+          zkProof: answer.zkProof,
+          nullifier: credential.nullifier,
+          timestamp: voteEntry.timestamp,
+          position,
+          merkleRoot: proof.root,
+        };
+
+        // Fire and forget - don't block on storage
+        veilcloud.storeVote(storedVote).catch(err => {
+          console.error('VeilCloud storage error:', err);
+        });
+
+        // Store nullifier
+        veilcloud.storeNullifier(body.electionId, {
+          nullifier: credential.nullifier,
+          questionId: answer.questionId,
+          timestamp: Date.now(),
+        }).catch(err => {
+          console.error('VeilCloud nullifier storage error:', err);
+        });
+
+        // Store snapshot
+        veilcloud.storeSnapshot({
+          electionId: body.electionId,
+          questionId: answer.questionId,
+          voteCount: ledger.getVoteCount(),
+          merkleRoot: proof.root,
+          lastUpdated: Date.now(),
+        }).catch(err => {
+          console.error('VeilCloud snapshot storage error:', err);
+        });
+      }
 
       results.push({
         questionId: answer.questionId,

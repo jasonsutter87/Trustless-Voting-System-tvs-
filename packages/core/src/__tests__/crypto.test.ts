@@ -9,7 +9,7 @@ import {
   bigintToHex,
   hexToBigint,
   constantTimeEqual,
-} from '../crypto';
+} from '../crypto.js';
 
 describe('sha256', () => {
   it('should hash a string correctly', () => {

@@ -1,22 +1,57 @@
 #!/usr/bin/env npx tsx
 /**
- * 10,000 Voter Multi-Jurisdiction Ballot Stress Test
+ * TVS Multi-Jurisdiction Ballot Stress Test
  *
  * Tests the hierarchical jurisdiction system at scale:
- * - 10,000 Placer County voters
+ * - Configurable voter count (default: 100,000)
  * - 5 questions across 3 jurisdiction levels (Federal, State, County)
- * - 50,000 total encrypted answers
- * - Per-question Merkle trees
+ * - Per-question Merkle trees with O(log n) FastMerkleTree
  * - Throughput degradation tracking
+ * - VeilCloud storage integration
  *
- * Usage: npx tsx scripts/test-10k-placer-ballot.ts
+ * Usage: npx tsx scripts/test-10k-placer-ballot.ts [voter_count]
  */
 
 import { randomBytes, createHash } from 'crypto';
+import { execSync } from 'child_process';
+import { hostname, platform, arch, cpus } from 'os';
 
 const API_BASE = 'http://localhost:3000';
-const VOTER_COUNT = 10000;
-const BATCH_SIZE = 100; // Report progress every N voters
+const VOTER_COUNT = parseInt(process.argv[2] || '100000');
+const BATCH_SIZE = VOTER_COUNT >= 10000 ? 1000 : 100; // Report progress every N voters
+
+function getSystemInfo(): { machine: string; os: string; cpu: string } {
+  const cpuModel = cpus()[0]?.model || 'Unknown CPU';
+  const osInfo = `${platform()} ${arch()}`;
+  return {
+    machine: hostname(),
+    os: osInfo,
+    cpu: cpuModel,
+  };
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+}
+
+function formatDuration(ms: number): string {
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  if (hours > 0) {
+    return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+  } else if (minutes > 0) {
+    return `${minutes}m ${seconds % 60}s`;
+  }
+  return `${seconds}s`;
+}
 
 function sha256(data: string): string {
   return createHash('sha256').update(data).digest('hex');
@@ -53,11 +88,20 @@ interface DegradationPoint {
 
 async function main() {
   const testStart = Date.now();
+  const testDate = new Date();
+  const sysInfo = getSystemInfo();
+  const scriptPath = 'scripts/test-10k-placer-ballot.ts';
 
-  console.log('╔════════════════════════════════════════════════════════════════╗');
-  console.log('║  TVS 10,000 Voter Multi-Jurisdiction Stress Test               ║');
-  console.log('║  Scenario: Placer County, California - 5 Questions             ║');
-  console.log('╚════════════════════════════════════════════════════════════════╝');
+  // Markdown header
+  console.log(`# TVS ${VOTER_COUNT.toLocaleString()} Voter Multi-Jurisdiction Stress Test`);
+  console.log();
+  console.log(`**Test Date:** ${formatDate(testDate)}`);
+  console.log(`**Test Machine:** ${sysInfo.machine}`);
+  console.log(`**CPU:** ${sysInfo.cpu}`);
+  console.log(`**OS:** ${sysInfo.os}`);
+  console.log(`**Test Script:** \`${scriptPath}\``);
+  console.log();
+  console.log('---');
   console.log();
 
   // Load VeilKey dynamically
@@ -261,9 +305,11 @@ async function main() {
   for (let i = 1; i <= VOTER_COUNT; i++) {
     try {
       // Create credential for this voter
+      // Nullifier must be 32 bytes hex (64 chars)
+      const nullifier = sha256(`voter-placer-${i}-${Date.now()}-${randomBytes(8).toString('hex')}`);
       const credential = {
         electionId,
-        nullifier: `voter-placer-${i}-${Date.now()}`,
+        nullifier,
         message: 'authorized voter',
         signature: 'mock-signature',
       };
@@ -357,11 +403,15 @@ async function main() {
   console.log('8. Per-Question Merkle Trees:');
   console.log();
 
-  for (const q of questions) {
-    const stats = await api(`/api/vote/question/${q.question.id}/stats`);
-    console.log(`   ${stats.questionTitle}:`);
-    console.log(`      Votes: ${stats.voteCount.toLocaleString()}`);
-    console.log(`      Merkle root: ${stats.merkleRoot?.substring(0, 24)}...`);
+  try {
+    for (const q of questions) {
+      const stats = await api(`/api/vote/question/${q.question.id}/stats`);
+      console.log(`   ${stats.questionTitle}:`);
+      console.log(`      Votes: ${stats.voteCount.toLocaleString()}`);
+      console.log(`      Merkle root: ${stats.merkleRoot?.substring(0, 24)}...`);
+    }
+  } catch (e) {
+    console.log('   (Merkle stats unavailable - rate limited)');
   }
   console.log();
 
@@ -387,41 +437,68 @@ async function main() {
 
   // Final summary
   const totalTime = (Date.now() - testStart) / 1000;
+  const totalTimeFormatted = formatDuration(Date.now() - testStart);
   const avgThroughput = (successCount / votingTime).toFixed(1);
 
-  console.log('═'.repeat(64));
-  console.log('TEST COMPLETE');
-  console.log('═'.repeat(64));
+  console.log('---');
   console.log();
-  console.log('Summary:');
-  console.log(`   Election: ${electionRes.election.name}`);
-  console.log(`   Jurisdiction: Placer County, California`);
-  console.log(`   Hierarchy: Federal → State → County`);
+  console.log('## Executive Summary');
   console.log();
-  console.log('Ballot Structure:');
-  console.log('   • 1 Federal question (President)');
-  console.log('   • 2 State questions (Governor, Prop 99)');
-  console.log('   • 2 County questions (Sheriff, Measure A)');
-  console.log('   • 5 questions total per ballot');
+  console.log(`Successfully processed **${successCount.toLocaleString()} voters** casting **${(successCount * 5).toLocaleString()} encrypted answers** across 5 questions spanning 3 jurisdiction levels (Federal, State, County) with **${((successCount / VOTER_COUNT) * 100).toFixed(2)}% success rate** in **${totalTimeFormatted}**.`);
   console.log();
-  console.log('Scale:');
-  console.log(`   • Voters: ${VOTER_COUNT.toLocaleString()}`);
-  console.log(`   • Encrypted answers: ${(VOTER_COUNT * 5).toLocaleString()}`);
-  console.log(`   • Merkle trees: 5 (one per question)`);
+  console.log('---');
   console.log();
-  console.log('Performance:');
-  console.log(`   • Key ceremony: ${ceremonyTime}ms`);
-  console.log(`   • Voting phase: ${votingTime.toFixed(1)}s`);
-  console.log(`   • Avg throughput: ${avgThroughput} voters/sec`);
-  console.log(`   • Peak throughput: ${firstTput} voters/sec`);
-  console.log(`   • Final throughput: ${lastTput} voters/sec`);
-  console.log(`   • Degradation: ${degradationPct}%`);
-  console.log(`   • Total time: ${totalTime.toFixed(1)}s`);
+  console.log('## Test Configuration');
   console.log();
-  console.log('Success Rate:');
-  console.log(`   • Succeeded: ${successCount.toLocaleString()}`);
-  console.log(`   • Failed: ${failCount}`);
-  console.log(`   • Rate: ${((successCount / VOTER_COUNT) * 100).toFixed(2)}%`);
+  console.log('| Parameter | Value |');
+  console.log('|-----------|-------|');
+  console.log(`| Total Voters | ${VOTER_COUNT.toLocaleString()} |`);
+  console.log('| Questions per Ballot | 5 |');
+  console.log(`| Total Encrypted Answers | ${(VOTER_COUNT * 5).toLocaleString()} |`);
+  console.log('| Jurisdiction Levels | 3 (Federal, State, County) |');
+  console.log('| Merkle Trees | 5 (one per question) |');
+  console.log('| Threshold Scheme | 3-of-5 Feldman VSS |');
+  console.log('| Merkle Algorithm | FastMerkleTree O(log n) |');
+  console.log('| Storage | VeilCloud (local filesystem) |');
+  console.log();
+  console.log('### Jurisdiction Hierarchy');
+  console.log();
+  console.log('```');
+  console.log('United States (Federal, Level 0)');
+  console.log('    └── California (State, Level 1)');
+  console.log('            └── Placer County (County, Level 2)');
+  console.log('```');
+  console.log();
+  console.log('---');
+  console.log();
+  console.log('## Performance Results');
+  console.log();
+  console.log('| Metric | Value |');
+  console.log('|--------|-------|');
+  console.log(`| **Total Time** | **${totalTimeFormatted}** |`);
+  console.log(`| Voting Phase | ${votingTime.toFixed(1)}s |`);
+  console.log(`| Key Ceremony | ${ceremonyTime}ms |`);
+  console.log(`| Avg Throughput | ${avgThroughput} voters/sec |`);
+  console.log(`| Peak Throughput | ${firstTput} voters/sec |`);
+  console.log(`| Final Throughput | ${lastTput} voters/sec |`);
+  console.log(`| Degradation | ${degradationPct}% |`);
+  console.log();
+  console.log('---');
+  console.log();
+  console.log('## Success Metrics');
+  console.log();
+  console.log('| Metric | Value |');
+  console.log('|--------|-------|');
+  console.log(`| Voters Processed | ${successCount.toLocaleString()} |`);
+  console.log(`| Answers Recorded | ${(successCount * 5).toLocaleString()} |`);
+  console.log(`| Failed Submissions | ${failCount} |`);
+  console.log(`| **Success Rate** | **${((successCount / VOTER_COUNT) * 100).toFixed(2)}%** |`);
+  console.log();
+  console.log('---');
+  console.log();
+  console.log(`*Generated: ${formatDate(new Date())}*`);
+  console.log(`*Test Duration: ${totalTimeFormatted}*`);
+  console.log(`*Script: ${scriptPath}*`);
   console.log();
 }
 

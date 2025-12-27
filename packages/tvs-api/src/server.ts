@@ -35,15 +35,18 @@ await fastify.register(cors, {
 });
 
 // Rate limiting - prevents brute force and DoS attacks
-await fastify.register(rateLimit, {
-  max: 100, // Max 100 requests per window
-  timeWindow: '1 minute',
-  errorResponseBuilder: () => ({
-    statusCode: 429,
-    error: 'Too Many Requests',
-    message: 'Rate limit exceeded. Please try again later.',
-  }),
-});
+// Can be disabled with DISABLE_RATE_LIMIT=true for stress testing
+if (process.env['DISABLE_RATE_LIMIT'] !== 'true') {
+  await fastify.register(rateLimit, {
+    max: 100, // Max 100 requests per window
+    timeWindow: '1 minute',
+    errorResponseBuilder: () => ({
+      statusCode: 429,
+      error: 'Too Many Requests',
+      message: 'Rate limit exceeded. Please try again later.',
+    }),
+  });
+}
 
 // Custom error handler - sanitize errors in production
 fastify.setErrorHandler((error, request, reply) => {
