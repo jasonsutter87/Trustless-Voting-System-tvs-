@@ -1,0 +1,209 @@
+╔════════════════════════════════════════════════════════════════╗
+║  TVS 10,000 Voter Multi-Jurisdiction Stress Test               ║
+║  Scenario: Placer County, California - 5 Questions             ║
+╚════════════════════════════════════════════════════════════════╝
+
+1. Checking API health...
+   Status: ok
+
+2. Verifying jurisdiction hierarchy...
+   Chain: US → US-CA → US-CA-PLACER
+
+3. Creating election with 3-of-5 threshold...
+   Election ID: 253e8f93-e702-4d1a-86f6-0b278425a4b4
+
+4. Running threshold key ceremony...
+   Key ceremony complete (36ms)
+
+5. Creating ballot questions at each jurisdiction level...
+   Federal: President of the United States
+   State: California Governor
+   State: Proposition 99: State Parks Funding
+   County: Placer County Sheriff
+   County: Measure A: Road Improvements
+
+6. Casting votes for 100,000 voters...
+   Each voter answers 5 questions = 500,000 encrypted answers
+
+   Progress: 1,000/100,000 (1.0%) | 1081 voters/sec | ETA: 92s      Progress: 2,000/100,000 (2.0%) | 1274 voters/sec | ETA: 77s      Progress: 3,000/100,000 (3.0%) | 1199 voters/sec | ETA: 81s      Progress: 4,000/100,000 (4.0%) | 1230 voters/sec | ETA: 78s      Progress: 5,000/100,000 (5.0%) | 1151 voters/sec | ETA: 83s      Progress: 6,000/100,000 (6.0%) | 806 voters/sec | ETA: 117s      Progress: 7,000/100,000 (7.0%) | 1011 voters/sec | ETA: 92s      Progress: 8,000/100,000 (8.0%) | 981 voters/sec | ETA: 94s      Progress: 9,000/100,000 (9.0%) | 902 voters/sec | ETA: 101s      Progress: 10,000/100,000 (10.0%) | 858 voters/sec | ETA: 105s      Progress: 11,000/100,000 (11.0%) | 792 voters/sec | ETA: 112s      Progress: 12,000/100,000 (12.0%) | 743 voters/sec | ETA: 118s      Progress: 13,000/100,000 (13.0%) | 694 voters/sec | ETA: 125s      Progress: 14,000/100,000 (14.0%) | 649 voters/sec | ETA: 133s      Progress: 15,000/100,000 (15.0%) | 609 voters/sec | ETA: 140s      Progress: 16,000/100,000 (16.0%) | 573 voters/sec | ETA: 147s      Progress: 17,000/100,000 (17.0%) | 537 voters/sec | ETA: 155s      Progress: 18,000/100,000 (18.0%) | 441 voters/sec | ETA: 186s      Progress: 19,000/100,000 (19.0%) | 474 voters/sec | ETA: 171s      Progress: 20,000/100,000 (20.0%) | 455 voters/sec | ETA: 176s      Progress: 21,000/100,000 (21.0%) | 425 voters/sec | ETA: 186s      Progress: 22,000/100,000 (22.0%) | 410 voters/sec | ETA: 190s      Progress: 23,000/100,000 (23.0%) | 399 voters/sec | ETA: 193s      Progress: 24,000/100,000 (24.0%) | 367 voters/sec | ETA: 207s      Progress: 25,000/100,000 (25.0%) | 326 voters/sec | ETA: 230s      Progress: 26,000/100,000 (26.0%) | 340 voters/sec | ETA: 218s      Progress: 27,000/100,000 (27.0%) | 329 voters/sec | ETA: 222s      Progress: 28,000/100,000 (28.0%) | 318 voters/sec | ETA: 226s      Progress: 29,000/100,000 (29.0%) | 306 voters/sec | ETA: 232s      Progress: 30,000/100,000 (30.0%) | 292 voters/sec | ETA: 240s      Progress: 31,000/100,000 (31.0%) | 288 voters/sec | ETA: 240s      Progress: 32,000/100,000 (32.0%) | 274 voters/sec | ETA: 248s      Progress: 33,000/100,000 (33.0%) | 258 voters/sec | ETA: 260s      Progress: 34,000/100,000 (34.0%) | 254 voters/sec | ETA: 260s      Progress: 35,000/100,000 (35.0%) | 242 voters/sec | ETA: 269s      Progress: 36,000/100,000 (36.0%) | 236 voters/sec | ETA: 271s      Progress: 37,000/100,000 (37.0%) | 225 voters/sec | ETA: 280s      Progress: 38,000/100,000 (38.0%) | 190 voters/sec | ETA: 326s      Progress: 39,000/100,000 (39.0%) | 182 voters/sec | ETA: 335s      Progress: 40,000/100,000 (40.0%) | 173 voters/sec | ETA: 347s      Progress: 41,000/100,000 (41.0%) | 178 voters/sec | ETA: 331s      Progress: 42,000/100,000 (42.0%) | 172 voters/sec | ETA: 337s      Progress: 43,000/100,000 (43.0%) | 166 voters/sec | ETA: 343s      Progress: 44,000/100,000 (44.0%) | 163 voters/sec | ETA: 344s      Progress: 45,000/100,000 (45.0%) | 158 voters/sec | ETA: 348s      Progress: 46,000/100,000 (46.0%) | 155 voters/sec | ETA: 348s      Progress: 47,000/100,000 (47.0%) | 149 voters/sec | ETA: 356s      Progress: 48,000/100,000 (48.0%) | 145 voters/sec | ETA: 359s      Progress: 49,000/100,000 (49.0%) | 142 voters/sec | ETA: 359s      Progress: 50,000/100,000 (50.0%) | 134 voters/sec | ETA: 373s      Progress: 51,000/100,000 (51.0%) | 127 voters/sec | ETA: 386s      Progress: 52,000/100,000 (52.0%) | 125 voters/sec | ETA: 384s      Progress: 53,000/100,000 (53.0%) | 124 voters/sec | ETA: 379s      Progress: 54,000/100,000 (54.0%) | 121 voters/sec | ETA: 380s      Progress: 55,000/100,000 (55.0%) | 121 voters/sec | ETA: 372s      Progress: 56,000/100,000 (56.0%) | 110 voters/sec | ETA: 400s      Progress: 57,000/100,000 (57.0%) | 112 voters/sec | ETA: 384s      Progress: 58,000/100,000 (58.0%) | 108 voters/sec | ETA: 389s      Progress: 59,000/100,000 (59.0%) | 109 voters/sec | ETA: 376s      Progress: 60,000/100,000 (60.0%) | 103 voters/sec | ETA: 388s      Progress: 61,000/100,000 (61.0%) | 105 voters/sec | ETA: 371s      Progress: 62,000/100,000 (62.0%) | 104 voters/sec | ETA: 365s      Progress: 63,000/100,000 (63.0%) | 102 voters/sec | ETA: 363s      Progress: 64,000/100,000 (64.0%) | 100 voters/sec | ETA: 360s      Progress: 65,000/100,000 (65.0%) | 98 voters/sec | ETA: 357s      Progress: 66,000/100,000 (66.0%) | 94 voters/sec | ETA: 362s      Progress: 67,000/100,000 (67.0%) | 94 voters/sec | ETA: 351s      Progress: 68,000/100,000 (68.0%) | 81 voters/sec | ETA: 395s      Progress: 69,000/100,000 (69.0%) | 79 voters/sec | ETA: 392s      Progress: 70,000/100,000 (70.0%) | 78 voters/sec | ETA: 385s      Progress: 71,000/100,000 (71.0%) | 84 voters/sec | ETA: 345s      Progress: 72,000/100,000 (72.0%) | 86 voters/sec | ETA: 326s      Progress: 73,000/100,000 (73.0%) | 86 voters/sec | ETA: 314s      Progress: 74,000/100,000 (74.0%) | 86 voters/sec | ETA: 302s      Progress: 75,000/100,000 (75.0%) | 83 voters/sec | ETA: 301s      Progress: 76,000/100,000 (76.0%) | 79 voters/sec | ETA: 304s      Progress: 77,000/100,000 (77.0%) | 81 voters/sec | ETA: 284s      Progress: 78,000/100,000 (78.0%) | 80 voters/sec | ETA: 275s      Progress: 79,000/100,000 (79.0%) | 78 voters/sec | ETA: 269s      Progress: 80,000/100,000 (80.0%) | 77 voters/sec | ETA: 260s      Progress: 81,000/100,000 (81.0%) | 67 voters/sec | ETA: 284s      Progress: 82,000/100,000 (82.0%) | 72 voters/sec | ETA: 250s      Progress: 83,000/100,000 (83.0%) | 71 voters/sec | ETA: 239s      Progress: 84,000/100,000 (84.0%) | 73 voters/sec | ETA: 219s      Progress: 85,000/100,000 (85.0%) | 71 voters/sec | ETA: 211s      Progress: 86,000/100,000 (86.0%) | 73 voters/sec | ETA: 192s      Progress: 87,000/100,000 (87.0%) | 72 voters/sec | ETA: 181s      Progress: 88,000/100,000 (88.0%) | 71 voters/sec | ETA: 169s      Progress: 89,000/100,000 (89.0%) | 70 voters/sec | ETA: 157s      Progress: 90,000/100,000 (90.0%) | 65 voters/sec | ETA: 154s      Progress: 91,000/100,000 (91.0%) | 64 voters/sec | ETA: 141s      Progress: 92,000/100,000 (92.0%) | 67 voters/sec | ETA: 119s      Progress: 93,000/100,000 (93.0%) | 68 voters/sec | ETA: 103s      Progress: 94,000/100,000 (94.0%) | 60 voters/sec | ETA: 100s      Progress: 95,000/100,000 (95.0%) | 64 voters/sec | ETA: 78s      Progress: 96,000/100,000 (96.0%) | 65 voters/sec | ETA: 62s      Progress: 97,000/100,000 (97.0%) | 65 voters/sec | ETA: 46s      Progress: 98,000/100,000 (98.0%) | 63 voters/sec | ETA: 32s      Progress: 99,000/100,000 (99.0%) | 62 voters/sec | ETA: 16s      Progress: 100,000/100,000 (100.0%) | 64 voters/sec | ETA: 0s   
+
+7. Voting Results:
+
+   President of the United States:
+      Carol Chen: 33,452 (33.5%) ███████
+      Bob Brown: 33,435 (33.4%) ███████
+      Alice Adams: 33,113 (33.1%) ███████
+
+   California Governor:
+      Edward Evans: 50,084 (50.1%) ██████████
+      Diana Davis: 49,916 (49.9%) ██████████
+
+   Proposition 99: State Parks Funding:
+      Yes: 50,336 (50.3%) ██████████
+      No: 49,664 (49.7%) ██████████
+
+   Placer County Sheriff:
+      Frank Foster: 50,084 (50.1%) ██████████
+      Grace Garcia: 49,916 (49.9%) ██████████
+
+   Measure A: Road Improvements:
+      No: 50,099 (50.1%) ██████████
+      Yes: 49,901 (49.9%) ██████████
+
+8. Per-Question Merkle Trees:
+
+   President of the United States:
+      Votes: 100,000
+      Merkle root: 06918382fa297ac22f8c90b9...
+   California Governor:
+      Votes: 100,000
+      Merkle root: 95dd07ba629200d65e8cc6bb...
+   Proposition 99: State Parks Funding:
+      Votes: 100,000
+      Merkle root: 69306f0221c10248b78f1491...
+   Placer County Sheriff:
+      Votes: 100,000
+      Merkle root: 2ed0a43d8021e26cecd6d241...
+   Measure A: Road Improvements:
+      Votes: 100,000
+      Merkle root: 8bd9a1e3c2d86d8a62e8b780...
+
+9. Throughput Degradation Curve:
+
+   Voters     Throughput    Cumulative     Batch
+   ──────────────────────────────────────────────
+      1000    1081/sec        0.9s     925ms
+      2000    1274/sec        1.7s     785ms
+      3000    1199/sec        2.5s     834ms
+      4000    1230/sec        3.4s     813ms
+      5000    1151/sec        4.2s     869ms
+      6000     806/sec        5.5s    1240ms
+      7000    1011/sec        6.5s     989ms
+      8000     981/sec        7.5s    1019ms
+      9000     902/sec        8.6s    1109ms
+     10000     858/sec        9.7s    1166ms
+     11000     792/sec       11.0s    1262ms
+     12000     743/sec       12.4s    1345ms
+     13000     694/sec       13.8s    1441ms
+     14000     649/sec       15.3s    1542ms
+     15000     609/sec       17.0s    1643ms
+     16000     573/sec       18.7s    1744ms
+     17000     537/sec       20.6s    1862ms
+     18000     441/sec       22.9s    2270ms
+     19000     474/sec       25.0s    2108ms
+     20000     455/sec       27.2s    2199ms
+     21000     425/sec       29.5s    2353ms
+     22000     410/sec       32.0s    2441ms
+     23000     399/sec       34.5s    2506ms
+     24000     367/sec       37.2s    2727ms
+     25000     326/sec       40.3s    3071ms
+     26000     340/sec       43.2s    2944ms
+     27000     329/sec       46.2s    3039ms
+     28000     318/sec       49.4s    3142ms
+     29000     306/sec       52.7s    3264ms
+     30000     292/sec       56.1s    3430ms
+     31000     288/sec       59.6s    3478ms
+     32000     274/sec       63.2s    3655ms
+     33000     258/sec       67.1s    3881ms
+     34000     254/sec       71.0s    3943ms
+     35000     242/sec       75.2s    4124ms
+     36000     236/sec       79.4s    4239ms
+     37000     225/sec       83.8s    4442ms
+     38000     190/sec       89.1s    5270ms
+     39000     182/sec       94.6s    5484ms
+     40000     173/sec      100.4s    5766ms
+     41000     178/sec      106.0s    5619ms
+     42000     172/sec      111.8s    5817ms
+     43000     166/sec      117.8s    6017ms
+     44000     163/sec      124.0s    6142ms
+     45000     158/sec      130.3s    6339ms
+     46000     155/sec      136.7s    6444ms
+     47000     149/sec      143.5s    6716ms
+     48000     145/sec      150.3s    6877ms
+     49000     142/sec      157.4s    7063ms
+     50000     134/sec      164.9s    7468ms
+     51000     127/sec      172.7s    7849ms
+     52000     125/sec      180.7s    7972ms
+     53000     124/sec      188.8s    8097ms
+     54000     121/sec      197.1s    8275ms
+     55000     121/sec      205.4s    8293ms
+     56000     110/sec      214.5s    9100ms
+     57000     112/sec      223.4s    8960ms
+     58000     108/sec      232.7s    9296ms
+     59000     109/sec      241.9s    9147ms
+     60000     103/sec      251.6s    9727ms
+     61000     105/sec      261.1s    9542ms
+     62000     104/sec      270.8s    9643ms
+     63000     102/sec      280.6s    9807ms
+     64000     100/sec      290.6s    9982ms
+     65000      98/sec      300.8s   10199ms
+     66000      94/sec      311.4s   10639ms
+     67000      94/sec      322.0s   10616ms
+     68000      81/sec      334.3s   12276ms
+     69000      79/sec      347.0s   12678ms
+     70000      78/sec      359.7s   12750ms
+     71000      84/sec      371.6s   11880ms
+     72000      86/sec      383.2s   11598ms
+     73000      86/sec      394.9s   11662ms
+     74000      86/sec      406.5s   11656ms
+     75000      83/sec      418.5s   12023ms
+     76000      79/sec      431.2s   12624ms
+     77000      81/sec      443.5s   12312ms
+     78000      80/sec      455.9s   12464ms
+     79000      78/sec      468.7s   12764ms
+     80000      77/sec      481.6s   12936ms
+     81000      67/sec      496.6s   14942ms
+     82000      72/sec      510.4s   13863ms
+     83000      71/sec      524.6s   14141ms
+     84000      73/sec      538.3s   13675ms
+     85000      71/sec      552.2s   13990ms
+     86000      73/sec      566.0s   13793ms
+     87000      72/sec      580.0s   13961ms
+     88000      71/sec      594.0s   14001ms
+     89000      70/sec      608.3s   14262ms
+     90000      65/sec      623.6s   15360ms
+     91000      64/sec      639.4s   15737ms
+     92000      67/sec      654.2s   14884ms
+     93000      68/sec      669.0s   14800ms
+     94000      60/sec      685.8s   16706ms
+     95000      64/sec      701.3s   15536ms
+     96000      65/sec      716.6s   15328ms
+     97000      65/sec      732.1s   15437ms
+     98000      63/sec      748.0s   15943ms
+     99000      62/sec      764.2s   16228ms
+    100000      64/sec      779.9s   15628ms
+
+════════════════════════════════════════════════════════════════
+TEST COMPLETE
+════════════════════════════════════════════════════════════════
+
+Summary:
+   Election: 10K Multi-Jurisdiction Stress Test
+   Jurisdiction: Placer County, California
+   Hierarchy: Federal → State → County
+
+Ballot Structure:
+   • 1 Federal question (President)
+   • 2 State questions (Governor, Prop 99)
+   • 2 County questions (Sheriff, Measure A)
+   • 5 questions total per ballot
+
+Scale:
+   • Voters: 100,000
+   • Encrypted answers: 500,000
+   • Merkle trees: 5 (one per question)
+
+Performance:
+   • Key ceremony: 36ms
+   • Voting phase: 779.9s
+   • Avg throughput: 128.2 voters/sec
+   • Peak throughput: 1081 voters/sec
+   • Final throughput: 64 voters/sec
+   • Degradation: 94.1%
+   • Total time: 780.0s
+
+Success Rate:
+   • Succeeded: 100,000
+   • Failed: 0
+   • Rate: 100.00%
+
