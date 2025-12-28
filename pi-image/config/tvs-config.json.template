@@ -1,0 +1,24 @@
+{
+  "nodeId": "${NODE_ID}",
+  "nodeName": "${NODE_NAME}",
+  "jurisdictionCode": "${JURISDICTION_CODE}",
+  "deploymentMode": "edge",
+  "cloudSyncUrl": "https://api.tvs.gov",
+  "localPort": 3000,
+  "sync": {
+    "enabled": true,
+    "intervalMs": 30000,
+    "batchSize": 1000,
+    "maxRetries": 3
+  },
+  "storage": {
+    "veilcloudPath": "/var/lib/tvs/veilcloud",
+    "checkpointPath": "/var/lib/tvs/sync-checkpoint.json"
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "tvs_local",
+    "user": "tvs"
+  }
+}

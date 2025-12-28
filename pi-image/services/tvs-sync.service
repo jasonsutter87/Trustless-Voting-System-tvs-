@@ -1,0 +1,48 @@
+[Unit]
+Description=TVS Edge Sync Service
+Documentation=https://github.com/veilsuite/tvs
+After=tvs-api.service network-online.target
+Wants=network-online.target
+Requires=tvs-api.service
+
+[Service]
+Type=simple
+User=tvs
+Group=tvs
+WorkingDirectory=/opt/tvs/api
+
+# Environment
+Environment=NODE_ENV=production
+Environment=SYNC_INTERVAL_MS=30000
+Environment=SYNC_BATCH_SIZE=1000
+
+# Load node configuration
+EnvironmentFile=-/etc/tvs/environment
+
+# Start command
+ExecStart=/usr/bin/node dist/edge-sync-daemon.js
+
+# Restart policy (more lenient for sync service)
+Restart=always
+RestartSec=30
+StartLimitInterval=300
+StartLimitBurst=5
+
+# Security
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/tvs
+PrivateTmp=true
+
+# Resource limits
+MemoryMax=128M
+CPUQuota=20%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=tvs-sync
+
+[Install]
+WantedBy=multi-user.target

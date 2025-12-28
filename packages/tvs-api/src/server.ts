@@ -17,6 +17,15 @@ import { jurisdictionRoutes } from './routes/jurisdictions.js';
 import { ballotRoutes } from './routes/ballot.js';
 import { anchorsRoutes } from './routes/anchors.js';
 import { organizationRoutes } from './routes/organizations.js';
+import { syncRoutes } from './routes/sync.js';
+import type { DeploymentMode, HealthResponse } from './services/edge-sync/types.js';
+
+// Deployment configuration
+const deploymentMode: DeploymentMode = (process.env['DEPLOYMENT_MODE'] as DeploymentMode) || 'standalone';
+const nodeId = process.env['EDGE_NODE_ID'] || undefined;
+const nodeName = process.env['EDGE_NODE_NAME'] || undefined;
+const jurisdictionCode = process.env['JURISDICTION_CODE'] || undefined;
+const startTime = Date.now();
 
 const fastify = Fastify({
   logger: true,
@@ -58,9 +67,17 @@ fastify.setErrorHandler((error, request, reply) => {
   });
 });
 
-// Health check
-fastify.get('/health', async () => {
-  return { status: 'ok', timestamp: new Date().toISOString() };
+// Health check with deployment info
+fastify.get('/health', async (): Promise<HealthResponse> => {
+  return {
+    status: 'ok',
+    deploymentMode,
+    nodeId,
+    nodeName,
+    jurisdictionCode,
+    version: '1.0.0',
+    uptime: Date.now() - startTime,
+  };
 });
 
 // Register routes
@@ -73,6 +90,7 @@ await fastify.register(verifyRoutes, { prefix: '/api/verify' });
 await fastify.register(jurisdictionRoutes, { prefix: '/api/jurisdictions' });
 await fastify.register(ballotRoutes, { prefix: '/api/ballot' });
 await fastify.register(anchorsRoutes, { prefix: '/api/anchors' });
+await fastify.register(syncRoutes, { prefix: '/api/sync' });
 
 // Start server
 const start = async () => {

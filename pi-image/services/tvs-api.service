@@ -1,0 +1,49 @@
+[Unit]
+Description=TVS Voting API
+Documentation=https://github.com/veilsuite/tvs
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=tvs
+Group=tvs
+WorkingDirectory=/opt/tvs/api
+
+# Environment
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=DEPLOYMENT_MODE=edge
+Environment=VEILCLOUD_ENABLED=true
+Environment=VEILCLOUD_STORAGE_PATH=/var/lib/tvs/veilcloud
+
+# Load node configuration
+EnvironmentFile=-/etc/tvs/environment
+
+# Start command
+ExecStart=/usr/bin/node dist/server.js
+
+# Restart policy
+Restart=always
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=3
+
+# Security
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/tvs
+PrivateTmp=true
+
+# Resource limits (for Raspberry Pi 4 with 4GB RAM)
+MemoryMax=512M
+CPUQuota=80%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=tvs-api
+
+[Install]
+WantedBy=multi-user.target
