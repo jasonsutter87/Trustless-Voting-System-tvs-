@@ -51,8 +51,14 @@ export interface LedgerSnapshot {
 export class VoteLedger {
   private entries: VoteEntry[] = [];
   private nullifierSet: Set<string> = new Set(); // O(1) lookup instead of O(n)
+  private nullifierToPosition: Map<string, number> = new Map(); // O(1) position lookup
   private tree: FastMerkleTree;
   private electionId: string;
+  private _entryCount: number = 0; // Track count without storing entries
+
+  // Memory optimization: don't store full entries in memory for large elections
+  private storeEntriesInMemory: boolean = true;
+  private static readonly MEMORY_THRESHOLD = 100_000; // Switch to low-memory mode after 100k
 
   constructor(electionId: string) {
     this.electionId = electionId;
@@ -83,12 +89,28 @@ export class VoteLedger {
     // Add to nullifier set - O(1)
     this.nullifierSet.add(entry.nullifier);
 
-    // Append entry
-    this.entries.push(entry);
+    const position = this._entryCount;
+
+    // Memory optimization: stop storing entries after threshold
+    if (this._entryCount >= VoteLedger.MEMORY_THRESHOLD) {
+      this.storeEntriesInMemory = false;
+      // Clear existing entries to free memory (keep first batch for debugging)
+      if (this.entries.length > 1000) {
+        this.entries = this.entries.slice(0, 1000);
+      }
+    }
+
+    if (this.storeEntriesInMemory) {
+      this.entries.push(entry);
+    }
+
+    // Track nullifier -> position mapping for lookups
+    this.nullifierToPosition.set(entry.nullifier, position);
+    this._entryCount++;
 
     // Hash and add to tree
     const hash = this.hashEntry(entry);
-    const position = this.tree.append(hash);
+    this.tree.append(hash);
 
     // Generate proof
     const proof = this.getProof(position);
@@ -100,10 +122,10 @@ export class VoteLedger {
    * Append multiple votes to the ledger in batch (more efficient for bulk operations)
    * Returns results for each entry with position and proof
    */
-  appendBatch(entries: VoteEntry[]): Array<{ position: number; proof: MerkleProof }> {
+  appendBatch(batchEntries: VoteEntry[]): Array<{ position: number; proof: MerkleProof }> {
     // Check for duplicate nullifiers within batch AND against existing - O(m) where m = batch size
     const nullifiersInBatch = new Set<string>();
-    for (const entry of entries) {
+    for (const entry of batchEntries) {
       if (nullifiersInBatch.has(entry.nullifier)) {
         throw new Error(`Duplicate nullifier in batch: ${entry.nullifier}`);
       }
@@ -114,26 +136,38 @@ export class VoteLedger {
       nullifiersInBatch.add(entry.nullifier);
     }
 
-    // Add all nullifiers to the set - O(m)
-    for (const entry of entries) {
-      this.nullifierSet.add(entry.nullifier);
+    // Record start position
+    const startPosition = this._entryCount;
+
+    // Memory optimization: stop storing entries after threshold
+    if (this._entryCount >= VoteLedger.MEMORY_THRESHOLD) {
+      this.storeEntriesInMemory = false;
+      if (this.entries.length > 1000) {
+        this.entries = this.entries.slice(0, 1000);
+      }
     }
 
+    // Add all nullifiers and track positions - O(m)
+    for (let i = 0; i < batchEntries.length; i++) {
+      const entry = batchEntries[i]!;
+      this.nullifierSet.add(entry.nullifier);
+      this.nullifierToPosition.set(entry.nullifier, startPosition + i);
+
+      if (this.storeEntriesInMemory) {
+        this.entries.push(entry);
+      }
+    }
+    this._entryCount += batchEntries.length;
+
     // Hash all entries
-    const hashes = entries.map(entry => this.hashEntry(entry));
-
-    // Record start position
-    const startPosition = this.entries.length;
-
-    // Append all entries
-    this.entries.push(...entries);
+    const hashes = batchEntries.map(entry => this.hashEntry(entry));
 
     // Batch append to tree
     this.tree.appendBatch(hashes);
 
     // Generate proofs for each entry
     const results: Array<{ position: number; proof: MerkleProof }> = [];
-    for (let i = 0; i < entries.length; i++) {
+    for (let i = 0; i < batchEntries.length; i++) {
       const position = startPosition + i;
       const proof = this.getProof(position);
       results.push({ position, proof });
@@ -146,7 +180,7 @@ export class VoteLedger {
    * Get inclusion proof for a vote at given position
    */
   getProof(position: number): MerkleProof {
-    if (position < 0 || position >= this.entries.length) {
+    if (position < 0 || position >= this._entryCount) {
       throw new Error('Invalid position');
     }
 
@@ -187,7 +221,7 @@ export class VoteLedger {
    * Get vote count
    */
   getVoteCount(): number {
-    return this.entries.length;
+    return this._entryCount;
   }
 
   /**
@@ -196,25 +230,42 @@ export class VoteLedger {
   getSnapshot(): LedgerSnapshot {
     return {
       root: this.getRoot(),
-      voteCount: this.entries.length,
+      voteCount: this._entryCount,
       timestamp: Date.now(),
     };
   }
 
   /**
-   * Get entry by position
+   * Get entry by position (only works if entries are stored in memory)
    */
   getEntry(position: number): VoteEntry | undefined {
+    if (!this.storeEntriesInMemory && position >= this.entries.length) {
+      // Entry not in memory - would need to load from VeilCloud
+      return undefined;
+    }
     return this.entries[position];
   }
 
   /**
-   * Find entry by nullifier
+   * Find position by nullifier - O(1) lookup
+   */
+  findPositionByNullifier(nullifier: string): number | undefined {
+    return this.nullifierToPosition.get(nullifier);
+  }
+
+  /**
+   * Find entry by nullifier (only works if entries are stored in memory)
    */
   findByNullifier(nullifier: string): { entry: VoteEntry; position: number } | undefined {
-    const position = this.entries.findIndex(e => e.nullifier === nullifier);
-    if (position === -1) return undefined;
-    return { entry: this.entries[position]!, position };
+    const position = this.nullifierToPosition.get(nullifier);
+    if (position === undefined) return undefined;
+
+    const entry = this.entries[position];
+    if (!entry) {
+      // Entry not in memory - return just position
+      return undefined;
+    }
+    return { entry, position };
   }
 
   /**
@@ -227,20 +278,29 @@ export class VoteLedger {
   /**
    * Import entries (for loading from database)
    */
-  import(entries: VoteEntry[]): void {
+  import(importEntries: VoteEntry[]): void {
     this.entries = [];
     this.nullifierSet = new Set();
+    this.nullifierToPosition = new Map();
     this.tree = new FastMerkleTree();
+    this._entryCount = importEntries.length;
 
-    // Use batch append for efficiency
-    const hashes = entries.map(entry => this.hashEntry(entry));
-    this.entries = [...entries];
+    // Memory optimization: don't store if too many entries
+    this.storeEntriesInMemory = importEntries.length < VoteLedger.MEMORY_THRESHOLD;
 
-    // Populate nullifier set for O(1) lookups
-    for (const entry of entries) {
-      this.nullifierSet.add(entry.nullifier);
+    if (this.storeEntriesInMemory) {
+      this.entries = [...importEntries];
     }
 
+    // Populate nullifier set and position map for O(1) lookups
+    for (let i = 0; i < importEntries.length; i++) {
+      const entry = importEntries[i]!;
+      this.nullifierSet.add(entry.nullifier);
+      this.nullifierToPosition.set(entry.nullifier, i);
+    }
+
+    // Use batch append for efficiency
+    const hashes = importEntries.map(entry => this.hashEntry(entry));
     if (hashes.length > 0) {
       this.tree.appendBatch(hashes);
     }
