@@ -1,0 +1,18 @@
+# TVS AWS Infrastructure Variables
+# Copy this file to terraform.tfvars and fill in your values
+
+region      = "us-east-1"
+environment = "prod"  # dev, staging, or prod
+
+# Database password (use a strong password)
+db_password = "your-secure-database-password-here"
+
+# TVS master encryption key (32 bytes hex)
+# Generate with: openssl rand -hex 32
+master_key = "your-32-byte-hex-master-key-here"
+
+# Domain name for SSL certificates
+domain_name = "tvs.gov"
+
+# Number of API instances
+api_desired_count = 3
