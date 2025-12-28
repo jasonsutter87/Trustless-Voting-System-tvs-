@@ -108,6 +108,9 @@ Build tamper-evident vote storage.
 - [x] Inclusion proof generation
 - [x] Root hash anchoring (Bitcoin, Ethereum)
 - [x] Merkle Mountain Range for scale
+- [x] **FastMerkleTree O(log n) appends** - Eliminated O(n) rebuild bottleneck
+- [x] **O(1) nullifier lookup** - Set-based duplicate detection at scale
+- [x] **Memory optimization** - Threshold-based entry storage for 1M+ votes
 
 **Deliverable**: [@veilchain/core](https://github.com/jasonsutter87/veilchain) | [veilchain.io](https://veilchain.io)
 
@@ -129,16 +132,21 @@ Prove vote validity without revealing the vote.
 
 ---
 
-### Phase 7: Production Scaling via VeilCloud 📋
+### Phase 7: Production Scaling via VeilCloud 🔄
 
-**Status: Planned**
+**Status: In Progress**
 
 Scale to handle 350+ million votes by integrating with **VeilCloud** as the infrastructure layer.
 
-**The Scaling Problem (Current):**
-- 100K voters → 90 minutes (~20 votes/sec sustained)
-- Bottleneck: Single-node Merkle tree updates (O(n) degradation)
-- Registration scales linearly (7,697/sec) — not the issue
+**Scaling Achievements (December 2025):**
+- ✅ **1M voters → 3m 33s** (~4,682 votes/sec) with 100% success rate
+- ✅ **FastMerkleTree O(log n)** - Eliminated O(n) rebuild bottleneck
+- ✅ **O(1) nullifier lookup** - Set-based duplicate detection
+- ✅ **8GB heap configuration** - Prevents GC pauses at scale
+
+**The Remaining Challenge:**
+- Single-node memory limit (~1-2M votes per instance)
+- Need horizontal sharding for 350M+ scale
 
 **The Solution: VeilCloud Integration**
 
@@ -230,13 +238,25 @@ Real-world testing with small elections.
 
 ## Current Performance
 
-| Test | Voters | Throughput | Status |
-|------|--------|------------|--------|
-| Unit Tests | - | - | ✅ Passing |
-| 30 Voter E2E | 30 | ~300 votes/sec | ✅ Passing |
-| 300 Voter E2E | 300 | ~2,000 votes/sec | ✅ Passing |
-| 3,000 Voter E2E | 3,000 | ~800 votes/sec | ✅ Passing |
-| 350M Voter | 350,000,000 | 100,000 votes/sec | 📋 Planned |
+| Test | Voters | Throughput | Duration | Status |
+|------|--------|------------|----------|--------|
+| Unit Tests | - | - | - | ✅ Passing |
+| 30 Voter E2E | 30 | ~300 votes/sec | <1s | ✅ Passing |
+| 300 Voter E2E | 300 | ~2,000 votes/sec | <1s | ✅ Passing |
+| 3,000 Voter E2E | 3,000 | ~800 votes/sec | ~4s | ✅ Passing |
+| 10K Stress Test | 10,000 | ~5,000 votes/sec | ~2s | ✅ Passing |
+| 100K Fast Merkle | 100,000 | ~6,000 votes/sec | ~17s | ✅ Passing |
+| 250K VeilCloud | 252,000 | ~27 votes/sec* | ~3hrs | ✅ Passing |
+| **500K O(1) Nullifier** | **500,000** | **~5,903 votes/sec** | **1m 24s** | ✅ **100% Success** |
+| **1M 8GB Heap** | **1,000,000** | **~4,682 votes/sec** | **3m 33s** | ✅ **100% Success** |
+| 350M Distributed | 350,000,000 | 100,000 votes/sec | ~1hr | 📋 Planned |
+
+*250K test included VeilCloud persistence I/O overhead
+
+**Key Optimizations:**
+- FastMerkleTree: O(log n) appends instead of O(n) rebuild
+- O(1) Nullifier: Set-based lookup instead of O(n) linear scan
+- 8GB Heap: `NODE_OPTIONS="--max-old-space-size=8192"` prevents GC pauses
 
 ---
 

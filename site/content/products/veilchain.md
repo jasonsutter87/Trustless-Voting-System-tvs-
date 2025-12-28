@@ -17,10 +17,20 @@ VeilChain implements a Merkle tree data structure that makes any modification cr
 | Feature | Description |
 |---------|-------------|
 | **SHA-256 Merkle Tree** | Tamper-evident data structure |
+| **FastMerkleTree O(log n)** | Efficient appends without full rebuild |
+| **O(1) Nullifier Lookup** | Set-based duplicate detection at scale |
 | **Inclusion Proofs** | Prove a vote exists in the tree |
 | **Append-Only** | No modifications or deletions |
 | **Root Anchoring** | Publish root to external systems |
-| **Merkle Mountain Range** | Efficient updates at scale |
+| **Memory Optimization** | Threshold-based storage for 1M+ votes |
+
+### Performance at Scale
+
+| Scale | Throughput | Duration |
+|-------|------------|----------|
+| 100K voters | 6,000/sec | 17 seconds |
+| 500K voters | 5,903/sec | 1m 24s |
+| **1M voters** | **4,682/sec** | **3m 33s** |
 
 ### How It Works
 
