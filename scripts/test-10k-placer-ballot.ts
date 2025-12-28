@@ -18,6 +18,7 @@ import { hostname, platform, arch, cpus } from 'os';
 
 const API_BASE = 'http://localhost:3000';
 const VOTER_COUNT = parseInt(process.argv[2] || '100000');
+const CONCURRENCY = parseInt(process.argv[3] || '50'); // Concurrent requests
 const BATCH_SIZE = VOTER_COUNT >= 10000 ? 1000 : 100; // Report progress every N voters
 
 function getSystemInfo(): { machine: string; os: string; cpu: string } {
@@ -281,8 +282,8 @@ async function main() {
     body: JSON.stringify({ status: 'voting' }),
   });
 
-  // Step 6: Vote with 10,000 voters
-  console.log(`6. Casting votes for ${VOTER_COUNT.toLocaleString()} voters...`);
+  // Step 6: Vote with voters (concurrent)
+  console.log(`6. Casting votes for ${VOTER_COUNT.toLocaleString()} voters (${CONCURRENCY} concurrent)...`);
   console.log(`   Each voter answers 5 questions = ${(VOTER_COUNT * 5).toLocaleString()} encrypted answers`);
   console.log();
 
@@ -290,6 +291,7 @@ async function main() {
   const degradationData: DegradationPoint[] = [];
   let successCount = 0;
   let failCount = 0;
+  let completedCount = 0;
   let batchStart = Date.now();
 
   // Vote tallies for results
@@ -302,77 +304,88 @@ async function main() {
     tallies.set(q.question.id, qTally);
   }
 
-  for (let i = 1; i <= VOTER_COUNT; i++) {
-    try {
-      // Create credential for this voter
-      // Nullifier must be 32 bytes hex (64 chars)
-      const nullifier = sha256(`voter-placer-${i}-${Date.now()}-${randomBytes(8).toString('hex')}`);
-      const credential = {
-        electionId,
-        nullifier,
-        message: 'authorized voter',
-        signature: 'mock-signature',
-      };
+  // Helper to submit a single voter's ballot
+  async function submitVoter(voterIndex: number): Promise<boolean> {
+    const nullifier = sha256(`voter-placer-${voterIndex}-${Date.now()}-${randomBytes(8).toString('hex')}`);
+    const credential = {
+      electionId,
+      nullifier,
+      message: 'authorized voter',
+      signature: 'mock-signature',
+    };
 
-      // Create answers for all 5 questions
-      const answers = [];
-      for (const q of questions) {
-        // Random candidate selection
-        const candidates = q.question.candidates;
-        const selectedIdx = Math.floor(Math.random() * candidates.length);
-        const selectedCandidate = candidates[selectedIdx];
+    const answers = [];
+    for (const q of questions) {
+      const candidates = q.question.candidates;
+      const selectedIdx = Math.floor(Math.random() * candidates.length);
+      const selectedCandidate = candidates[selectedIdx];
 
-        answers.push({
-          questionId: q.question.id,
-          encryptedVote: JSON.stringify({ candidateId: selectedCandidate.id }),
-          commitment: sha256(`${selectedCandidate.id}:${randomBytes(16).toString('hex')}`),
-          zkProof: 'mock-proof',
-        });
-
-        // Track tally
-        const qTally = tallies.get(q.question.id)!;
-        qTally.set(selectedCandidate.id, (qTally.get(selectedCandidate.id) || 0) + 1);
-      }
-
-      // Submit ballot
-      const result = await api('/api/vote/ballot', {
-        method: 'POST',
-        body: JSON.stringify({
-          electionId,
-          credential,
-          answers,
-        }),
+      answers.push({
+        questionId: q.question.id,
+        encryptedVote: JSON.stringify({ candidateId: selectedCandidate.id }),
+        commitment: sha256(`${selectedCandidate.id}:${randomBytes(16).toString('hex')}`),
+        zkProof: 'mock-proof',
       });
 
-      if (result.answersSubmitted === 5) {
-        successCount++;
-      } else {
+      // Track tally (not thread-safe but close enough for stats)
+      const qTally = tallies.get(q.question.id)!;
+      qTally.set(selectedCandidate.id, (qTally.get(selectedCandidate.id) || 0) + 1);
+    }
+
+    const result = await api('/api/vote/ballot', {
+      method: 'POST',
+      body: JSON.stringify({ electionId, credential, answers }),
+    });
+
+    return result.answersSubmitted === 5;
+  }
+
+  // Concurrent worker pool
+  const pending: Promise<void>[] = [];
+  let nextVoter = 1;
+
+  async function worker() {
+    while (nextVoter <= VOTER_COUNT) {
+      const voterIndex = nextVoter++;
+      if (voterIndex > VOTER_COUNT) break;
+
+      try {
+        const success = await submitVoter(voterIndex);
+        if (success) successCount++;
+        else failCount++;
+      } catch {
         failCount++;
       }
 
-      // Progress and degradation tracking
-      if (i % BATCH_SIZE === 0) {
+      completedCount++;
+
+      // Progress reporting (only one worker reports)
+      if (completedCount % BATCH_SIZE === 0) {
         const batchTime = Date.now() - batchStart;
         const cumulativeTime = (Date.now() - votingStart) / 1000;
         const throughput = Math.round(BATCH_SIZE / (batchTime / 1000));
 
         degradationData.push({
-          voteCount: i,
+          voteCount: completedCount,
           throughput,
           cumulativeTime,
           batchTime,
         });
 
-        const pct = ((i / VOTER_COUNT) * 100).toFixed(1);
-        const eta = ((VOTER_COUNT - i) / throughput).toFixed(0);
-        process.stdout.write(`\r   Progress: ${i.toLocaleString()}/${VOTER_COUNT.toLocaleString()} (${pct}%) | ${throughput} voters/sec | ETA: ${eta}s   `);
+        const pct = ((completedCount / VOTER_COUNT) * 100).toFixed(1);
+        const eta = ((VOTER_COUNT - completedCount) / throughput).toFixed(0);
+        process.stdout.write(`\r   Progress: ${completedCount.toLocaleString()}/${VOTER_COUNT.toLocaleString()} (${pct}%) | ${throughput} voters/sec | ETA: ${eta}s   `);
 
         batchStart = Date.now();
       }
-    } catch (e) {
-      failCount++;
     }
   }
+
+  // Start concurrent workers
+  for (let w = 0; w < CONCURRENCY; w++) {
+    pending.push(worker());
+  }
+  await Promise.all(pending);
 
   const votingTime = (Date.now() - votingStart) / 1000;
   console.log();

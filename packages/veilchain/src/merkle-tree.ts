@@ -50,6 +50,7 @@ export interface LedgerSnapshot {
  */
 export class VoteLedger {
   private entries: VoteEntry[] = [];
+  private nullifierSet: Set<string> = new Set(); // O(1) lookup instead of O(n)
   private tree: FastMerkleTree;
   private electionId: string;
 
@@ -74,11 +75,13 @@ export class VoteLedger {
    * Append a vote to the ledger (immutable operation)
    */
   append(entry: VoteEntry): { position: number; proof: MerkleProof } {
-    // Check for duplicate nullifier (double-vote prevention)
-    const existing = this.entries.find(e => e.nullifier === entry.nullifier);
-    if (existing) {
+    // Check for duplicate nullifier - O(1) with Set
+    if (this.nullifierSet.has(entry.nullifier)) {
       throw new Error('Duplicate nullifier - vote already cast with this credential');
     }
+
+    // Add to nullifier set - O(1)
+    this.nullifierSet.add(entry.nullifier);
 
     // Append entry
     this.entries.push(entry);
@@ -98,21 +101,22 @@ export class VoteLedger {
    * Returns results for each entry with position and proof
    */
   appendBatch(entries: VoteEntry[]): Array<{ position: number; proof: MerkleProof }> {
-    // Check for duplicate nullifiers within batch
+    // Check for duplicate nullifiers within batch AND against existing - O(m) where m = batch size
     const nullifiersInBatch = new Set<string>();
     for (const entry of entries) {
       if (nullifiersInBatch.has(entry.nullifier)) {
         throw new Error(`Duplicate nullifier in batch: ${entry.nullifier}`);
       }
+      // O(1) check against existing entries
+      if (this.nullifierSet.has(entry.nullifier)) {
+        throw new Error('Duplicate nullifier - vote already cast with this credential');
+      }
       nullifiersInBatch.add(entry.nullifier);
     }
 
-    // Check for duplicates against existing entries
+    // Add all nullifiers to the set - O(m)
     for (const entry of entries) {
-      const existing = this.entries.find(e => e.nullifier === entry.nullifier);
-      if (existing) {
-        throw new Error('Duplicate nullifier - vote already cast with this credential');
-      }
+      this.nullifierSet.add(entry.nullifier);
     }
 
     // Hash all entries
@@ -225,11 +229,18 @@ export class VoteLedger {
    */
   import(entries: VoteEntry[]): void {
     this.entries = [];
+    this.nullifierSet = new Set();
     this.tree = new FastMerkleTree();
 
     // Use batch append for efficiency
     const hashes = entries.map(entry => this.hashEntry(entry));
     this.entries = [...entries];
+
+    // Populate nullifier set for O(1) lookups
+    for (const entry of entries) {
+      this.nullifierSet.add(entry.nullifier);
+    }
+
     if (hashes.length > 0) {
       this.tree.appendBatch(hashes);
     }
