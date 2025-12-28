@@ -14,7 +14,7 @@
  */
 
 import { VoteLedger, type VoteEntry } from '@tvs/veilchain';
-import { getVeilCloudStorage, type StoredVote, type StoredNullifier } from './veilcloud-storage.js';
+import { getVeilCloudStorage, getBufferedVeilCloudWriter, type StoredVote, type StoredNullifier } from './veilcloud-storage.js';
 
 // ============================================================================
 // Configuration
@@ -261,15 +261,21 @@ export class VoteBatchQueue {
       }
     }
 
-    // Batch write to VeilCloud
+    // Buffer writes to VeilCloud (non-blocking, high performance)
     if (veilcloud.isEnabled() && votesToStore.length > 0) {
       try {
-        await veilcloud.storeVotesBatchStream(votesToStore);
+        const bufferedWriter = getBufferedVeilCloudWriter();
 
-        // Store nullifiers in batch
+        // Use buffered writer for high-throughput (non-blocking)
+        bufferedWriter.bufferVotes(votesToStore);
+
+        // Buffer nullifiers
         for (const [electionId, nullifiers] of nullifiersToStore) {
-          await veilcloud.storeNullifiersBatch(electionId, nullifiers);
+          bufferedWriter.bufferNullifiers(electionId, nullifiers);
         }
+
+        // Note: Data is flushed asynchronously in batches of 1000
+        // Use bufferedWriter.drain() to wait for all writes to complete
       } catch (err) {
         console.error('VeilCloud batch storage error:', err);
         // Don't fail the votes - they're already in the Merkle tree
@@ -289,10 +295,17 @@ export class VoteBatchQueue {
   }
 
   /**
-   * Force flush and wait for completion
+   * Force flush and wait for completion (including VeilCloud writes)
    */
   async drain(): Promise<void> {
     await this.flush();
+
+    // Also drain the buffered VeilCloud writer
+    const veilcloud = getVeilCloudStorage();
+    if (veilcloud.isEnabled()) {
+      const bufferedWriter = getBufferedVeilCloudWriter();
+      await bufferedWriter.drain();
+    }
   }
 
   /**

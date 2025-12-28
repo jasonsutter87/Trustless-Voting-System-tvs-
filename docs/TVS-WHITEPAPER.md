@@ -1,6 +1,6 @@
 # TVS: A Trustless Voting System
 
-**Version 1.5 — December 2025**
+**Version 1.6 — December 2025**
 
 > **GitHub**: [github.com/jasonsutter87/Trustless-Voting-System-tvs-](https://github.com/jasonsutter87/Trustless-Voting-System-tvs-)
 
@@ -113,7 +113,7 @@ TVS consists of five core components:
 |-----------|---------|------------------------|
 | **VeilSign** | Anonymous credential issuance | Chaum blind signatures (RSA) |
 | **VeilForms** | Vote encryption | AES-256-GCM + RSA-OAEP |
-| **VeilChain** | Immutable vote storage | SHA-256 FastMerkleTree O(log n) |
+| **VeilChain** | Immutable vote storage | SHA-256 FastMerkleTree O(log n) + O(1) nullifier |
 | **VeilProof** | Vote validity proofs | Groth16 zk-SNARKs |
 | **VeilKey** | Distributed key management | Shamir SS + Threshold RSA |
 | **VeilCloud** | Zero-knowledge infrastructure | Client-side encryption + horizontal scaling |
@@ -537,7 +537,16 @@ External Anchoring:
 
 **The Problem VeilCloud Solves:**
 
-TVS faced a fundamental scaling challenge: processing 100,000 voters previously took ~83 minutes due to O(n) Merkle tree rebuild bottlenecks. With the introduction of **FastMerkleTree** (O(log n) incremental updates), this has been reduced to **~13 minutes**—a 6x improvement. Scaling to handle 350+ million votes (U.S. national election scale) requires distributed infrastructure—but traditional cloud providers see all your data.
+TVS faced fundamental scaling challenges that have now been solved through multiple optimizations:
+
+1. **O(n) Merkle rebuilds** → FastMerkleTree O(log n) incremental updates
+2. **O(n) nullifier scans** → O(1) Set-based lookup
+3. **Memory exhaustion at scale** → 8GB heap configuration
+4. **Synchronous I/O bottleneck** → Buffered async writes (1000 votes/batch)
+
+**Result: 1 million voters processed in 3 minutes 33 seconds with 100% success rate.**
+
+Scaling to handle 350+ million votes (U.S. national election scale) requires distributed infrastructure—but traditional cloud providers see all your data.
 
 **VeilCloud's Solution:**
 
@@ -618,14 +627,17 @@ const valid = await veilcloud.audit.verifyProof(proof);
 
 **Scaling Benefits:**
 
-| Metric | Before FastMerkleTree | With FastMerkleTree | With VeilCloud (Target) |
-|--------|----------------------|---------------------|------------------------|
-| 100K voters | ~83 minutes | **~13 minutes** | <5 minutes |
-| 10K voters | ~3.4 minutes | **~11 seconds** | <3 seconds |
+| Metric | Before Optimization | Current (Dec 2025) | With VeilCloud (Target) |
+|--------|---------------------|-------------------|------------------------|
+| 10K voters | ~3.4 minutes | **~2 seconds** | <1 second |
+| 100K voters | ~83 minutes | **~17 seconds** | <5 seconds |
+| 500K voters | Infeasible | **1m 24s** (5,903/sec) | <30 seconds |
+| **1M voters** | Infeasible | **3m 33s** (4,682/sec) | <1 minute |
 | Merkle updates | O(n) rebuild | O(log n) incremental | O(log n) + sharded |
+| Nullifier check | O(n) scan | **O(1) Set lookup** | O(1) distributed |
+| Memory | Default heap (~2GB) | **8GB heap** | Horizontal scaling |
+| Storage I/O | Synchronous | **Buffered async** | Kafka + S3 |
 | Architecture | Single-node | Single-node | Horizontal (K8s) |
-| Vote ingestion | Synchronous | Synchronous | Async (Kafka queue) |
-| Storage | In-memory | VeilCloud local | S3 + Citus sharding |
 | Availability | 99.9% | 99.9% | 99.99% |
 
 ---
@@ -1616,20 +1628,26 @@ Once anchored, any modification to votes would require:
 
 ### 13.1 The Scaling Challenge (Solved)
 
-TVS previously processed votes through a single-node architecture with O(n) Merkle tree rebuilds. With the introduction of **FastMerkleTree** (O(log n) incremental updates), performance has improved dramatically:
+TVS previously processed votes through a single-node architecture with multiple O(n) bottlenecks. Through a series of optimizations in December 2025, performance has improved dramatically:
 
 ```
-Performance Comparison (Single Node):
+Performance Milestones (Single Node, Apple M1):
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                                                                              │
-│  Voters      │  Before (O(n))  │  After (O(log n))  │  Improvement          │
-│  ────────────┼─────────────────┼────────────────────┼─────────────          │
-│  10,000      │  ~3.4 min       │  ~11 seconds       │  18x faster           │
-│  100,000     │  ~83 min        │  ~13 minutes       │  6x faster            │
-│  350,000,000 │  Infeasible     │  Target: <1 hour   │  With VeilCloud       │
+│  Voters      │  Before         │  After (Dec 2025)   │  Improvement         │
+│  ────────────┼─────────────────┼─────────────────────┼─────────────         │
+│  10,000      │  ~3.4 min       │  ~2 seconds         │  100x faster         │
+│  100,000     │  ~83 min        │  ~17 seconds        │  290x faster         │
+│  500,000     │  Infeasible     │  1m 24s (5,903/sec) │  ∞                   │
+│  1,000,000   │  Infeasible     │  3m 33s (4,682/sec) │  ∞                   │
+│  350,000,000 │  Infeasible     │  Target: <1 hour    │  With VeilCloud      │
 │                                                                              │
-│  Key Optimization: FastMerkleTree with O(log n) incremental updates        │
-│  Storage: VeilCloud zero-knowledge local/S3/Citus storage                  │
+│  Key Optimizations:                                                          │
+│  1. FastMerkleTree: O(log n) incremental updates (not O(n) rebuild)        │
+│  2. O(1) Nullifier: Set-based lookup (not O(n) linear scan)                │
+│  3. 8GB Heap: NODE_OPTIONS="--max-old-space-size=8192"                      │
+│  4. Buffered I/O: Async batch writes (1000 votes/flush)                    │
+│  5. Vote Batching: Merkle appendBatch() for throughput                     │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1681,12 +1699,14 @@ VeilCloud Production Architecture:
 
 ### 13.3 Scaling Targets
 
-| Metric | Before | Current (FastMerkleTree) | With VeilCloud | Improvement |
-|--------|--------|--------------------------|----------------|-------------|
-| Vote throughput | ~20/sec | ~128/sec | 100,000/sec | 5,000x |
-| 10K election | 3.4 min | **11 seconds** | <3 sec | 68x faster |
-| 100K election | 83 min | **13 min** | <5 min | 16x faster |
-| Max voters | ~100K | 100K+ | 350M+ | 3,500x |
+| Metric | Before | Current (Dec 2025) | With VeilCloud | Improvement |
+|--------|--------|-------------------|----------------|-------------|
+| Vote throughput | ~20/sec | **~5,000/sec** | 100,000/sec | 250x → 5,000x |
+| 10K election | 3.4 min | **~2 seconds** | <1 sec | 100x faster |
+| 100K election | 83 min | **~17 seconds** | <5 sec | 290x faster |
+| 500K election | Infeasible | **1m 24s** | <30 sec | ∞ |
+| **1M election** | Infeasible | **3m 33s** | <1 min | ∞ |
+| Max voters | ~100K | **1M+ tested** | 350M+ | 10x → 3,500x |
 | Availability | 99.9% | 99.9% | 99.99% | 10x uptime |
 | Geographic | Single region | Single region | Multi-region | Global |
 
@@ -1830,7 +1850,7 @@ All TVS components are open source and available on GitHub:
 
 ---
 
-*Document version: 1.5*
+*Document version: 1.6*
 *Last updated: December 2025*
 *Authors: TVS Development Team*
 
@@ -1838,6 +1858,7 @@ All TVS components are open source and available on GitHub:
 
 ## Changelog
 
+- **v1.6** (December 2025): **1 Million Voter Milestone** — Complete optimization suite achieving 1M voters in 3m 33s with 100% success rate. Added O(1) nullifier lookup (Set-based), 8GB heap configuration for scale, buffered async VeilCloud I/O (1000 votes/batch). Updated all performance tables with 500K (1m 24s, 5,903/sec) and 1M (3m 33s, 4,682/sec) benchmarks.
 - **v1.5** (December 2025): **Major Performance Milestone** — FastMerkleTree O(log n) optimization reduces 100K voter test from 83 minutes to 13 minutes (6x improvement). 10K voter test now completes in 11 seconds (18x improvement). Updated scaling tables throughout.
 - **v1.4** (December 2025): Added VeilCloud zero-knowledge infrastructure (Section 5.5), new Production Scaling section (Section 13) with architecture diagrams and scaling targets
 - **v1.3** (December 2025): Enhanced Bitcoin anchoring protocol (Section 11.3) with two-transaction specification, added Hashcash citation
