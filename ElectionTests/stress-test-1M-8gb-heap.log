@@ -1,0 +1,1140 @@
+# TVS 1,000,000 Voter Multi-Jurisdiction Stress Test
+
+**Test Date:** December 27, 2025 at 09:13 PM PST
+**Test Machine:** Jasons-MacBook-Pro.local
+**CPU:** Apple M1
+**OS:** darwin arm64
+**Test Script:** `scripts/test-10k-placer-ballot.ts`
+
+---
+
+1. Checking API health...
+   Status: ok
+
+2. Verifying jurisdiction hierarchy...
+   Chain: US → US-CA → US-CA-PLACER
+
+3. Creating election with 3-of-5 threshold...
+   Election ID: f2e5c6b2-cf61-44f2-a4bf-f22a4435cdba
+
+4. Running threshold key ceremony...
+   Key ceremony complete (56ms)
+
+5. Creating ballot questions at each jurisdiction level...
+   Federal: President of the United States
+   State: California Governor
+   State: Proposition 99: State Parks Funding
+   County: Placer County Sheriff
+   County: Measure A: Road Improvements
+
+6. Casting votes for 1,000,000 voters (50 concurrent)...
+   Each voter answers 5 questions = 5,000,000 encrypted answers
+
+   Progress: 1,000/1,000,000 (0.1%) | 4274 voters/sec | ETA: 234s      Progress: 2,000/1,000,000 (0.2%) | 5714 voters/sec | ETA: 175s      Progress: 3,000/1,000,000 (0.3%) | 6211 voters/sec | ETA: 161s      Progress: 4,000/1,000,000 (0.4%) | 7042 voters/sec | ETA: 141s      Progress: 5,000/1,000,000 (0.5%) | 7407 voters/sec | ETA: 134s      Progress: 6,000/1,000,000 (0.6%) | 6803 voters/sec | ETA: 146s      Progress: 7,000/1,000,000 (0.7%) | 6803 voters/sec | ETA: 146s      Progress: 8,000/1,000,000 (0.8%) | 7143 voters/sec | ETA: 139s      Progress: 9,000/1,000,000 (0.9%) | 7407 voters/sec | ETA: 134s      Progress: 10,000/1,000,000 (1.0%) | 7813 voters/sec | ETA: 127s      Progress: 11,000/1,000,000 (1.1%) | 7463 voters/sec | ETA: 133s      Progress: 12,000/1,000,000 (1.2%) | 7042 voters/sec | ETA: 140s      Progress: 13,000/1,000,000 (1.3%) | 6452 voters/sec | ETA: 153s      Progress: 14,000/1,000,000 (1.4%) | 7937 voters/sec | ETA: 124s      Progress: 15,000/1,000,000 (1.5%) | 6579 voters/sec | ETA: 150s      Progress: 16,000/1,000,000 (1.6%) | 6897 voters/sec | ETA: 143s      Progress: 17,000/1,000,000 (1.7%) | 6623 voters/sec | ETA: 148s      Progress: 18,000/1,000,000 (1.8%) | 6993 voters/sec | ETA: 140s      Progress: 19,000/1,000,000 (1.9%) | 6711 voters/sec | ETA: 146s      Progress: 20,000/1,000,000 (2.0%) | 6329 voters/sec | ETA: 155s      Progress: 21,000/1,000,000 (2.1%) | 6944 voters/sec | ETA: 141s      Progress: 22,000/1,000,000 (2.2%) | 6849 voters/sec | ETA: 143s      Progress: 23,000/1,000,000 (2.3%) | 6897 voters/sec | ETA: 142s      Progress: 24,000/1,000,000 (2.4%) | 6944 voters/sec | ETA: 141s      Progress: 25,000/1,000,000 (2.5%) | 6711 voters/sec | ETA: 145s      Progress: 26,000/1,000,000 (2.6%) | 7092 voters/sec | ETA: 137s      Progress: 27,000/1,000,000 (2.7%) | 6757 voters/sec | ETA: 144s      Progress: 28,000/1,000,000 (2.8%) | 7299 voters/sec | ETA: 133s      Progress: 29,000/1,000,000 (2.9%) | 6667 voters/sec | ETA: 146s      Progress: 30,000/1,000,000 (3.0%) | 7042 voters/sec | ETA: 138s      Progress: 31,000/1,000,000 (3.1%) | 6849 voters/sec | ETA: 141s      Progress: 32,000/1,000,000 (3.2%) | 6711 voters/sec | ETA: 144s      Progress: 33,000/1,000,000 (3.3%) | 5556 voters/sec | ETA: 174s      Progress: 34,000/1,000,000 (3.4%) | 6329 voters/sec | ETA: 153s      Progress: 35,000/1,000,000 (3.5%) | 6667 voters/sec | ETA: 145s      Progress: 36,000/1,000,000 (3.6%) | 6757 voters/sec | ETA: 143s      Progress: 37,000/1,000,000 (3.7%) | 7353 voters/sec | ETA: 131s      Progress: 38,000/1,000,000 (3.8%) | 6494 voters/sec | ETA: 148s      Progress: 39,000/1,000,000 (3.9%) | 7463 voters/sec | ETA: 129s      Progress: 40,000/1,000,000 (4.0%) | 6667 voters/sec | ETA: 144s      Progress: 41,000/1,000,000 (4.1%) | 5814 voters/sec | ETA: 165s      Progress: 42,000/1,000,000 (4.2%) | 6536 voters/sec | ETA: 147s      Progress: 43,000/1,000,000 (4.3%) | 6757 voters/sec | ETA: 142s      Progress: 44,000/1,000,000 (4.4%) | 6623 voters/sec | ETA: 144s      Progress: 45,000/1,000,000 (4.5%) | 6944 voters/sec | ETA: 138s      Progress: 46,000/1,000,000 (4.6%) | 6536 voters/sec | ETA: 146s      Progress: 47,000/1,000,000 (4.7%) | 6536 voters/sec | ETA: 146s      Progress: 48,000/1,000,000 (4.8%) | 6667 voters/sec | ETA: 143s      Progress: 49,000/1,000,000 (4.9%) | 6757 voters/sec | ETA: 141s      Progress: 50,000/1,000,000 (5.0%) | 6623 voters/sec | ETA: 143s      Progress: 51,000/1,000,000 (5.1%) | 6452 voters/sec | ETA: 147s      Progress: 52,000/1,000,000 (5.2%) | 6579 voters/sec | ETA: 144s      Progress: 53,000/1,000,000 (5.3%) | 6369 voters/sec | ETA: 149s      Progress: 54,000/1,000,000 (5.4%) | 6579 voters/sec | ETA: 144s      Progress: 55,000/1,000,000 (5.5%) | 6494 voters/sec | ETA: 146s      Progress: 56,000/1,000,000 (5.6%) | 4717 voters/sec | ETA: 200s      Progress: 57,000/1,000,000 (5.7%) | 6369 voters/sec | ETA: 148s      Progress: 58,000/1,000,000 (5.8%) | 6897 voters/sec | ETA: 137s      Progress: 59,000/1,000,000 (5.9%) | 6494 voters/sec | ETA: 145s      Progress: 60,000/1,000,000 (6.0%) | 6494 voters/sec | ETA: 145s      Progress: 61,000/1,000,000 (6.1%) | 6369 voters/sec | ETA: 147s      Progress: 62,000/1,000,000 (6.2%) | 6410 voters/sec | ETA: 146s      Progress: 63,000/1,000,000 (6.3%) | 6667 voters/sec | ETA: 141s      Progress: 64,000/1,000,000 (6.4%) | 6494 voters/sec | ETA: 144s      Progress: 65,000/1,000,000 (6.5%) | 6579 voters/sec | ETA: 142s      Progress: 66,000/1,000,000 (6.6%) | 5525 voters/sec | ETA: 169s      Progress: 67,000/1,000,000 (6.7%) | 6289 voters/sec | ETA: 148s      Progress: 68,000/1,000,000 (6.8%) | 6494 voters/sec | ETA: 144s      Progress: 69,000/1,000,000 (6.9%) | 6289 voters/sec | ETA: 148s      Progress: 70,000/1,000,000 (7.0%) | 6098 voters/sec | ETA: 153s      Progress: 71,000/1,000,000 (7.1%) | 6897 voters/sec | ETA: 135s      Progress: 72,000/1,000,000 (7.2%) | 6098 voters/sec | ETA: 152s      Progress: 73,000/1,000,000 (7.3%) | 5917 voters/sec | ETA: 157s      Progress: 74,000/1,000,000 (7.4%) | 6757 voters/sec | ETA: 137s      Progress: 75,000/1,000,000 (7.5%) | 6250 voters/sec | ETA: 148s      Progress: 76,000/1,000,000 (7.6%) | 6369 voters/sec | ETA: 145s      Progress: 77,000/1,000,000 (7.7%) | 6494 voters/sec | ETA: 142s      Progress: 78,000/1,000,000 (7.8%) | 6329 voters/sec | ETA: 146s      Progress: 79,000/1,000,000 (7.9%) | 6536 voters/sec | ETA: 141s      Progress: 80,000/1,000,000 (8.0%) | 6494 voters/sec | ETA: 142s      Progress: 81,000/1,000,000 (8.1%) | 6211 voters/sec | ETA: 148s      Progress: 82,000/1,000,000 (8.2%) | 6211 voters/sec | ETA: 148s      Progress: 83,000/1,000,000 (8.3%) | 5848 voters/sec | ETA: 157s      Progress: 84,000/1,000,000 (8.4%) | 6061 voters/sec | ETA: 151s      Progress: 85,000/1,000,000 (8.5%) | 6135 voters/sec | ETA: 149s      Progress: 86,000/1,000,000 (8.6%) | 6173 voters/sec | ETA: 148s      Progress: 87,000/1,000,000 (8.7%) | 6369 voters/sec | ETA: 143s      Progress: 88,000/1,000,000 (8.8%) | 6410 voters/sec | ETA: 142s      Progress: 89,000/1,000,000 (8.9%) | 6250 voters/sec | ETA: 146s      Progress: 90,000/1,000,000 (9.0%) | 6369 voters/sec | ETA: 143s      Progress: 91,000/1,000,000 (9.1%) | 5988 voters/sec | ETA: 152s      Progress: 92,000/1,000,000 (9.2%) | 6211 voters/sec | ETA: 146s      Progress: 93,000/1,000,000 (9.3%) | 6098 voters/sec | ETA: 149s      Progress: 94,000/1,000,000 (9.4%) | 6211 voters/sec | ETA: 146s      Progress: 95,000/1,000,000 (9.5%) | 6173 voters/sec | ETA: 147s      Progress: 96,000/1,000,000 (9.6%) | 6289 voters/sec | ETA: 144s      Progress: 97,000/1,000,000 (9.7%) | 6211 voters/sec | ETA: 145s      Progress: 98,000/1,000,000 (9.8%) | 6329 voters/sec | ETA: 143s      Progress: 99,000/1,000,000 (9.9%) | 6329 voters/sec | ETA: 142s      Progress: 100,000/1,000,000 (10.0%) | 6061 voters/sec | ETA: 148s      Progress: 101,000/1,000,000 (10.1%) | 6250 voters/sec | ETA: 144s      Progress: 102,000/1,000,000 (10.2%) | 6410 voters/sec | ETA: 140s      Progress: 103,000/1,000,000 (10.3%) | 6061 voters/sec | ETA: 148s      Progress: 104,000/1,000,000 (10.4%) | 6135 voters/sec | ETA: 146s      Progress: 105,000/1,000,000 (10.5%) | 5917 voters/sec | ETA: 151s      Progress: 106,000/1,000,000 (10.6%) | 5882 voters/sec | ETA: 152s      Progress: 107,000/1,000,000 (10.7%) | 6623 voters/sec | ETA: 135s      Progress: 108,000/1,000,000 (10.8%) | 6289 voters/sec | ETA: 142s      Progress: 109,000/1,000,000 (10.9%) | 6289 voters/sec | ETA: 142s      Progress: 110,000/1,000,000 (11.0%) | 6289 voters/sec | ETA: 142s      Progress: 111,000/1,000,000 (11.1%) | 6135 voters/sec | ETA: 145s      Progress: 112,000/1,000,000 (11.2%) | 6061 voters/sec | ETA: 147s      Progress: 113,000/1,000,000 (11.3%) | 6024 voters/sec | ETA: 147s      Progress: 114,000/1,000,000 (11.4%) | 6452 voters/sec | ETA: 137s      Progress: 115,000/1,000,000 (11.5%) | 6211 voters/sec | ETA: 142s      Progress: 116,000/1,000,000 (11.6%) | 5814 voters/sec | ETA: 152s      Progress: 117,000/1,000,000 (11.7%) | 6173 voters/sec | ETA: 143s      Progress: 118,000/1,000,000 (11.8%) | 6211 voters/sec | ETA: 142s      Progress: 119,000/1,000,000 (11.9%) | 6135 voters/sec | ETA: 144s      Progress: 120,000/1,000,000 (12.0%) | 6135 voters/sec | ETA: 143s      Progress: 121,000/1,000,000 (12.1%) | 6329 voters/sec | ETA: 139s      Progress: 122,000/1,000,000 (12.2%) | 6410 voters/sec | ETA: 137s      Progress: 123,000/1,000,000 (12.3%) | 6211 voters/sec | ETA: 141s      Progress: 124,000/1,000,000 (12.4%) | 6211 voters/sec | ETA: 141s      Progress: 125,000/1,000,000 (12.5%) | 6289 voters/sec | ETA: 139s      Progress: 126,000/1,000,000 (12.6%) | 6250 voters/sec | ETA: 140s      Progress: 127,000/1,000,000 (12.7%) | 6410 voters/sec | ETA: 136s      Progress: 128,000/1,000,000 (12.8%) | 6061 voters/sec | ETA: 144s      Progress: 129,000/1,000,000 (12.9%) | 6452 voters/sec | ETA: 135s      Progress: 130,000/1,000,000 (13.0%) | 5882 voters/sec | ETA: 148s      Progress: 131,000/1,000,000 (13.1%) | 5882 voters/sec | ETA: 148s      Progress: 132,000/1,000,000 (13.2%) | 4587 voters/sec | ETA: 189s      Progress: 133,000/1,000,000 (13.3%) | 6024 voters/sec | ETA: 144s      Progress: 134,000/1,000,000 (13.4%) | 6098 voters/sec | ETA: 142s      Progress: 135,000/1,000,000 (13.5%) | 6135 voters/sec | ETA: 141s      Progress: 136,000/1,000,000 (13.6%) | 5988 voters/sec | ETA: 144s      Progress: 137,000/1,000,000 (13.7%) | 6024 voters/sec | ETA: 143s      Progress: 138,000/1,000,000 (13.8%) | 6024 voters/sec | ETA: 143s      Progress: 139,000/1,000,000 (13.9%) | 6289 voters/sec | ETA: 137s      Progress: 140,000/1,000,000 (14.0%) | 5882 voters/sec | ETA: 146s      Progress: 141,000/1,000,000 (14.1%) | 6098 voters/sec | ETA: 141s      Progress: 142,000/1,000,000 (14.2%) | 5917 voters/sec | ETA: 145s      Progress: 143,000/1,000,000 (14.3%) | 5952 voters/sec | ETA: 144s      Progress: 144,000/1,000,000 (14.4%) | 6061 voters/sec | ETA: 141s      Progress: 145,000/1,000,000 (14.5%) | 6369 voters/sec | ETA: 134s      Progress: 146,000/1,000,000 (14.6%) | 6024 voters/sec | ETA: 142s      Progress: 147,000/1,000,000 (14.7%) | 6289 voters/sec | ETA: 136s      Progress: 148,000/1,000,000 (14.8%) | 6098 voters/sec | ETA: 140s      Progress: 149,000/1,000,000 (14.9%) | 5988 voters/sec | ETA: 142s      Progress: 150,000/1,000,000 (15.0%) | 6250 voters/sec | ETA: 136s      Progress: 151,000/1,000,000 (15.1%) | 6098 voters/sec | ETA: 139s      Progress: 152,000/1,000,000 (15.2%) | 6329 voters/sec | ETA: 134s      Progress: 153,000/1,000,000 (15.3%) | 6024 voters/sec | ETA: 141s      Progress: 154,000/1,000,000 (15.4%) | 6098 voters/sec | ETA: 139s      Progress: 155,000/1,000,000 (15.5%) | 6135 voters/sec | ETA: 138s      Progress: 156,000/1,000,000 (15.6%) | 5952 voters/sec | ETA: 142s      Progress: 157,000/1,000,000 (15.7%) | 6211 voters/sec | ETA: 136s      Progress: 158,000/1,000,000 (15.8%) | 6024 voters/sec | ETA: 140s      Progress: 159,000/1,000,000 (15.9%) | 6410 voters/sec | ETA: 131s      Progress: 160,000/1,000,000 (16.0%) | 5848 voters/sec | ETA: 144s      Progress: 161,000/1,000,000 (16.1%) | 5917 voters/sec | ETA: 142s      Progress: 162,000/1,000,000 (16.2%) | 6024 voters/sec | ETA: 139s      Progress: 163,000/1,000,000 (16.3%) | 6250 voters/sec | ETA: 134s      Progress: 164,000/1,000,000 (16.4%) | 5952 voters/sec | ETA: 140s      Progress: 165,000/1,000,000 (16.5%) | 5988 voters/sec | ETA: 139s      Progress: 166,000/1,000,000 (16.6%) | 6173 voters/sec | ETA: 135s      Progress: 167,000/1,000,000 (16.7%) | 5714 voters/sec | ETA: 146s      Progress: 168,000/1,000,000 (16.8%) | 6173 voters/sec | ETA: 135s      Progress: 169,000/1,000,000 (16.9%) | 6098 voters/sec | ETA: 136s      Progress: 170,000/1,000,000 (17.0%) | 6211 voters/sec | ETA: 134s      Progress: 171,000/1,000,000 (17.1%) | 5988 voters/sec | ETA: 138s      Progress: 172,000/1,000,000 (17.2%) | 5780 voters/sec | ETA: 143s      Progress: 173,000/1,000,000 (17.3%) | 5988 voters/sec | ETA: 138s      Progress: 174,000/1,000,000 (17.4%) | 6173 voters/sec | ETA: 134s      Progress: 175,000/1,000,000 (17.5%) | 6024 voters/sec | ETA: 137s      Progress: 176,000/1,000,000 (17.6%) | 5952 voters/sec | ETA: 138s      Progress: 177,000/1,000,000 (17.7%) | 5988 voters/sec | ETA: 137s      Progress: 178,000/1,000,000 (17.8%) | 5814 voters/sec | ETA: 141s      Progress: 179,000/1,000,000 (17.9%) | 6329 voters/sec | ETA: 130s      Progress: 180,000/1,000,000 (18.0%) | 5917 voters/sec | ETA: 139s      Progress: 181,000/1,000,000 (18.1%) | 5848 voters/sec | ETA: 140s      Progress: 182,000/1,000,000 (18.2%) | 6098 voters/sec | ETA: 134s      Progress: 183,000/1,000,000 (18.3%) | 5917 voters/sec | ETA: 138s      Progress: 184,000/1,000,000 (18.4%) | 5988 voters/sec | ETA: 136s      Progress: 185,000/1,000,000 (18.5%) | 5917 voters/sec | ETA: 138s      Progress: 186,000/1,000,000 (18.6%) | 6061 voters/sec | ETA: 134s      Progress: 187,000/1,000,000 (18.7%) | 5814 voters/sec | ETA: 140s      Progress: 188,000/1,000,000 (18.8%) | 6061 voters/sec | ETA: 134s      Progress: 189,000/1,000,000 (18.9%) | 6061 voters/sec | ETA: 134s      Progress: 190,000/1,000,000 (19.0%) | 5747 voters/sec | ETA: 141s      Progress: 191,000/1,000,000 (19.1%) | 5988 voters/sec | ETA: 135s      Progress: 192,000/1,000,000 (19.2%) | 5952 voters/sec | ETA: 136s      Progress: 193,000/1,000,000 (19.3%) | 5988 voters/sec | ETA: 135s      Progress: 194,000/1,000,000 (19.4%) | 6250 voters/sec | ETA: 129s      Progress: 195,000/1,000,000 (19.5%) | 5882 voters/sec | ETA: 137s      Progress: 196,000/1,000,000 (19.6%) | 5714 voters/sec | ETA: 141s      Progress: 197,000/1,000,000 (19.7%) | 5988 voters/sec | ETA: 134s      Progress: 198,000/1,000,000 (19.8%) | 5882 voters/sec | ETA: 136s      Progress: 199,000/1,000,000 (19.9%) | 5917 voters/sec | ETA: 135s      Progress: 200,000/1,000,000 (20.0%) | 5848 voters/sec | ETA: 137s      Progress: 201,000/1,000,000 (20.1%) | 5952 voters/sec | ETA: 134s      Progress: 202,000/1,000,000 (20.2%) | 5848 voters/sec | ETA: 136s      Progress: 203,000/1,000,000 (20.3%) | 5848 voters/sec | ETA: 136s      Progress: 204,000/1,000,000 (20.4%) | 5882 voters/sec | ETA: 135s      Progress: 205,000/1,000,000 (20.5%) | 5988 voters/sec | ETA: 133s      Progress: 206,000/1,000,000 (20.6%) | 5952 voters/sec | ETA: 133s      Progress: 207,000/1,000,000 (20.7%) | 5747 voters/sec | ETA: 138s      Progress: 208,000/1,000,000 (20.8%) | 5814 voters/sec | ETA: 136s      Progress: 209,000/1,000,000 (20.9%) | 5882 voters/sec | ETA: 134s      Progress: 210,000/1,000,000 (21.0%) | 4000 voters/sec | ETA: 198s      Progress: 211,000/1,000,000 (21.1%) | 3953 voters/sec | ETA: 200s      Progress: 212,000/1,000,000 (21.2%) | 6410 voters/sec | ETA: 123s      Progress: 213,000/1,000,000 (21.3%) | 5988 voters/sec | ETA: 131s      Progress: 214,000/1,000,000 (21.4%) | 6024 voters/sec | ETA: 130s      Progress: 215,000/1,000,000 (21.5%) | 5988 voters/sec | ETA: 131s      Progress: 216,000/1,000,000 (21.6%) | 6173 voters/sec | ETA: 127s      Progress: 217,000/1,000,000 (21.7%) | 6024 voters/sec | ETA: 130s      Progress: 218,000/1,000,000 (21.8%) | 5882 voters/sec | ETA: 133s      Progress: 219,000/1,000,000 (21.9%) | 5405 voters/sec | ETA: 144s      Progress: 220,000/1,000,000 (22.0%) | 6494 voters/sec | ETA: 120s      Progress: 221,000/1,000,000 (22.1%) | 5882 voters/sec | ETA: 132s      Progress: 222,000/1,000,000 (22.2%) | 6024 voters/sec | ETA: 129s      Progress: 223,000/1,000,000 (22.3%) | 6024 voters/sec | ETA: 129s      Progress: 224,000/1,000,000 (22.4%) | 6410 voters/sec | ETA: 121s      Progress: 225,000/1,000,000 (22.5%) | 5952 voters/sec | ETA: 130s      Progress: 226,000/1,000,000 (22.6%) | 6250 voters/sec | ETA: 124s      Progress: 227,000/1,000,000 (22.7%) | 6061 voters/sec | ETA: 128s      Progress: 228,000/1,000,000 (22.8%) | 6329 voters/sec | ETA: 122s      Progress: 229,000/1,000,000 (22.9%) | 6024 voters/sec | ETA: 128s      Progress: 230,000/1,000,000 (23.0%) | 5952 voters/sec | ETA: 129s      Progress: 231,000/1,000,000 (23.1%) | 5952 voters/sec | ETA: 129s      Progress: 232,000/1,000,000 (23.2%) | 5988 voters/sec | ETA: 128s      Progress: 233,000/1,000,000 (23.3%) | 5952 voters/sec | ETA: 129s      Progress: 234,000/1,000,000 (23.4%) | 6098 voters/sec | ETA: 126s      Progress: 235,000/1,000,000 (23.5%) | 6135 voters/sec | ETA: 125s      Progress: 236,000/1,000,000 (23.6%) | 6024 voters/sec | ETA: 127s      Progress: 237,000/1,000,000 (23.7%) | 6098 voters/sec | ETA: 125s      Progress: 238,000/1,000,000 (23.8%) | 6024 voters/sec | ETA: 126s      Progress: 239,000/1,000,000 (23.9%) | 5848 voters/sec | ETA: 130s      Progress: 240,000/1,000,000 (24.0%) | 6098 voters/sec | ETA: 125s      Progress: 241,000/1,000,000 (24.1%) | 5988 voters/sec | ETA: 127s      Progress: 242,000/1,000,000 (24.2%) | 6098 voters/sec | ETA: 124s      Progress: 243,000/1,000,000 (24.3%) | 5917 voters/sec | ETA: 128s      Progress: 244,000/1,000,000 (24.4%) | 6098 voters/sec | ETA: 124s      Progress: 245,000/1,000,000 (24.5%) | 5882 voters/sec | ETA: 128s      Progress: 246,000/1,000,000 (24.6%) | 5917 voters/sec | ETA: 127s      Progress: 247,000/1,000,000 (24.7%) | 6024 voters/sec | ETA: 125s      Progress: 248,000/1,000,000 (24.8%) | 5917 voters/sec | ETA: 127s      Progress: 249,000/1,000,000 (24.9%) | 5952 voters/sec | ETA: 126s      Progress: 250,000/1,000,000 (25.0%) | 5917 voters/sec | ETA: 127s      Progress: 251,000/1,000,000 (25.1%) | 6061 voters/sec | ETA: 124s      Progress: 252,000/1,000,000 (25.2%) | 5714 voters/sec | ETA: 131s      Progress: 253,000/1,000,000 (25.3%) | 5882 voters/sec | ETA: 127s      Progress: 254,000/1,000,000 (25.4%) | 5780 voters/sec | ETA: 129s      Progress: 255,000/1,000,000 (25.5%) | 5952 voters/sec | ETA: 125s      Progress: 256,000/1,000,000 (25.6%) | 6098 voters/sec | ETA: 122s      Progress: 257,000/1,000,000 (25.7%) | 5917 voters/sec | ETA: 126s      Progress: 258,000/1,000,000 (25.8%) | 5780 voters/sec | ETA: 128s      Progress: 259,000/1,000,000 (25.9%) | 5917 voters/sec | ETA: 125s      Progress: 260,000/1,000,000 (26.0%) | 6135 voters/sec | ETA: 121s      Progress: 261,000/1,000,000 (26.1%) | 5952 voters/sec | ETA: 124s      Progress: 262,000/1,000,000 (26.2%) | 5780 voters/sec | ETA: 128s      Progress: 263,000/1,000,000 (26.3%) | 3597 voters/sec | ETA: 205s      Progress: 264,000/1,000,000 (26.4%) | 5780 voters/sec | ETA: 127s      Progress: 265,000/1,000,000 (26.5%) | 5714 voters/sec | ETA: 129s      Progress: 266,000/1,000,000 (26.6%) | 5917 voters/sec | ETA: 124s      Progress: 267,000/1,000,000 (26.7%) | 5747 voters/sec | ETA: 128s      Progress: 268,000/1,000,000 (26.8%) | 5848 voters/sec | ETA: 125s      Progress: 269,000/1,000,000 (26.9%) | 5814 voters/sec | ETA: 126s      Progress: 270,000/1,000,000 (27.0%) | 5848 voters/sec | ETA: 125s      Progress: 271,000/1,000,000 (27.1%) | 5814 voters/sec | ETA: 125s      Progress: 272,000/1,000,000 (27.2%) | 5988 voters/sec | ETA: 122s      Progress: 273,000/1,000,000 (27.3%) | 5882 voters/sec | ETA: 124s      Progress: 274,000/1,000,000 (27.4%) | 5988 voters/sec | ETA: 121s      Progress: 275,000/1,000,000 (27.5%) | 5917 voters/sec | ETA: 123s      Progress: 276,000/1,000,000 (27.6%) | 5587 voters/sec | ETA: 130s      Progress: 277,000/1,000,000 (27.7%) | 5319 voters/sec | ETA: 136s      Progress: 278,000/1,000,000 (27.8%) | 5181 voters/sec | ETA: 139s      Progress: 279,000/1,000,000 (27.9%) | 5747 voters/sec | ETA: 125s      Progress: 280,000/1,000,000 (28.0%) | 5780 voters/sec | ETA: 125s      Progress: 281,000/1,000,000 (28.1%) | 5747 voters/sec | ETA: 125s      Progress: 282,000/1,000,000 (28.2%) | 6061 voters/sec | ETA: 118s      Progress: 283,000/1,000,000 (28.3%) | 5848 voters/sec | ETA: 123s      Progress: 284,000/1,000,000 (28.4%) | 5747 voters/sec | ETA: 125s      Progress: 285,000/1,000,000 (28.5%) | 5814 voters/sec | ETA: 123s      Progress: 286,000/1,000,000 (28.6%) | 6135 voters/sec | ETA: 116s      Progress: 287,000/1,000,000 (28.7%) | 5952 voters/sec | ETA: 120s      Progress: 288,000/1,000,000 (28.8%) | 5714 voters/sec | ETA: 125s      Progress: 289,000/1,000,000 (28.9%) | 5917 voters/sec | ETA: 120s      Progress: 290,000/1,000,000 (29.0%) | 5814 voters/sec | ETA: 122s      Progress: 291,000/1,000,000 (29.1%) | 5682 voters/sec | ETA: 125s      Progress: 292,000/1,000,000 (29.2%) | 5848 voters/sec | ETA: 121s      Progress: 293,000/1,000,000 (29.3%) | 5780 voters/sec | ETA: 122s      Progress: 294,000/1,000,000 (29.4%) | 5952 voters/sec | ETA: 119s      Progress: 295,000/1,000,000 (29.5%) | 5917 voters/sec | ETA: 119s      Progress: 296,000/1,000,000 (29.6%) | 5848 voters/sec | ETA: 120s      Progress: 297,000/1,000,000 (29.7%) | 5917 voters/sec | ETA: 119s      Progress: 298,000/1,000,000 (29.8%) | 5650 voters/sec | ETA: 124s      Progress: 299,000/1,000,000 (29.9%) | 5882 voters/sec | ETA: 119s      Progress: 300,000/1,000,000 (30.0%) | 6173 voters/sec | ETA: 113s      Progress: 301,000/1,000,000 (30.1%) | 5917 voters/sec | ETA: 118s      Progress: 302,000/1,000,000 (30.2%) | 5952 voters/sec | ETA: 117s      Progress: 303,000/1,000,000 (30.3%) | 5814 voters/sec | ETA: 120s      Progress: 304,000/1,000,000 (30.4%) | 5682 voters/sec | ETA: 122s      Progress: 305,000/1,000,000 (30.5%) | 5747 voters/sec | ETA: 121s      Progress: 306,000/1,000,000 (30.6%) | 6024 voters/sec | ETA: 115s      Progress: 307,000/1,000,000 (30.7%) | 5747 voters/sec | ETA: 121s      Progress: 308,000/1,000,000 (30.8%) | 5780 voters/sec | ETA: 120s      Progress: 309,000/1,000,000 (30.9%) | 5780 voters/sec | ETA: 120s      Progress: 310,000/1,000,000 (31.0%) | 5780 voters/sec | ETA: 119s      Progress: 311,000/1,000,000 (31.1%) | 5848 voters/sec | ETA: 118s      Progress: 312,000/1,000,000 (31.2%) | 5747 voters/sec | ETA: 120s      Progress: 313,000/1,000,000 (31.3%) | 5780 voters/sec | ETA: 119s      Progress: 314,000/1,000,000 (31.4%) | 5952 voters/sec | ETA: 115s      Progress: 315,000/1,000,000 (31.5%) | 5848 voters/sec | ETA: 117s      Progress: 316,000/1,000,000 (31.6%) | 5882 voters/sec | ETA: 116s      Progress: 317,000/1,000,000 (31.7%) | 5556 voters/sec | ETA: 123s      Progress: 318,000/1,000,000 (31.8%) | 6173 voters/sec | ETA: 110s      Progress: 319,000/1,000,000 (31.9%) | 5780 voters/sec | ETA: 118s      Progress: 320,000/1,000,000 (32.0%) | 5682 voters/sec | ETA: 120s      Progress: 321,000/1,000,000 (32.1%) | 5848 voters/sec | ETA: 116s      Progress: 322,000/1,000,000 (32.2%) | 5618 voters/sec | ETA: 121s      Progress: 323,000/1,000,000 (32.3%) | 5650 voters/sec | ETA: 120s      Progress: 324,000/1,000,000 (32.4%) | 5848 voters/sec | ETA: 116s      Progress: 325,000/1,000,000 (32.5%) | 5747 voters/sec | ETA: 117s      Progress: 326,000/1,000,000 (32.6%) | 5128 voters/sec | ETA: 131s      Progress: 327,000/1,000,000 (32.7%) | 5587 voters/sec | ETA: 120s      Progress: 328,000/1,000,000 (32.8%) | 5747 voters/sec | ETA: 117s      Progress: 329,000/1,000,000 (32.9%) | 5882 voters/sec | ETA: 114s      Progress: 330,000/1,000,000 (33.0%) | 5587 voters/sec | ETA: 120s      Progress: 331,000/1,000,000 (33.1%) | 6061 voters/sec | ETA: 110s      Progress: 332,000/1,000,000 (33.2%) | 5780 voters/sec | ETA: 116s      Progress: 333,000/1,000,000 (33.3%) | 5780 voters/sec | ETA: 115s      Progress: 334,000/1,000,000 (33.4%) | 5848 voters/sec | ETA: 114s      Progress: 335,000/1,000,000 (33.5%) | 5917 voters/sec | ETA: 112s      Progress: 336,000/1,000,000 (33.6%) | 6135 voters/sec | ETA: 108s      Progress: 337,000/1,000,000 (33.7%) | 5747 voters/sec | ETA: 115s      Progress: 338,000/1,000,000 (33.8%) | 5814 voters/sec | ETA: 114s      Progress: 339,000/1,000,000 (33.9%) | 5618 voters/sec | ETA: 118s      Progress: 340,000/1,000,000 (34.0%) | 5882 voters/sec | ETA: 112s      Progress: 341,000/1,000,000 (34.1%) | 5714 voters/sec | ETA: 115s      Progress: 342,000/1,000,000 (34.2%) | 5882 voters/sec | ETA: 112s      Progress: 343,000/1,000,000 (34.3%) | 5780 voters/sec | ETA: 114s      Progress: 344,000/1,000,000 (34.4%) | 5525 voters/sec | ETA: 119s      Progress: 345,000/1,000,000 (34.5%) | 5650 voters/sec | ETA: 116s      Progress: 346,000/1,000,000 (34.6%) | 6098 voters/sec | ETA: 107s      Progress: 347,000/1,000,000 (34.7%) | 5618 voters/sec | ETA: 116s      Progress: 348,000/1,000,000 (34.8%) | 5405 voters/sec | ETA: 121s      Progress: 349,000/1,000,000 (34.9%) | 5714 voters/sec | ETA: 114s      Progress: 350,000/1,000,000 (35.0%) | 5650 voters/sec | ETA: 115s      Progress: 351,000/1,000,000 (35.1%) | 5650 voters/sec | ETA: 115s      Progress: 352,000/1,000,000 (35.2%) | 5882 voters/sec | ETA: 110s      Progress: 353,000/1,000,000 (35.3%) | 5556 voters/sec | ETA: 116s      Progress: 354,000/1,000,000 (35.4%) | 5587 voters/sec | ETA: 116s      Progress: 355,000/1,000,000 (35.5%) | 5848 voters/sec | ETA: 110s      Progress: 356,000/1,000,000 (35.6%) | 5682 voters/sec | ETA: 113s      Progress: 357,000/1,000,000 (35.7%) | 5780 voters/sec | ETA: 111s      Progress: 358,000/1,000,000 (35.8%) | 5848 voters/sec | ETA: 110s      Progress: 359,000/1,000,000 (35.9%) | 5682 voters/sec | ETA: 113s      Progress: 360,000/1,000,000 (36.0%) | 5650 voters/sec | ETA: 113s      Progress: 361,000/1,000,000 (36.1%) | 5464 voters/sec | ETA: 117s      Progress: 362,000/1,000,000 (36.2%) | 5747 voters/sec | ETA: 111s      Progress: 363,000/1,000,000 (36.3%) | 5780 voters/sec | ETA: 110s      Progress: 364,000/1,000,000 (36.4%) | 5780 voters/sec | ETA: 110s      Progress: 365,000/1,000,000 (36.5%) | 5682 voters/sec | ETA: 112s      Progress: 366,000/1,000,000 (36.6%) | 5208 voters/sec | ETA: 122s      Progress: 367,000/1,000,000 (36.7%) | 5102 voters/sec | ETA: 124s      Progress: 368,000/1,000,000 (36.8%) | 5682 voters/sec | ETA: 111s      Progress: 369,000/1,000,000 (36.9%) | 5848 voters/sec | ETA: 108s      Progress: 370,000/1,000,000 (37.0%) | 5814 voters/sec | ETA: 108s      Progress: 371,000/1,000,000 (37.1%) | 5556 voters/sec | ETA: 113s      Progress: 372,000/1,000,000 (37.2%) | 5587 voters/sec | ETA: 112s      Progress: 373,000/1,000,000 (37.3%) | 5525 voters/sec | ETA: 113s      Progress: 374,000/1,000,000 (37.4%) | 5525 voters/sec | ETA: 113s      Progress: 375,000/1,000,000 (37.5%) | 5650 voters/sec | ETA: 111s      Progress: 376,000/1,000,000 (37.6%) | 5525 voters/sec | ETA: 113s      Progress: 377,000/1,000,000 (37.7%) | 5556 voters/sec | ETA: 112s      Progress: 378,000/1,000,000 (37.8%) | 5618 voters/sec | ETA: 111s      Progress: 379,000/1,000,000 (37.9%) | 5682 voters/sec | ETA: 109s      Progress: 380,000/1,000,000 (38.0%) | 5000 voters/sec | ETA: 124s      Progress: 381,000/1,000,000 (38.1%) | 5435 voters/sec | ETA: 114s      Progress: 382,000/1,000,000 (38.2%) | 5556 voters/sec | ETA: 111s      Progress: 383,000/1,000,000 (38.3%) | 5650 voters/sec | ETA: 109s      Progress: 384,000/1,000,000 (38.4%) | 5495 voters/sec | ETA: 112s      Progress: 385,000/1,000,000 (38.5%) | 5814 voters/sec | ETA: 106s      Progress: 386,000/1,000,000 (38.6%) | 5747 voters/sec | ETA: 107s      Progress: 387,000/1,000,000 (38.7%) | 4878 voters/sec | ETA: 126s      Progress: 388,000/1,000,000 (38.8%) | 5882 voters/sec | ETA: 104s      Progress: 389,000/1,000,000 (38.9%) | 5988 voters/sec | ETA: 102s      Progress: 390,000/1,000,000 (39.0%) | 5618 voters/sec | ETA: 109s      Progress: 391,000/1,000,000 (39.1%) | 5780 voters/sec | ETA: 105s      Progress: 392,000/1,000,000 (39.2%) | 5556 voters/sec | ETA: 109s      Progress: 393,000/1,000,000 (39.3%) | 5556 voters/sec | ETA: 109s      Progress: 394,000/1,000,000 (39.4%) | 5618 voters/sec | ETA: 108s      Progress: 395,000/1,000,000 (39.5%) | 5618 voters/sec | ETA: 108s      Progress: 396,000/1,000,000 (39.6%) | 5376 voters/sec | ETA: 112s      Progress: 397,000/1,000,000 (39.7%) | 5682 voters/sec | ETA: 106s      Progress: 398,000/1,000,000 (39.8%) | 5495 voters/sec | ETA: 110s      Progress: 399,000/1,000,000 (39.9%) | 5618 voters/sec | ETA: 107s      Progress: 400,000/1,000,000 (40.0%) | 5556 voters/sec | ETA: 108s      Progress: 401,000/1,000,000 (40.1%) | 5587 voters/sec | ETA: 107s      Progress: 402,000/1,000,000 (40.2%) | 5495 voters/sec | ETA: 109s      Progress: 403,000/1,000,000 (40.3%) | 5556 voters/sec | ETA: 107s      Progress: 404,000/1,000,000 (40.4%) | 5319 voters/sec | ETA: 112s      Progress: 405,000/1,000,000 (40.5%) | 5495 voters/sec | ETA: 108s      Progress: 406,000/1,000,000 (40.6%) | 5525 voters/sec | ETA: 108s      Progress: 407,000/1,000,000 (40.7%) | 5495 voters/sec | ETA: 108s      Progress: 408,000/1,000,000 (40.8%) | 5882 voters/sec | ETA: 101s      Progress: 409,000/1,000,000 (40.9%) | 5495 voters/sec | ETA: 108s      Progress: 410,000/1,000,000 (41.0%) | 5525 voters/sec | ETA: 107s      Progress: 411,000/1,000,000 (41.1%) | 5348 voters/sec | ETA: 110s      Progress: 412,000/1,000,000 (41.2%) | 5525 voters/sec | ETA: 106s      Progress: 413,000/1,000,000 (41.3%) | 5556 voters/sec | ETA: 106s      Progress: 414,000/1,000,000 (41.4%) | 5208 voters/sec | ETA: 113s      Progress: 415,000/1,000,000 (41.5%) | 5435 voters/sec | ETA: 108s      Progress: 416,000/1,000,000 (41.6%) | 5319 voters/sec | ETA: 110s      Progress: 417,000/1,000,000 (41.7%) | 5525 voters/sec | ETA: 106s      Progress: 418,000/1,000,000 (41.8%) | 5464 voters/sec | ETA: 107s      Progress: 419,000/1,000,000 (41.9%) | 5348 voters/sec | ETA: 109s      Progress: 420,000/1,000,000 (42.0%) | 3145 voters/sec | ETA: 184s      Progress: 421,000/1,000,000 (42.1%) | 4975 voters/sec | ETA: 116s      Progress: 422,000/1,000,000 (42.2%) | 5155 voters/sec | ETA: 112s      Progress: 423,000/1,000,000 (42.3%) | 5556 voters/sec | ETA: 104s      Progress: 424,000/1,000,000 (42.4%) | 5291 voters/sec | ETA: 109s      Progress: 425,000/1,000,000 (42.5%) | 5291 voters/sec | ETA: 109s      Progress: 426,000/1,000,000 (42.6%) | 5291 voters/sec | ETA: 108s      Progress: 427,000/1,000,000 (42.7%) | 5495 voters/sec | ETA: 104s      Progress: 428,000/1,000,000 (42.8%) | 5376 voters/sec | ETA: 106s      Progress: 429,000/1,000,000 (42.9%) | 5435 voters/sec | ETA: 105s      Progress: 430,000/1,000,000 (43.0%) | 5405 voters/sec | ETA: 105s      Progress: 431,000/1,000,000 (43.1%) | 5525 voters/sec | ETA: 103s      Progress: 432,000/1,000,000 (43.2%) | 5525 voters/sec | ETA: 103s      Progress: 433,000/1,000,000 (43.3%) | 5319 voters/sec | ETA: 107s      Progress: 434,000/1,000,000 (43.4%) | 5714 voters/sec | ETA: 99s      Progress: 435,000/1,000,000 (43.5%) | 5348 voters/sec | ETA: 106s      Progress: 436,000/1,000,000 (43.6%) | 5495 voters/sec | ETA: 103s      Progress: 437,000/1,000,000 (43.7%) | 5525 voters/sec | ETA: 102s      Progress: 438,000/1,000,000 (43.8%) | 5376 voters/sec | ETA: 105s      Progress: 439,000/1,000,000 (43.9%) | 5376 voters/sec | ETA: 104s      Progress: 440,000/1,000,000 (44.0%) | 5556 voters/sec | ETA: 101s      Progress: 441,000/1,000,000 (44.1%) | 5682 voters/sec | ETA: 98s      Progress: 442,000/1,000,000 (44.2%) | 5814 voters/sec | ETA: 96s      Progress: 443,000/1,000,000 (44.3%) | 5348 voters/sec | ETA: 104s      Progress: 444,000/1,000,000 (44.4%) | 5319 voters/sec | ETA: 105s      Progress: 445,000/1,000,000 (44.5%) | 5848 voters/sec | ETA: 95s      Progress: 446,000/1,000,000 (44.6%) | 5435 voters/sec | ETA: 102s      Progress: 447,000/1,000,000 (44.7%) | 5556 voters/sec | ETA: 100s      Progress: 448,000/1,000,000 (44.8%) | 5556 voters/sec | ETA: 99s      Progress: 449,000/1,000,000 (44.9%) | 5155 voters/sec | ETA: 107s      Progress: 450,000/1,000,000 (45.0%) | 5376 voters/sec | ETA: 102s      Progress: 451,000/1,000,000 (45.1%) | 5714 voters/sec | ETA: 96s      Progress: 452,000/1,000,000 (45.2%) | 5051 voters/sec | ETA: 108s      Progress: 453,000/1,000,000 (45.3%) | 5495 voters/sec | ETA: 100s      Progress: 454,000/1,000,000 (45.4%) | 5682 voters/sec | ETA: 96s      Progress: 455,000/1,000,000 (45.5%) | 5556 voters/sec | ETA: 98s      Progress: 456,000/1,000,000 (45.6%) | 5848 voters/sec | ETA: 93s      Progress: 457,000/1,000,000 (45.7%) | 4878 voters/sec | ETA: 111s      Progress: 458,000/1,000,000 (45.8%) | 5319 voters/sec | ETA: 102s      Progress: 459,000/1,000,000 (45.9%) | 5348 voters/sec | ETA: 101s      Progress: 460,000/1,000,000 (46.0%) | 5319 voters/sec | ETA: 102s      Progress: 461,000/1,000,000 (46.1%) | 5376 voters/sec | ETA: 100s      Progress: 462,000/1,000,000 (46.2%) | 5435 voters/sec | ETA: 99s      Progress: 463,000/1,000,000 (46.3%) | 5263 voters/sec | ETA: 102s      Progress: 464,000/1,000,000 (46.4%) | 5495 voters/sec | ETA: 98s      Progress: 465,000/1,000,000 (46.5%) | 5128 voters/sec | ETA: 104s      Progress: 466,000/1,000,000 (46.6%) | 5405 voters/sec | ETA: 99s      Progress: 467,000/1,000,000 (46.7%) | 5291 voters/sec | ETA: 101s      Progress: 468,000/1,000,000 (46.8%) | 5319 voters/sec | ETA: 100s      Progress: 469,000/1,000,000 (46.9%) | 5495 voters/sec | ETA: 97s      Progress: 470,000/1,000,000 (47.0%) | 5348 voters/sec | ETA: 99s      Progress: 471,000/1,000,000 (47.1%) | 5435 voters/sec | ETA: 97s      Progress: 472,000/1,000,000 (47.2%) | 5376 voters/sec | ETA: 98s      Progress: 473,000/1,000,000 (47.3%) | 5263 voters/sec | ETA: 100s      Progress: 474,000/1,000,000 (47.4%) | 5236 voters/sec | ETA: 100s      Progress: 475,000/1,000,000 (47.5%) | 5464 voters/sec | ETA: 96s      Progress: 476,000/1,000,000 (47.6%) | 5747 voters/sec | ETA: 91s      Progress: 477,000/1,000,000 (47.7%) | 5128 voters/sec | ETA: 102s      Progress: 478,000/1,000,000 (47.8%) | 5525 voters/sec | ETA: 94s      Progress: 479,000/1,000,000 (47.9%) | 5291 voters/sec | ETA: 98s      Progress: 480,000/1,000,000 (48.0%) | 4902 voters/sec | ETA: 106s      Progress: 481,000/1,000,000 (48.1%) | 5076 voters/sec | ETA: 102s      Progress: 482,000/1,000,000 (48.2%) | 4587 voters/sec | ETA: 113s      Progress: 483,000/1,000,000 (48.3%) | 5263 voters/sec | ETA: 98s      Progress: 484,000/1,000,000 (48.4%) | 5263 voters/sec | ETA: 98s      Progress: 485,000/1,000,000 (48.5%) | 5181 voters/sec | ETA: 99s      Progress: 486,000/1,000,000 (48.6%) | 5208 voters/sec | ETA: 99s      Progress: 487,000/1,000,000 (48.7%) | 5025 voters/sec | ETA: 102s      Progress: 488,000/1,000,000 (48.8%) | 5102 voters/sec | ETA: 100s      Progress: 489,000/1,000,000 (48.9%) | 4854 voters/sec | ETA: 105s      Progress: 490,000/1,000,000 (49.0%) | 5025 voters/sec | ETA: 101s      Progress: 491,000/1,000,000 (49.1%) | 5263 voters/sec | ETA: 97s      Progress: 492,000/1,000,000 (49.2%) | 4785 voters/sec | ETA: 106s      Progress: 493,000/1,000,000 (49.3%) | 5348 voters/sec | ETA: 95s      Progress: 494,000/1,000,000 (49.4%) | 4831 voters/sec | ETA: 105s      Progress: 495,000/1,000,000 (49.5%) | 5076 voters/sec | ETA: 99s      Progress: 496,000/1,000,000 (49.6%) | 5236 voters/sec | ETA: 96s      Progress: 497,000/1,000,000 (49.7%) | 4878 voters/sec | ETA: 103s      Progress: 498,000/1,000,000 (49.8%) | 5348 voters/sec | ETA: 94s      Progress: 499,000/1,000,000 (49.9%) | 5051 voters/sec | ETA: 99s      Progress: 500,000/1,000,000 (50.0%) | 5348 voters/sec | ETA: 93s      Progress: 501,000/1,000,000 (50.1%) | 5236 voters/sec | ETA: 95s      Progress: 502,000/1,000,000 (50.2%) | 5000 voters/sec | ETA: 100s      Progress: 503,000/1,000,000 (50.3%) | 5155 voters/sec | ETA: 96s      Progress: 504,000/1,000,000 (50.4%) | 4902 voters/sec | ETA: 101s      Progress: 505,000/1,000,000 (50.5%) | 4808 voters/sec | ETA: 103s      Progress: 506,000/1,000,000 (50.6%) | 5102 voters/sec | ETA: 97s      Progress: 507,000/1,000,000 (50.7%) | 4878 voters/sec | ETA: 101s      Progress: 508,000/1,000,000 (50.8%) | 4808 voters/sec | ETA: 102s      Progress: 509,000/1,000,000 (50.9%) | 4854 voters/sec | ETA: 101s      Progress: 510,000/1,000,000 (51.0%) | 5000 voters/sec | ETA: 98s      Progress: 511,000/1,000,000 (51.1%) | 5348 voters/sec | ETA: 91s      Progress: 512,000/1,000,000 (51.2%) | 5263 voters/sec | ETA: 93s      Progress: 513,000/1,000,000 (51.3%) | 5051 voters/sec | ETA: 96s      Progress: 514,000/1,000,000 (51.4%) | 4926 voters/sec | ETA: 99s      Progress: 515,000/1,000,000 (51.5%) | 5181 voters/sec | ETA: 94s      Progress: 516,000/1,000,000 (51.6%) | 4444 voters/sec | ETA: 109s      Progress: 517,000/1,000,000 (51.7%) | 4255 voters/sec | ETA: 114s      Progress: 518,000/1,000,000 (51.8%) | 5102 voters/sec | ETA: 94s      Progress: 519,000/1,000,000 (51.9%) | 4608 voters/sec | ETA: 104s      Progress: 520,000/1,000,000 (52.0%) | 5025 voters/sec | ETA: 96s      Progress: 521,000/1,000,000 (52.1%) | 4739 voters/sec | ETA: 101s      Progress: 522,000/1,000,000 (52.2%) | 4831 voters/sec | ETA: 99s      Progress: 523,000/1,000,000 (52.3%) | 5076 voters/sec | ETA: 94s      Progress: 524,000/1,000,000 (52.4%) | 4484 voters/sec | ETA: 106s      Progress: 525,000/1,000,000 (52.5%) | 720 voters/sec | ETA: 660s      Progress: 526,000/1,000,000 (52.6%) | 5076 voters/sec | ETA: 93s      Progress: 527,000/1,000,000 (52.7%) | 5435 voters/sec | ETA: 87s      Progress: 528,000/1,000,000 (52.8%) | 5525 voters/sec | ETA: 85s      Progress: 529,000/1,000,000 (52.9%) | 5464 voters/sec | ETA: 86s      Progress: 530,000/1,000,000 (53.0%) | 5319 voters/sec | ETA: 88s      Progress: 531,000/1,000,000 (53.1%) | 5780 voters/sec | ETA: 81s      Progress: 532,000/1,000,000 (53.2%) | 5155 voters/sec | ETA: 91s      Progress: 533,000/1,000,000 (53.3%) | 5051 voters/sec | ETA: 92s      Progress: 534,000/1,000,000 (53.4%) | 5291 voters/sec | ETA: 88s      Progress: 535,000/1,000,000 (53.5%) | 5376 voters/sec | ETA: 86s      Progress: 536,000/1,000,000 (53.6%) | 5291 voters/sec | ETA: 88s      Progress: 537,000/1,000,000 (53.7%) | 5208 voters/sec | ETA: 89s      Progress: 538,000/1,000,000 (53.8%) | 5376 voters/sec | ETA: 86s      Progress: 539,000/1,000,000 (53.9%) | 5376 voters/sec | ETA: 86s      Progress: 540,000/1,000,000 (54.0%) | 5435 voters/sec | ETA: 85s      Progress: 541,000/1,000,000 (54.1%) | 5464 voters/sec | ETA: 84s      Progress: 542,000/1,000,000 (54.2%) | 5435 voters/sec | ETA: 84s      Progress: 543,000/1,000,000 (54.3%) | 5051 voters/sec | ETA: 90s      Progress: 544,000/1,000,000 (54.4%) | 5319 voters/sec | ETA: 86s      Progress: 545,000/1,000,000 (54.5%) | 5208 voters/sec | ETA: 87s      Progress: 546,000/1,000,000 (54.6%) | 5102 voters/sec | ETA: 89s      Progress: 547,000/1,000,000 (54.7%) | 5464 voters/sec | ETA: 83s      Progress: 548,000/1,000,000 (54.8%) | 5618 voters/sec | ETA: 80s      Progress: 549,000/1,000,000 (54.9%) | 5435 voters/sec | ETA: 83s      Progress: 550,000/1,000,000 (55.0%) | 5263 voters/sec | ETA: 86s      Progress: 551,000/1,000,000 (55.1%) | 5556 voters/sec | ETA: 81s      Progress: 552,000/1,000,000 (55.2%) | 5525 voters/sec | ETA: 81s      Progress: 553,000/1,000,000 (55.3%) | 5525 voters/sec | ETA: 81s      Progress: 554,000/1,000,000 (55.4%) | 5556 voters/sec | ETA: 80s      Progress: 555,000/1,000,000 (55.5%) | 5319 voters/sec | ETA: 84s      Progress: 556,000/1,000,000 (55.6%) | 5376 voters/sec | ETA: 83s      Progress: 557,000/1,000,000 (55.7%) | 5263 voters/sec | ETA: 84s      Progress: 558,000/1,000,000 (55.8%) | 5435 voters/sec | ETA: 81s      Progress: 559,000/1,000,000 (55.9%) | 5747 voters/sec | ETA: 77s      Progress: 560,000/1,000,000 (56.0%) | 5319 voters/sec | ETA: 83s      Progress: 561,000/1,000,000 (56.1%) | 5525 voters/sec | ETA: 79s      Progress: 562,000/1,000,000 (56.2%) | 5495 voters/sec | ETA: 80s      Progress: 563,000/1,000,000 (56.3%) | 5405 voters/sec | ETA: 81s      Progress: 564,000/1,000,000 (56.4%) | 5747 voters/sec | ETA: 76s      Progress: 565,000/1,000,000 (56.5%) | 5181 voters/sec | ETA: 84s      Progress: 566,000/1,000,000 (56.6%) | 5464 voters/sec | ETA: 79s      Progress: 567,000/1,000,000 (56.7%) | 5236 voters/sec | ETA: 83s      Progress: 568,000/1,000,000 (56.8%) | 5348 voters/sec | ETA: 81s      Progress: 569,000/1,000,000 (56.9%) | 5348 voters/sec | ETA: 81s      Progress: 570,000/1,000,000 (57.0%) | 5405 voters/sec | ETA: 80s      Progress: 571,000/1,000,000 (57.1%) | 5291 voters/sec | ETA: 81s      Progress: 572,000/1,000,000 (57.2%) | 5525 voters/sec | ETA: 77s      Progress: 573,000/1,000,000 (57.3%) | 5435 voters/sec | ETA: 79s      Progress: 574,000/1,000,000 (57.4%) | 5236 voters/sec | ETA: 81s      Progress: 575,000/1,000,000 (57.5%) | 5076 voters/sec | ETA: 84s      Progress: 576,000/1,000,000 (57.6%) | 5376 voters/sec | ETA: 79s      Progress: 577,000/1,000,000 (57.7%) | 5376 voters/sec | ETA: 79s      Progress: 578,000/1,000,000 (57.8%) | 5236 voters/sec | ETA: 81s      Progress: 579,000/1,000,000 (57.9%) | 5495 voters/sec | ETA: 77s      Progress: 580,000/1,000,000 (58.0%) | 4695 voters/sec | ETA: 89s      Progress: 581,000/1,000,000 (58.1%) | 5263 voters/sec | ETA: 80s      Progress: 582,000/1,000,000 (58.2%) | 5435 voters/sec | ETA: 77s      Progress: 583,000/1,000,000 (58.3%) | 4630 voters/sec | ETA: 90s      Progress: 584,000/1,000,000 (58.4%) | 5291 voters/sec | ETA: 79s      Progress: 585,000/1,000,000 (58.5%) | 5464 voters/sec | ETA: 76s      Progress: 586,000/1,000,000 (58.6%) | 5405 voters/sec | ETA: 77s      Progress: 587,000/1,000,000 (58.7%) | 5128 voters/sec | ETA: 81s      Progress: 588,000/1,000,000 (58.8%) | 5495 voters/sec | ETA: 75s      Progress: 589,000/1,000,000 (58.9%) | 5376 voters/sec | ETA: 76s      Progress: 590,000/1,000,000 (59.0%) | 5405 voters/sec | ETA: 76s      Progress: 591,000/1,000,000 (59.1%) | 5525 voters/sec | ETA: 74s      Progress: 592,000/1,000,000 (59.2%) | 5376 voters/sec | ETA: 76s      Progress: 593,000/1,000,000 (59.3%) | 5319 voters/sec | ETA: 77s      Progress: 594,000/1,000,000 (59.4%) | 5376 voters/sec | ETA: 76s      Progress: 595,000/1,000,000 (59.5%) | 5405 voters/sec | ETA: 75s      Progress: 596,000/1,000,000 (59.6%) | 5525 voters/sec | ETA: 73s      Progress: 597,000/1,000,000 (59.7%) | 5376 voters/sec | ETA: 75s      Progress: 598,000/1,000,000 (59.8%) | 5525 voters/sec | ETA: 73s      Progress: 599,000/1,000,000 (59.9%) | 2336 voters/sec | ETA: 172s      Progress: 600,000/1,000,000 (60.0%) | 3922 voters/sec | ETA: 102s      Progress: 601,000/1,000,000 (60.1%) | 4785 voters/sec | ETA: 83s      Progress: 602,000/1,000,000 (60.2%) | 4975 voters/sec | ETA: 80s      Progress: 603,000/1,000,000 (60.3%) | 4975 voters/sec | ETA: 80s      Progress: 604,000/1,000,000 (60.4%) | 5128 voters/sec | ETA: 77s      Progress: 605,000/1,000,000 (60.5%) | 5102 voters/sec | ETA: 77s      Progress: 606,000/1,000,000 (60.6%) | 5525 voters/sec | ETA: 71s      Progress: 607,000/1,000,000 (60.7%) | 5155 voters/sec | ETA: 76s      Progress: 608,000/1,000,000 (60.8%) | 5348 voters/sec | ETA: 73s      Progress: 609,000/1,000,000 (60.9%) | 5376 voters/sec | ETA: 73s      Progress: 610,000/1,000,000 (61.0%) | 5208 voters/sec | ETA: 75s      Progress: 611,000/1,000,000 (61.1%) | 5682 voters/sec | ETA: 68s      Progress: 612,000/1,000,000 (61.2%) | 5128 voters/sec | ETA: 76s      Progress: 613,000/1,000,000 (61.3%) | 5405 voters/sec | ETA: 72s      Progress: 614,000/1,000,000 (61.4%) | 5181 voters/sec | ETA: 75s      Progress: 615,000/1,000,000 (61.5%) | 5650 voters/sec | ETA: 68s      Progress: 616,000/1,000,000 (61.6%) | 5525 voters/sec | ETA: 70s      Progress: 617,000/1,000,000 (61.7%) | 5291 voters/sec | ETA: 72s      Progress: 618,000/1,000,000 (61.8%) | 5376 voters/sec | ETA: 71s      Progress: 619,000/1,000,000 (61.9%) | 5405 voters/sec | ETA: 70s      Progress: 620,000/1,000,000 (62.0%) | 5435 voters/sec | ETA: 70s      Progress: 621,000/1,000,000 (62.1%) | 5376 voters/sec | ETA: 70s      Progress: 622,000/1,000,000 (62.2%) | 5435 voters/sec | ETA: 70s      Progress: 623,000/1,000,000 (62.3%) | 5376 voters/sec | ETA: 70s      Progress: 624,000/1,000,000 (62.4%) | 5319 voters/sec | ETA: 71s      Progress: 625,000/1,000,000 (62.5%) | 5495 voters/sec | ETA: 68s      Progress: 626,000/1,000,000 (62.6%) | 5464 voters/sec | ETA: 68s      Progress: 627,000/1,000,000 (62.7%) | 5495 voters/sec | ETA: 68s      Progress: 628,000/1,000,000 (62.8%) | 5291 voters/sec | ETA: 70s      Progress: 629,000/1,000,000 (62.9%) | 5464 voters/sec | ETA: 68s      Progress: 630,000/1,000,000 (63.0%) | 5495 voters/sec | ETA: 67s      Progress: 631,000/1,000,000 (63.1%) | 5263 voters/sec | ETA: 70s      Progress: 632,000/1,000,000 (63.2%) | 5464 voters/sec | ETA: 67s      Progress: 633,000/1,000,000 (63.3%) | 5525 voters/sec | ETA: 66s      Progress: 634,000/1,000,000 (63.4%) | 5464 voters/sec | ETA: 67s      Progress: 635,000/1,000,000 (63.5%) | 5464 voters/sec | ETA: 67s      Progress: 636,000/1,000,000 (63.6%) | 5348 voters/sec | ETA: 68s      Progress: 637,000/1,000,000 (63.7%) | 5319 voters/sec | ETA: 68s      Progress: 638,000/1,000,000 (63.8%) | 5464 voters/sec | ETA: 66s      Progress: 639,000/1,000,000 (63.9%) | 5464 voters/sec | ETA: 66s      Progress: 640,000/1,000,000 (64.0%) | 3663 voters/sec | ETA: 98s      Progress: 641,000/1,000,000 (64.1%) | 2597 voters/sec | ETA: 138s      Progress: 642,000/1,000,000 (64.2%) | 3185 voters/sec | ETA: 112s      Progress: 643,000/1,000,000 (64.3%) | 4367 voters/sec | ETA: 82s      Progress: 644,000/1,000,000 (64.4%) | 4717 voters/sec | ETA: 75s      Progress: 645,000/1,000,000 (64.5%) | 4717 voters/sec | ETA: 75s      Progress: 646,000/1,000,000 (64.6%) | 5025 voters/sec | ETA: 70s      Progress: 647,000/1,000,000 (64.7%) | 4386 voters/sec | ETA: 80s      Progress: 648,000/1,000,000 (64.8%) | 3937 voters/sec | ETA: 89s      Progress: 649,000/1,000,000 (64.9%) | 4115 voters/sec | ETA: 85s      Progress: 650,000/1,000,000 (65.0%) | 4484 voters/sec | ETA: 78s      Progress: 651,000/1,000,000 (65.1%) | 4975 voters/sec | ETA: 70s      Progress: 652,000/1,000,000 (65.2%) | 4878 voters/sec | ETA: 71s      Progress: 653,000/1,000,000 (65.3%) | 5102 voters/sec | ETA: 68s      Progress: 654,000/1,000,000 (65.4%) | 4878 voters/sec | ETA: 71s      Progress: 655,000/1,000,000 (65.5%) | 4950 voters/sec | ETA: 70s      Progress: 656,000/1,000,000 (65.6%) | 5076 voters/sec | ETA: 68s      Progress: 657,000/1,000,000 (65.7%) | 5155 voters/sec | ETA: 67s      Progress: 658,000/1,000,000 (65.8%) | 5102 voters/sec | ETA: 67s      Progress: 659,000/1,000,000 (65.9%) | 5000 voters/sec | ETA: 68s      Progress: 660,000/1,000,000 (66.0%) | 5263 voters/sec | ETA: 65s      Progress: 661,000/1,000,000 (66.1%) | 5236 voters/sec | ETA: 65s      Progress: 662,000/1,000,000 (66.2%) | 5181 voters/sec | ETA: 65s      Progress: 663,000/1,000,000 (66.3%) | 5236 voters/sec | ETA: 64s      Progress: 664,000/1,000,000 (66.4%) | 4566 voters/sec | ETA: 74s      Progress: 665,000/1,000,000 (66.5%) | 4808 voters/sec | ETA: 70s      Progress: 666,000/1,000,000 (66.6%) | 4630 voters/sec | ETA: 72s      Progress: 667,000/1,000,000 (66.7%) | 4673 voters/sec | ETA: 71s      Progress: 668,000/1,000,000 (66.8%) | 4717 voters/sec | ETA: 70s      Progress: 669,000/1,000,000 (66.9%) | 4975 voters/sec | ETA: 67s      Progress: 670,000/1,000,000 (67.0%) | 4902 voters/sec | ETA: 67s      Progress: 671,000/1,000,000 (67.1%) | 4975 voters/sec | ETA: 66s      Progress: 672,000/1,000,000 (67.2%) | 4926 voters/sec | ETA: 67s      Progress: 673,000/1,000,000 (67.3%) | 5076 voters/sec | ETA: 64s      Progress: 674,000/1,000,000 (67.4%) | 4854 voters/sec | ETA: 67s      Progress: 675,000/1,000,000 (67.5%) | 4854 voters/sec | ETA: 67s      Progress: 676,000/1,000,000 (67.6%) | 5128 voters/sec | ETA: 63s      Progress: 677,000/1,000,000 (67.7%) | 5348 voters/sec | ETA: 60s      Progress: 678,000/1,000,000 (67.8%) | 5076 voters/sec | ETA: 63s      Progress: 679,000/1,000,000 (67.9%) | 5263 voters/sec | ETA: 61s      Progress: 680,000/1,000,000 (68.0%) | 5155 voters/sec | ETA: 62s      Progress: 681,000/1,000,000 (68.1%) | 4695 voters/sec | ETA: 68s      Progress: 682,000/1,000,000 (68.2%) | 5181 voters/sec | ETA: 61s      Progress: 683,000/1,000,000 (68.3%) | 4444 voters/sec | ETA: 71s      Progress: 684,000/1,000,000 (68.4%) | 4545 voters/sec | ETA: 70s      Progress: 685,000/1,000,000 (68.5%) | 4348 voters/sec | ETA: 72s      Progress: 686,000/1,000,000 (68.6%) | 4566 voters/sec | ETA: 69s      Progress: 687,000/1,000,000 (68.7%) | 4566 voters/sec | ETA: 69s      Progress: 688,000/1,000,000 (68.8%) | 4630 voters/sec | ETA: 67s      Progress: 689,000/1,000,000 (68.9%) | 4762 voters/sec | ETA: 65s      Progress: 690,000/1,000,000 (69.0%) | 4695 voters/sec | ETA: 66s      Progress: 691,000/1,000,000 (69.1%) | 4854 voters/sec | ETA: 64s      Progress: 692,000/1,000,000 (69.2%) | 5051 voters/sec | ETA: 61s      Progress: 693,000/1,000,000 (69.3%) | 4566 voters/sec | ETA: 67s      Progress: 694,000/1,000,000 (69.4%) | 4525 voters/sec | ETA: 68s      Progress: 695,000/1,000,000 (69.5%) | 4464 voters/sec | ETA: 68s      Progress: 696,000/1,000,000 (69.6%) | 4386 voters/sec | ETA: 69s      Progress: 697,000/1,000,000 (69.7%) | 4292 voters/sec | ETA: 71s      Progress: 698,000/1,000,000 (69.8%) | 4184 voters/sec | ETA: 72s      Progress: 699,000/1,000,000 (69.9%) | 4386 voters/sec | ETA: 69s      Progress: 700,000/1,000,000 (70.0%) | 4608 voters/sec | ETA: 65s      Progress: 701,000/1,000,000 (70.1%) | 4854 voters/sec | ETA: 62s      Progress: 702,000/1,000,000 (70.2%) | 4587 voters/sec | ETA: 65s      Progress: 703,000/1,000,000 (70.3%) | 4608 voters/sec | ETA: 64s      Progress: 704,000/1,000,000 (70.4%) | 4367 voters/sec | ETA: 68s      Progress: 705,000/1,000,000 (70.5%) | 4016 voters/sec | ETA: 73s      Progress: 706,000/1,000,000 (70.6%) | 3846 voters/sec | ETA: 76s      Progress: 707,000/1,000,000 (70.7%) | 4016 voters/sec | ETA: 73s      Progress: 708,000/1,000,000 (70.8%) | 4310 voters/sec | ETA: 68s      Progress: 709,000/1,000,000 (70.9%) | 4016 voters/sec | ETA: 72s      Progress: 710,000/1,000,000 (71.0%) | 4082 voters/sec | ETA: 71s      Progress: 711,000/1,000,000 (71.1%) | 4255 voters/sec | ETA: 68s      Progress: 712,000/1,000,000 (71.2%) | 4082 voters/sec | ETA: 71s      Progress: 713,000/1,000,000 (71.3%) | 3759 voters/sec | ETA: 76s      Progress: 714,000/1,000,000 (71.4%) | 3731 voters/sec | ETA: 77s      Progress: 715,000/1,000,000 (71.5%) | 3861 voters/sec | ETA: 74s      Progress: 716,000/1,000,000 (71.6%) | 4149 voters/sec | ETA: 68s      Progress: 717,000/1,000,000 (71.7%) | 4098 voters/sec | ETA: 69s      Progress: 718,000/1,000,000 (71.8%) | 4219 voters/sec | ETA: 67s      Progress: 719,000/1,000,000 (71.9%) | 3984 voters/sec | ETA: 71s      Progress: 720,000/1,000,000 (72.0%) | 4082 voters/sec | ETA: 69s      Progress: 721,000/1,000,000 (72.1%) | 3846 voters/sec | ETA: 73s      Progress: 722,000/1,000,000 (72.2%) | 3846 voters/sec | ETA: 72s      Progress: 723,000/1,000,000 (72.3%) | 4000 voters/sec | ETA: 69s      Progress: 724,000/1,000,000 (72.4%) | 4202 voters/sec | ETA: 66s      Progress: 725,000/1,000,000 (72.5%) | 4115 voters/sec | ETA: 67s      Progress: 726,000/1,000,000 (72.6%) | 4348 voters/sec | ETA: 63s      Progress: 727,000/1,000,000 (72.7%) | 4065 voters/sec | ETA: 67s      Progress: 728,000/1,000,000 (72.8%) | 4348 voters/sec | ETA: 63s      Progress: 729,000/1,000,000 (72.9%) | 4098 voters/sec | ETA: 66s      Progress: 730,000/1,000,000 (73.0%) | 3759 voters/sec | ETA: 72s      Progress: 731,000/1,000,000 (73.1%) | 3831 voters/sec | ETA: 70s      Progress: 732,000/1,000,000 (73.2%) | 3690 voters/sec | ETA: 73s      Progress: 733,000/1,000,000 (73.3%) | 3663 voters/sec | ETA: 73s      Progress: 734,000/1,000,000 (73.4%) | 4149 voters/sec | ETA: 64s      Progress: 735,000/1,000,000 (73.5%) | 3690 voters/sec | ETA: 72s      Progress: 736,000/1,000,000 (73.6%) | 4032 voters/sec | ETA: 65s      Progress: 737,000/1,000,000 (73.7%) | 3731 voters/sec | ETA: 70s      Progress: 738,000/1,000,000 (73.8%) | 3704 voters/sec | ETA: 71s      Progress: 739,000/1,000,000 (73.9%) | 3676 voters/sec | ETA: 71s      Progress: 740,000/1,000,000 (74.0%) | 3425 voters/sec | ETA: 76s      Progress: 741,000/1,000,000 (74.1%) | 3774 voters/sec | ETA: 69s      Progress: 742,000/1,000,000 (74.2%) | 3497 voters/sec | ETA: 74s      Progress: 743,000/1,000,000 (74.3%) | 3745 voters/sec | ETA: 69s      Progress: 744,000/1,000,000 (74.4%) | 3333 voters/sec | ETA: 77s      Progress: 745,000/1,000,000 (74.5%) | 3597 voters/sec | ETA: 71s      Progress: 746,000/1,000,000 (74.6%) | 3759 voters/sec | ETA: 68s      Progress: 747,000/1,000,000 (74.7%) | 3534 voters/sec | ETA: 72s      Progress: 748,000/1,000,000 (74.8%) | 3448 voters/sec | ETA: 73s      Progress: 749,000/1,000,000 (74.9%) | 3788 voters/sec | ETA: 66s      Progress: 750,000/1,000,000 (75.0%) | 2625 voters/sec | ETA: 95s      Progress: 751,000/1,000,000 (75.1%) | 3175 voters/sec | ETA: 78s      Progress: 752,000/1,000,000 (75.2%) | 3356 voters/sec | ETA: 74s      Progress: 753,000/1,000,000 (75.3%) | 3984 voters/sec | ETA: 62s      Progress: 754,000/1,000,000 (75.4%) | 4255 voters/sec | ETA: 58s      Progress: 755,000/1,000,000 (75.5%) | 4464 voters/sec | ETA: 55s      Progress: 756,000/1,000,000 (75.6%) | 3922 voters/sec | ETA: 62s      Progress: 757,000/1,000,000 (75.7%) | 3344 voters/sec | ETA: 73s      Progress: 758,000/1,000,000 (75.8%) | 3268 voters/sec | ETA: 74s      Progress: 759,000/1,000,000 (75.9%) | 3861 voters/sec | ETA: 62s      Progress: 760,000/1,000,000 (76.0%) | 3226 voters/sec | ETA: 74s      Progress: 761,000/1,000,000 (76.1%) | 3534 voters/sec | ETA: 68s      Progress: 762,000/1,000,000 (76.2%) | 3247 voters/sec | ETA: 73s      Progress: 763,000/1,000,000 (76.3%) | 3425 voters/sec | ETA: 69s      Progress: 764,000/1,000,000 (76.4%) | 3344 voters/sec | ETA: 71s      Progress: 765,000/1,000,000 (76.5%) | 3226 voters/sec | ETA: 73s      Progress: 766,000/1,000,000 (76.6%) | 3257 voters/sec | ETA: 72s      Progress: 767,000/1,000,000 (76.7%) | 3030 voters/sec | ETA: 77s      Progress: 768,000/1,000,000 (76.8%) | 3247 voters/sec | ETA: 71s      Progress: 769,000/1,000,000 (76.9%) | 3215 voters/sec | ETA: 72s      Progress: 770,000/1,000,000 (77.0%) | 3106 voters/sec | ETA: 74s      Progress: 771,000/1,000,000 (77.1%) | 3236 voters/sec | ETA: 71s      Progress: 772,000/1,000,000 (77.2%) | 3185 voters/sec | ETA: 72s      Progress: 773,000/1,000,000 (77.3%) | 3356 voters/sec | ETA: 68s      Progress: 774,000/1,000,000 (77.4%) | 3401 voters/sec | ETA: 66s      Progress: 775,000/1,000,000 (77.5%) | 3378 voters/sec | ETA: 67s      Progress: 776,000/1,000,000 (77.6%) | 3195 voters/sec | ETA: 70s      Progress: 777,000/1,000,000 (77.7%) | 3012 voters/sec | ETA: 74s      Progress: 778,000/1,000,000 (77.8%) | 3546 voters/sec | ETA: 63s      Progress: 779,000/1,000,000 (77.9%) | 3300 voters/sec | ETA: 67s      Progress: 780,000/1,000,000 (78.0%) | 3559 voters/sec | ETA: 62s      Progress: 781,000/1,000,000 (78.1%) | 3300 voters/sec | ETA: 66s      Progress: 782,000/1,000,000 (78.2%) | 3759 voters/sec | ETA: 58s      Progress: 783,000/1,000,000 (78.3%) | 3690 voters/sec | ETA: 59s      Progress: 784,000/1,000,000 (78.4%) | 3774 voters/sec | ETA: 57s      Progress: 785,000/1,000,000 (78.5%) | 3497 voters/sec | ETA: 61s      Progress: 786,000/1,000,000 (78.6%) | 3610 voters/sec | ETA: 59s      Progress: 787,000/1,000,000 (78.7%) | 3460 voters/sec | ETA: 62s      Progress: 788,000/1,000,000 (78.8%) | 3247 voters/sec | ETA: 65s      Progress: 789,000/1,000,000 (78.9%) | 3356 voters/sec | ETA: 63s      Progress: 790,000/1,000,000 (79.0%) | 3367 voters/sec | ETA: 62s      Progress: 791,000/1,000,000 (79.1%) | 3610 voters/sec | ETA: 58s      Progress: 792,000/1,000,000 (79.2%) | 3546 voters/sec | ETA: 59s      Progress: 793,000/1,000,000 (79.3%) | 3610 voters/sec | ETA: 57s      Progress: 794,000/1,000,000 (79.4%) | 3497 voters/sec | ETA: 59s      Progress: 795,000/1,000,000 (79.5%) | 3597 voters/sec | ETA: 57s      Progress: 796,000/1,000,000 (79.6%) | 3367 voters/sec | ETA: 61s      Progress: 797,000/1,000,000 (79.7%) | 3367 voters/sec | ETA: 60s      Progress: 798,000/1,000,000 (79.8%) | 3460 voters/sec | ETA: 58s      Progress: 799,000/1,000,000 (79.9%) | 3472 voters/sec | ETA: 58s      Progress: 800,000/1,000,000 (80.0%) | 3521 voters/sec | ETA: 57s      Progress: 801,000/1,000,000 (80.1%) | 3690 voters/sec | ETA: 54s      Progress: 802,000/1,000,000 (80.2%) | 3663 voters/sec | ETA: 54s      Progress: 803,000/1,000,000 (80.3%) | 3247 voters/sec | ETA: 61s      Progress: 804,000/1,000,000 (80.4%) | 2985 voters/sec | ETA: 66s      Progress: 805,000/1,000,000 (80.5%) | 3165 voters/sec | ETA: 62s      Progress: 806,000/1,000,000 (80.6%) | 3521 voters/sec | ETA: 55s      Progress: 807,000/1,000,000 (80.7%) | 3534 voters/sec | ETA: 55s      Progress: 808,000/1,000,000 (80.8%) | 3030 voters/sec | ETA: 63s      Progress: 809,000/1,000,000 (80.9%) | 3322 voters/sec | ETA: 57s      Progress: 810,000/1,000,000 (81.0%) | 3571 voters/sec | ETA: 53s      Progress: 811,000/1,000,000 (81.1%) | 3937 voters/sec | ETA: 48s      Progress: 812,000/1,000,000 (81.2%) | 3663 voters/sec | ETA: 51s      Progress: 813,000/1,000,000 (81.3%) | 3861 voters/sec | ETA: 48s      Progress: 814,000/1,000,000 (81.4%) | 3175 voters/sec | ETA: 59s      Progress: 815,000/1,000,000 (81.5%) | 3378 voters/sec | ETA: 55s      Progress: 816,000/1,000,000 (81.6%) | 3195 voters/sec | ETA: 58s      Progress: 817,000/1,000,000 (81.7%) | 3289 voters/sec | ETA: 56s      Progress: 818,000/1,000,000 (81.8%) | 2950 voters/sec | ETA: 62s      Progress: 819,000/1,000,000 (81.9%) | 3322 voters/sec | ETA: 54s      Progress: 820,000/1,000,000 (82.0%) | 3115 voters/sec | ETA: 58s      Progress: 821,000/1,000,000 (82.1%) | 3610 voters/sec | ETA: 50s      Progress: 822,000/1,000,000 (82.2%) | 3279 voters/sec | ETA: 54s      Progress: 823,000/1,000,000 (82.3%) | 3289 voters/sec | ETA: 54s      Progress: 824,000/1,000,000 (82.4%) | 3322 voters/sec | ETA: 53s      Progress: 825,000/1,000,000 (82.5%) | 3300 voters/sec | ETA: 53s      Progress: 826,000/1,000,000 (82.6%) | 3344 voters/sec | ETA: 52s      Progress: 827,000/1,000,000 (82.7%) | 3247 voters/sec | ETA: 53s      Progress: 828,000/1,000,000 (82.8%) | 3623 voters/sec | ETA: 47s      Progress: 829,000/1,000,000 (82.9%) | 3472 voters/sec | ETA: 49s      Progress: 830,000/1,000,000 (83.0%) | 3115 voters/sec | ETA: 55s      Progress: 831,000/1,000,000 (83.1%) | 3077 voters/sec | ETA: 55s      Progress: 832,000/1,000,000 (83.2%) | 3067 voters/sec | ETA: 55s      Progress: 833,000/1,000,000 (83.3%) | 3205 voters/sec | ETA: 52s      Progress: 834,000/1,000,000 (83.4%) | 3106 voters/sec | ETA: 53s      Progress: 835,000/1,000,000 (83.5%) | 3236 voters/sec | ETA: 51s      Progress: 836,000/1,000,000 (83.6%) | 3571 voters/sec | ETA: 46s      Progress: 837,000/1,000,000 (83.7%) | 3788 voters/sec | ETA: 43s      Progress: 838,000/1,000,000 (83.8%) | 3650 voters/sec | ETA: 44s      Progress: 839,000/1,000,000 (83.9%) | 1802 voters/sec | ETA: 89s      Progress: 840,000/1,000,000 (84.0%) | 3175 voters/sec | ETA: 50s      Progress: 841,000/1,000,000 (84.1%) | 3279 voters/sec | ETA: 48s      Progress: 842,000/1,000,000 (84.2%) | 3484 voters/sec | ETA: 45s      Progress: 843,000/1,000,000 (84.3%) | 3300 voters/sec | ETA: 48s      Progress: 844,000/1,000,000 (84.4%) | 3322 voters/sec | ETA: 47s      Progress: 845,000/1,000,000 (84.5%) | 3086 voters/sec | ETA: 50s      Progress: 846,000/1,000,000 (84.6%) | 3058 voters/sec | ETA: 50s      Progress: 847,000/1,000,000 (84.7%) | 2865 voters/sec | ETA: 53s      Progress: 848,000/1,000,000 (84.8%) | 2865 voters/sec | ETA: 53s      Progress: 849,000/1,000,000 (84.9%) | 2865 voters/sec | ETA: 53s      Progress: 850,000/1,000,000 (85.0%) | 3040 voters/sec | ETA: 49s      Progress: 851,000/1,000,000 (85.1%) | 3279 voters/sec | ETA: 45s      Progress: 852,000/1,000,000 (85.2%) | 3049 voters/sec | ETA: 49s      Progress: 853,000/1,000,000 (85.3%) | 2857 voters/sec | ETA: 51s      Progress: 854,000/1,000,000 (85.4%) | 3077 voters/sec | ETA: 47s      Progress: 855,000/1,000,000 (85.5%) | 2874 voters/sec | ETA: 50s      Progress: 856,000/1,000,000 (85.6%) | 2857 voters/sec | ETA: 50s      Progress: 857,000/1,000,000 (85.7%) | 2985 voters/sec | ETA: 48s      Progress: 858,000/1,000,000 (85.8%) | 2778 voters/sec | ETA: 51s      Progress: 859,000/1,000,000 (85.9%) | 2865 voters/sec | ETA: 49s      Progress: 860,000/1,000,000 (86.0%) | 3030 voters/sec | ETA: 46s      Progress: 861,000/1,000,000 (86.1%) | 2717 voters/sec | ETA: 51s      Progress: 862,000/1,000,000 (86.2%) | 3472 voters/sec | ETA: 40s      Progress: 863,000/1,000,000 (86.3%) | 2000 voters/sec | ETA: 69s      Progress: 864,000/1,000,000 (86.4%) | 2551 voters/sec | ETA: 53s      Progress: 865,000/1,000,000 (86.5%) | 3067 voters/sec | ETA: 44s      Progress: 866,000/1,000,000 (86.6%) | 3268 voters/sec | ETA: 41s      Progress: 867,000/1,000,000 (86.7%) | 3484 voters/sec | ETA: 38s      Progress: 868,000/1,000,000 (86.8%) | 3650 voters/sec | ETA: 36s      Progress: 869,000/1,000,000 (86.9%) | 3953 voters/sec | ETA: 33s      Progress: 870,000/1,000,000 (87.0%) | 1637 voters/sec | ETA: 79s      Progress: 871,000/1,000,000 (87.1%) | 1656 voters/sec | ETA: 78s      Progress: 872,000/1,000,000 (87.2%) | 2817 voters/sec | ETA: 45s      Progress: 873,000/1,000,000 (87.3%) | 3333 voters/sec | ETA: 38s      Progress: 874,000/1,000,000 (87.4%) | 3610 voters/sec | ETA: 35s      Progress: 875,000/1,000,000 (87.5%) | 3731 voters/sec | ETA: 34s      Progress: 876,000/1,000,000 (87.6%) | 4115 voters/sec | ETA: 30s      Progress: 877,000/1,000,000 (87.7%) | 4292 voters/sec | ETA: 29s      Progress: 878,000/1,000,000 (87.8%) | 4386 voters/sec | ETA: 28s      Progress: 879,000/1,000,000 (87.9%) | 4274 voters/sec | ETA: 28s      Progress: 880,000/1,000,000 (88.0%) | 4505 voters/sec | ETA: 27s      Progress: 881,000/1,000,000 (88.1%) | 4464 voters/sec | ETA: 27s      Progress: 882,000/1,000,000 (88.2%) | 4545 voters/sec | ETA: 26s      Progress: 883,000/1,000,000 (88.3%) | 4274 voters/sec | ETA: 27s      Progress: 884,000/1,000,000 (88.4%) | 4425 voters/sec | ETA: 26s      Progress: 885,000/1,000,000 (88.5%) | 4202 voters/sec | ETA: 27s      Progress: 886,000/1,000,000 (88.6%) | 3663 voters/sec | ETA: 31s      Progress: 887,000/1,000,000 (88.7%) | 3690 voters/sec | ETA: 31s      Progress: 888,000/1,000,000 (88.8%) | 3891 voters/sec | ETA: 29s      Progress: 889,000/1,000,000 (88.9%) | 4149 voters/sec | ETA: 27s      Progress: 890,000/1,000,000 (89.0%) | 3968 voters/sec | ETA: 28s      Progress: 891,000/1,000,000 (89.1%) | 3390 voters/sec | ETA: 32s      Progress: 892,000/1,000,000 (89.2%) | 3559 voters/sec | ETA: 30s      Progress: 893,000/1,000,000 (89.3%) | 3356 voters/sec | ETA: 32s      Progress: 894,000/1,000,000 (89.4%) | 3436 voters/sec | ETA: 31s      Progress: 895,000/1,000,000 (89.5%) | 3663 voters/sec | ETA: 29s      Progress: 896,000/1,000,000 (89.6%) | 3021 voters/sec | ETA: 34s      Progress: 897,000/1,000,000 (89.7%) | 2457 voters/sec | ETA: 42s      Progress: 898,000/1,000,000 (89.8%) | 1479 voters/sec | ETA: 69s      Progress: 899,000/1,000,000 (89.9%) | 2632 voters/sec | ETA: 38s      Progress: 900,000/1,000,000 (90.0%) | 3165 voters/sec | ETA: 32s      Progress: 901,000/1,000,000 (90.1%) | 3745 voters/sec | ETA: 26s      Progress: 902,000/1,000,000 (90.2%) | 3906 voters/sec | ETA: 25s      Progress: 903,000/1,000,000 (90.3%) | 4348 voters/sec | ETA: 22s      Progress: 904,000/1,000,000 (90.4%) | 4329 voters/sec | ETA: 22s      Progress: 905,000/1,000,000 (90.5%) | 4525 voters/sec | ETA: 21s      Progress: 906,000/1,000,000 (90.6%) | 4630 voters/sec | ETA: 20s      Progress: 907,000/1,000,000 (90.7%) | 4405 voters/sec | ETA: 21s      Progress: 908,000/1,000,000 (90.8%) | 4545 voters/sec | ETA: 20s      Progress: 909,000/1,000,000 (90.9%) | 4608 voters/sec | ETA: 20s      Progress: 910,000/1,000,000 (91.0%) | 4854 voters/sec | ETA: 19s      Progress: 911,000/1,000,000 (91.1%) | 4525 voters/sec | ETA: 20s      Progress: 912,000/1,000,000 (91.2%) | 4878 voters/sec | ETA: 18s      Progress: 913,000/1,000,000 (91.3%) | 4854 voters/sec | ETA: 18s      Progress: 914,000/1,000,000 (91.4%) | 4926 voters/sec | ETA: 17s      Progress: 915,000/1,000,000 (91.5%) | 3922 voters/sec | ETA: 22s      Progress: 916,000/1,000,000 (91.6%) | 4115 voters/sec | ETA: 20s      Progress: 917,000/1,000,000 (91.7%) | 3861 voters/sec | ETA: 21s      Progress: 918,000/1,000,000 (91.8%) | 3676 voters/sec | ETA: 22s      Progress: 919,000/1,000,000 (91.9%) | 3984 voters/sec | ETA: 20s      Progress: 920,000/1,000,000 (92.0%) | 3731 voters/sec | ETA: 21s      Progress: 921,000/1,000,000 (92.1%) | 3676 voters/sec | ETA: 21s      Progress: 922,000/1,000,000 (92.2%) | 3788 voters/sec | ETA: 21s      Progress: 923,000/1,000,000 (92.3%) | 3717 voters/sec | ETA: 21s      Progress: 924,000/1,000,000 (92.4%) | 3436 voters/sec | ETA: 22s      Progress: 925,000/1,000,000 (92.5%) | 3636 voters/sec | ETA: 21s      Progress: 926,000/1,000,000 (92.6%) | 3922 voters/sec | ETA: 19s      Progress: 927,000/1,000,000 (92.7%) | 3922 voters/sec | ETA: 19s      Progress: 928,000/1,000,000 (92.8%) | 3817 voters/sec | ETA: 19s      Progress: 929,000/1,000,000 (92.9%) | 3704 voters/sec | ETA: 19s      Progress: 930,000/1,000,000 (93.0%) | 3937 voters/sec | ETA: 18s      Progress: 931,000/1,000,000 (93.1%) | 3497 voters/sec | ETA: 20s      Progress: 932,000/1,000,000 (93.2%) | 3937 voters/sec | ETA: 17s      Progress: 933,000/1,000,000 (93.3%) | 4032 voters/sec | ETA: 17s      Progress: 934,000/1,000,000 (93.4%) | 3690 voters/sec | ETA: 18s      Progress: 935,000/1,000,000 (93.5%) | 3534 voters/sec | ETA: 18s      Progress: 936,000/1,000,000 (93.6%) | 3802 voters/sec | ETA: 17s      Progress: 937,000/1,000,000 (93.7%) | 1374 voters/sec | ETA: 46s      Progress: 938,000/1,000,000 (93.8%) | 608 voters/sec | ETA: 102s      Progress: 939,000/1,000,000 (93.9%) | 4348 voters/sec | ETA: 14s      Progress: 940,000/1,000,000 (94.0%) | 4587 voters/sec | ETA: 13s      Progress: 941,000/1,000,000 (94.1%) | 4975 voters/sec | ETA: 12s      Progress: 942,000/1,000,000 (94.2%) | 4310 voters/sec | ETA: 13s      Progress: 943,000/1,000,000 (94.3%) | 4739 voters/sec | ETA: 12s      Progress: 944,000/1,000,000 (94.4%) | 4739 voters/sec | ETA: 12s      Progress: 945,000/1,000,000 (94.5%) | 4831 voters/sec | ETA: 11s      Progress: 946,000/1,000,000 (94.6%) | 4878 voters/sec | ETA: 11s      Progress: 947,000/1,000,000 (94.7%) | 4608 voters/sec | ETA: 12s      Progress: 948,000/1,000,000 (94.8%) | 4878 voters/sec | ETA: 11s      Progress: 949,000/1,000,000 (94.9%) | 4950 voters/sec | ETA: 10s      Progress: 950,000/1,000,000 (95.0%) | 4484 voters/sec | ETA: 11s      Progress: 951,000/1,000,000 (95.1%) | 4831 voters/sec | ETA: 10s      Progress: 952,000/1,000,000 (95.2%) | 4132 voters/sec | ETA: 12s      Progress: 953,000/1,000,000 (95.3%) | 4132 voters/sec | ETA: 11s      Progress: 954,000/1,000,000 (95.4%) | 4386 voters/sec | ETA: 10s      Progress: 955,000/1,000,000 (95.5%) | 3968 voters/sec | ETA: 11s      Progress: 956,000/1,000,000 (95.6%) | 4149 voters/sec | ETA: 11s      Progress: 957,000/1,000,000 (95.7%) | 4367 voters/sec | ETA: 10s      Progress: 958,000/1,000,000 (95.8%) | 4444 voters/sec | ETA: 9s      Progress: 959,000/1,000,000 (95.9%) | 4464 voters/sec | ETA: 9s      Progress: 960,000/1,000,000 (96.0%) | 3571 voters/sec | ETA: 11s      Progress: 961,000/1,000,000 (96.1%) | 3378 voters/sec | ETA: 12s      Progress: 962,000/1,000,000 (96.2%) | 3597 voters/sec | ETA: 11s      Progress: 963,000/1,000,000 (96.3%) | 3922 voters/sec | ETA: 9s      Progress: 964,000/1,000,000 (96.4%) | 3802 voters/sec | ETA: 9s      Progress: 965,000/1,000,000 (96.5%) | 4219 voters/sec | ETA: 8s      Progress: 966,000/1,000,000 (96.6%) | 4329 voters/sec | ETA: 8s      Progress: 967,000/1,000,000 (96.7%) | 4237 voters/sec | ETA: 8s      Progress: 968,000/1,000,000 (96.8%) | 3788 voters/sec | ETA: 8s      Progress: 969,000/1,000,000 (96.9%) | 3745 voters/sec | ETA: 8s      Progress: 970,000/1,000,000 (97.0%) | 3436 voters/sec | ETA: 9s      Progress: 971,000/1,000,000 (97.1%) | 3953 voters/sec | ETA: 7s      Progress: 972,000/1,000,000 (97.2%) | 3984 voters/sec | ETA: 7s      Progress: 973,000/1,000,000 (97.3%) | 3861 voters/sec | ETA: 7s      Progress: 974,000/1,000,000 (97.4%) | 4202 voters/sec | ETA: 6s      Progress: 975,000/1,000,000 (97.5%) | 4149 voters/sec | ETA: 6s      Progress: 976,000/1,000,000 (97.6%) | 3831 voters/sec | ETA: 6s      Progress: 977,000/1,000,000 (97.7%) | 4032 voters/sec | ETA: 6s      Progress: 978,000/1,000,000 (97.8%) | 3650 voters/sec | ETA: 6s      Progress: 979,000/1,000,000 (97.9%) | 3788 voters/sec | ETA: 6s      Progress: 980,000/1,000,000 (98.0%) | 3378 voters/sec | ETA: 6s      Progress: 981,000/1,000,000 (98.1%) | 3906 voters/sec | ETA: 5s      Progress: 982,000/1,000,000 (98.2%) | 3676 voters/sec | ETA: 5s      Progress: 983,000/1,000,000 (98.3%) | 3546 voters/sec | ETA: 5s      Progress: 984,000/1,000,000 (98.4%) | 3610 voters/sec | ETA: 4s      Progress: 985,000/1,000,000 (98.5%) | 3922 voters/sec | ETA: 4s      Progress: 986,000/1,000,000 (98.6%) | 4065 voters/sec | ETA: 3s      Progress: 987,000/1,000,000 (98.7%) | 3774 voters/sec | ETA: 3s      Progress: 988,000/1,000,000 (98.8%) | 3584 voters/sec | ETA: 3s      Progress: 989,000/1,000,000 (98.9%) | 3460 voters/sec | ETA: 3s      Progress: 990,000/1,000,000 (99.0%) | 3690 voters/sec | ETA: 3s      Progress: 991,000/1,000,000 (99.1%) | 3521 voters/sec | ETA: 3s      Progress: 992,000/1,000,000 (99.2%) | 4032 voters/sec | ETA: 2s      Progress: 993,000/1,000,000 (99.3%) | 2421 voters/sec | ETA: 3s      Progress: 994,000/1,000,000 (99.4%) | 2114 voters/sec | ETA: 3s      Progress: 995,000/1,000,000 (99.5%) | 2092 voters/sec | ETA: 2s      Progress: 996,000/1,000,000 (99.6%) | 2237 voters/sec | ETA: 2s      Progress: 997,000/1,000,000 (99.7%) | 2183 voters/sec | ETA: 1s      Progress: 998,000/1,000,000 (99.8%) | 2519 voters/sec | ETA: 1s      Progress: 999,000/1,000,000 (99.9%) | 2646 voters/sec | ETA: 0s      Progress: 1,000,000/1,000,000 (100.0%) | 2469 voters/sec | ETA: 0s   
+
+7. Voting Results:
+
+   President of the United States:
+      Carol Chen: 333,954 (33.4%) ███████
+      Bob Brown: 333,262 (33.3%) ███████
+      Alice Adams: 332,784 (33.3%) ███████
+
+   California Governor:
+      Diana Davis: 500,072 (50.0%) ██████████
+      Edward Evans: 499,928 (50.0%) ██████████
+
+   Proposition 99: State Parks Funding:
+      Yes: 500,092 (50.0%) ██████████
+      No: 499,908 (50.0%) ██████████
+
+   Placer County Sheriff:
+      Frank Foster: 501,190 (50.1%) ██████████
+      Grace Garcia: 498,810 (49.9%) ██████████
+
+   Measure A: Road Improvements:
+      No: 500,358 (50.0%) ██████████
+      Yes: 499,642 (50.0%) ██████████
+
+8. Per-Question Merkle Trees:
+
+   President of the United States:
+      Votes: 1,000,000
+      Merkle root: 7272f1390ab770347ca654cf...
+   California Governor:
+      Votes: 1,000,000
+      Merkle root: 86e6b5fc547fc6cab7fa2fef...
+   Proposition 99: State Parks Funding:
+      Votes: 1,000,000
+      Merkle root: 3b68d4f2e13f3bad2f200760...
+   Placer County Sheriff:
+      Votes: 1,000,000
+      Merkle root: 84b90cabc218e90069728461...
+   Measure A: Road Improvements:
+      Votes: 1,000,000
+      Merkle root: 370f47449924c8c0b69a5fa3...
+
+9. Throughput Degradation Curve:
+
+   Voters     Throughput    Cumulative     Batch
+   ──────────────────────────────────────────────
+      1000    4274/sec        0.2s     234ms
+      2000    5714/sec        0.4s     175ms
+      3000    6211/sec        0.6s     161ms
+      4000    7042/sec        0.7s     142ms
+      5000    7407/sec        0.8s     135ms
+      6000    6803/sec        1.0s     147ms
+      7000    6803/sec        1.1s     147ms
+      8000    7143/sec        1.3s     140ms
+      9000    7407/sec        1.4s     135ms
+     10000    7813/sec        1.5s     128ms
+     11000    7463/sec        1.7s     134ms
+     12000    7042/sec        1.8s     142ms
+     13000    6452/sec        2.0s     155ms
+     14000    7937/sec        2.1s     126ms
+     15000    6579/sec        2.3s     152ms
+     16000    6897/sec        2.4s     145ms
+     17000    6623/sec        2.5s     151ms
+     18000    6993/sec        2.7s     143ms
+     19000    6711/sec        2.8s     149ms
+     20000    6329/sec        3.0s     158ms
+     21000    6944/sec        3.1s     144ms
+     22000    6849/sec        3.3s     146ms
+     23000    6897/sec        3.4s     145ms
+     24000    6944/sec        3.6s     144ms
+     25000    6711/sec        3.7s     149ms
+     26000    7092/sec        3.9s     141ms
+     27000    6757/sec        4.0s     148ms
+     28000    7299/sec        4.2s     137ms
+     29000    6667/sec        4.3s     150ms
+     30000    7042/sec        4.4s     142ms
+     31000    6849/sec        4.6s     146ms
+     32000    6711/sec        4.7s     149ms
+     33000    5556/sec        4.9s     180ms
+     34000    6329/sec        5.1s     158ms
+     35000    6667/sec        5.2s     150ms
+     36000    6757/sec        5.4s     148ms
+     37000    7353/sec        5.5s     136ms
+     38000    6494/sec        5.7s     154ms
+     39000    7463/sec        5.8s     134ms
+     40000    6667/sec        6.0s     150ms
+     41000    5814/sec        6.1s     172ms
+     42000    6536/sec        6.3s     153ms
+     43000    6757/sec        6.4s     148ms
+     44000    6623/sec        6.6s     151ms
+     45000    6944/sec        6.7s     144ms
+     46000    6536/sec        6.9s     153ms
+     47000    6536/sec        7.0s     153ms
+     48000    6667/sec        7.2s     150ms
+     49000    6757/sec        7.3s     148ms
+     50000    6623/sec        7.5s     151ms
+     51000    6452/sec        7.6s     155ms
+     52000    6579/sec        7.8s     152ms
+     53000    6369/sec        7.9s     157ms
+     54000    6579/sec        8.1s     152ms
+     55000    6494/sec        8.2s     154ms
+     56000    4717/sec        8.5s     212ms
+     57000    6369/sec        8.6s     157ms
+     58000    6897/sec        8.8s     145ms
+     59000    6494/sec        8.9s     154ms
+     60000    6494/sec        9.1s     154ms
+     61000    6369/sec        9.2s     157ms
+     62000    6410/sec        9.4s     156ms
+     63000    6667/sec        9.5s     150ms
+     64000    6494/sec        9.7s     154ms
+     65000    6579/sec        9.8s     152ms
+     66000    5525/sec       10.0s     181ms
+     67000    6289/sec       10.2s     159ms
+     68000    6494/sec       10.3s     154ms
+     69000    6289/sec       10.5s     159ms
+     70000    6098/sec       10.7s     164ms
+     71000    6897/sec       10.8s     145ms
+     72000    6098/sec       11.0s     164ms
+     73000    5917/sec       11.1s     169ms
+     74000    6757/sec       11.3s     148ms
+     75000    6250/sec       11.4s     160ms
+     76000    6369/sec       11.6s     157ms
+     77000    6494/sec       11.7s     154ms
+     78000    6329/sec       11.9s     158ms
+     79000    6536/sec       12.1s     153ms
+     80000    6494/sec       12.2s     154ms
+     81000    6211/sec       12.4s     161ms
+     82000    6211/sec       12.5s     161ms
+     83000    5848/sec       12.7s     171ms
+     84000    6061/sec       12.9s     165ms
+     85000    6135/sec       13.0s     163ms
+     86000    6173/sec       13.2s     162ms
+     87000    6369/sec       13.4s     157ms
+     88000    6410/sec       13.5s     156ms
+     89000    6250/sec       13.7s     160ms
+     90000    6369/sec       13.8s     157ms
+     91000    5988/sec       14.0s     167ms
+     92000    6211/sec       14.2s     161ms
+     93000    6098/sec       14.3s     164ms
+     94000    6211/sec       14.5s     161ms
+     95000    6173/sec       14.6s     162ms
+     96000    6289/sec       14.8s     159ms
+     97000    6211/sec       15.0s     161ms
+     98000    6329/sec       15.1s     158ms
+     99000    6329/sec       15.3s     158ms
+    100000    6061/sec       15.4s     165ms
+    101000    6250/sec       15.6s     160ms
+    102000    6410/sec       15.8s     156ms
+    103000    6061/sec       15.9s     165ms
+    104000    6135/sec       16.1s     163ms
+    105000    5917/sec       16.3s     169ms
+    106000    5882/sec       16.4s     170ms
+    107000    6623/sec       16.6s     151ms
+    108000    6289/sec       16.7s     159ms
+    109000    6289/sec       16.9s     159ms
+    110000    6289/sec       17.1s     159ms
+    111000    6135/sec       17.2s     163ms
+    112000    6061/sec       17.4s     165ms
+    113000    6024/sec       17.5s     166ms
+    114000    6452/sec       17.7s     155ms
+    115000    6211/sec       17.9s     161ms
+    116000    5814/sec       18.0s     172ms
+    117000    6173/sec       18.2s     162ms
+    118000    6211/sec       18.4s     161ms
+    119000    6135/sec       18.5s     163ms
+    120000    6135/sec       18.7s     163ms
+    121000    6329/sec       18.8s     158ms
+    122000    6410/sec       19.0s     156ms
+    123000    6211/sec       19.2s     161ms
+    124000    6211/sec       19.3s     161ms
+    125000    6289/sec       19.5s     159ms
+    126000    6250/sec       19.6s     160ms
+    127000    6410/sec       19.8s     156ms
+    128000    6061/sec       20.0s     165ms
+    129000    6452/sec       20.1s     155ms
+    130000    5882/sec       20.3s     170ms
+    131000    5882/sec       20.5s     170ms
+    132000    4587/sec       20.7s     218ms
+    133000    6024/sec       20.8s     166ms
+    134000    6098/sec       21.0s     164ms
+    135000    6135/sec       21.2s     163ms
+    136000    5988/sec       21.3s     167ms
+    137000    6024/sec       21.5s     166ms
+    138000    6024/sec       21.7s     166ms
+    139000    6289/sec       21.8s     159ms
+    140000    5882/sec       22.0s     170ms
+    141000    6098/sec       22.2s     164ms
+    142000    5917/sec       22.3s     169ms
+    143000    5952/sec       22.5s     168ms
+    144000    6061/sec       22.7s     165ms
+    145000    6369/sec       22.8s     157ms
+    146000    6024/sec       23.0s     166ms
+    147000    6289/sec       23.1s     159ms
+    148000    6098/sec       23.3s     164ms
+    149000    5988/sec       23.5s     167ms
+    150000    6250/sec       23.6s     160ms
+    151000    6098/sec       23.8s     164ms
+    152000    6329/sec       24.0s     158ms
+    153000    6024/sec       24.1s     166ms
+    154000    6098/sec       24.3s     164ms
+    155000    6135/sec       24.5s     163ms
+    156000    5952/sec       24.6s     168ms
+    157000    6211/sec       24.8s     161ms
+    158000    6024/sec       24.9s     166ms
+    159000    6410/sec       25.1s     156ms
+    160000    5848/sec       25.3s     171ms
+    161000    5917/sec       25.4s     169ms
+    162000    6024/sec       25.6s     166ms
+    163000    6250/sec       25.8s     160ms
+    164000    5952/sec       25.9s     168ms
+    165000    5988/sec       26.1s     167ms
+    166000    6173/sec       26.3s     162ms
+    167000    5714/sec       26.4s     175ms
+    168000    6173/sec       26.6s     162ms
+    169000    6098/sec       26.8s     164ms
+    170000    6211/sec       26.9s     161ms
+    171000    5988/sec       27.1s     167ms
+    172000    5780/sec       27.3s     173ms
+    173000    5988/sec       27.4s     167ms
+    174000    6173/sec       27.6s     162ms
+    175000    6024/sec       27.8s     166ms
+    176000    5952/sec       27.9s     168ms
+    177000    5988/sec       28.1s     167ms
+    178000    5814/sec       28.3s     172ms
+    179000    6329/sec       28.4s     158ms
+    180000    5917/sec       28.6s     169ms
+    181000    5848/sec       28.8s     171ms
+    182000    6098/sec       28.9s     164ms
+    183000    5917/sec       29.1s     169ms
+    184000    5988/sec       29.3s     167ms
+    185000    5917/sec       29.4s     169ms
+    186000    6061/sec       29.6s     165ms
+    187000    5814/sec       29.8s     172ms
+    188000    6061/sec       29.9s     165ms
+    189000    6061/sec       30.1s     165ms
+    190000    5747/sec       30.3s     174ms
+    191000    5988/sec       30.4s     167ms
+    192000    5952/sec       30.6s     168ms
+    193000    5988/sec       30.8s     167ms
+    194000    6250/sec       30.9s     160ms
+    195000    5882/sec       31.1s     170ms
+    196000    5714/sec       31.3s     175ms
+    197000    5988/sec       31.5s     167ms
+    198000    5882/sec       31.6s     170ms
+    199000    5917/sec       31.8s     169ms
+    200000    5848/sec       32.0s     171ms
+    201000    5952/sec       32.1s     168ms
+    202000    5848/sec       32.3s     171ms
+    203000    5848/sec       32.5s     171ms
+    204000    5882/sec       32.6s     170ms
+    205000    5988/sec       32.8s     167ms
+    206000    5952/sec       33.0s     168ms
+    207000    5747/sec       33.1s     174ms
+    208000    5814/sec       33.3s     172ms
+    209000    5882/sec       33.5s     170ms
+    210000    4000/sec       33.7s     250ms
+    211000    3953/sec       34.0s     253ms
+    212000    6410/sec       34.2s     156ms
+    213000    5988/sec       34.3s     167ms
+    214000    6024/sec       34.5s     166ms
+    215000    5988/sec       34.7s     167ms
+    216000    6173/sec       34.8s     162ms
+    217000    6024/sec       35.0s     166ms
+    218000    5882/sec       35.1s     170ms
+    219000    5405/sec       35.3s     185ms
+    220000    6494/sec       35.5s     154ms
+    221000    5882/sec       35.7s     170ms
+    222000    6024/sec       35.8s     166ms
+    223000    6024/sec       36.0s     166ms
+    224000    6410/sec       36.1s     156ms
+    225000    5952/sec       36.3s     168ms
+    226000    6250/sec       36.5s     160ms
+    227000    6061/sec       36.6s     165ms
+    228000    6329/sec       36.8s     158ms
+    229000    6024/sec       37.0s     166ms
+    230000    5952/sec       37.1s     168ms
+    231000    5952/sec       37.3s     168ms
+    232000    5988/sec       37.5s     167ms
+    233000    5952/sec       37.6s     168ms
+    234000    6098/sec       37.8s     164ms
+    235000    6135/sec       38.0s     163ms
+    236000    6024/sec       38.1s     166ms
+    237000    6098/sec       38.3s     164ms
+    238000    6024/sec       38.5s     166ms
+    239000    5848/sec       38.6s     171ms
+    240000    6098/sec       38.8s     164ms
+    241000    5988/sec       39.0s     167ms
+    242000    6098/sec       39.1s     164ms
+    243000    5917/sec       39.3s     169ms
+    244000    6098/sec       39.5s     164ms
+    245000    5882/sec       39.6s     170ms
+    246000    5917/sec       39.8s     169ms
+    247000    6024/sec       40.0s     166ms
+    248000    5917/sec       40.1s     169ms
+    249000    5952/sec       40.3s     168ms
+    250000    5917/sec       40.5s     169ms
+    251000    6061/sec       40.6s     165ms
+    252000    5714/sec       40.8s     175ms
+    253000    5882/sec       41.0s     170ms
+    254000    5780/sec       41.1s     173ms
+    255000    5952/sec       41.3s     168ms
+    256000    6098/sec       41.5s     164ms
+    257000    5917/sec       41.7s     169ms
+    258000    5780/sec       41.8s     173ms
+    259000    5917/sec       42.0s     169ms
+    260000    6135/sec       42.2s     163ms
+    261000    5952/sec       42.3s     168ms
+    262000    5780/sec       42.5s     173ms
+    263000    3597/sec       42.8s     278ms
+    264000    5780/sec       42.9s     173ms
+    265000    5714/sec       43.1s     175ms
+    266000    5917/sec       43.3s     169ms
+    267000    5747/sec       43.5s     174ms
+    268000    5848/sec       43.6s     171ms
+    269000    5814/sec       43.8s     172ms
+    270000    5848/sec       44.0s     171ms
+    271000    5814/sec       44.2s     172ms
+    272000    5988/sec       44.3s     167ms
+    273000    5882/sec       44.5s     170ms
+    274000    5988/sec       44.7s     167ms
+    275000    5917/sec       44.8s     169ms
+    276000    5587/sec       45.0s     179ms
+    277000    5319/sec       45.2s     188ms
+    278000    5181/sec       45.4s     193ms
+    279000    5747/sec       45.6s     174ms
+    280000    5780/sec       45.7s     173ms
+    281000    5747/sec       45.9s     174ms
+    282000    6061/sec       46.1s     165ms
+    283000    5848/sec       46.2s     171ms
+    284000    5747/sec       46.4s     174ms
+    285000    5814/sec       46.6s     172ms
+    286000    6135/sec       46.8s     163ms
+    287000    5952/sec       46.9s     168ms
+    288000    5714/sec       47.1s     175ms
+    289000    5917/sec       47.3s     169ms
+    290000    5814/sec       47.4s     172ms
+    291000    5682/sec       47.6s     176ms
+    292000    5848/sec       47.8s     171ms
+    293000    5780/sec       48.0s     173ms
+    294000    5952/sec       48.1s     168ms
+    295000    5917/sec       48.3s     169ms
+    296000    5848/sec       48.5s     171ms
+    297000    5917/sec       48.6s     169ms
+    298000    5650/sec       48.8s     177ms
+    299000    5882/sec       49.0s     170ms
+    300000    6173/sec       49.1s     162ms
+    301000    5917/sec       49.3s     169ms
+    302000    5952/sec       49.5s     168ms
+    303000    5814/sec       49.7s     172ms
+    304000    5682/sec       49.8s     176ms
+    305000    5747/sec       50.0s     174ms
+    306000    6024/sec       50.2s     166ms
+    307000    5747/sec       50.3s     174ms
+    308000    5780/sec       50.5s     173ms
+    309000    5780/sec       50.7s     173ms
+    310000    5780/sec       50.9s     173ms
+    311000    5848/sec       51.0s     171ms
+    312000    5747/sec       51.2s     174ms
+    313000    5780/sec       51.4s     173ms
+    314000    5952/sec       51.5s     168ms
+    315000    5848/sec       51.7s     171ms
+    316000    5882/sec       51.9s     170ms
+    317000    5556/sec       52.1s     180ms
+    318000    6173/sec       52.2s     162ms
+    319000    5780/sec       52.4s     173ms
+    320000    5682/sec       52.6s     176ms
+    321000    5848/sec       52.7s     171ms
+    322000    5618/sec       52.9s     178ms
+    323000    5650/sec       53.1s     177ms
+    324000    5848/sec       53.3s     171ms
+    325000    5747/sec       53.4s     174ms
+    326000    5128/sec       53.6s     195ms
+    327000    5587/sec       53.8s     179ms
+    328000    5747/sec       54.0s     174ms
+    329000    5882/sec       54.2s     170ms
+    330000    5587/sec       54.3s     179ms
+    331000    6061/sec       54.5s     165ms
+    332000    5780/sec       54.7s     173ms
+    333000    5780/sec       54.9s     173ms
+    334000    5848/sec       55.0s     171ms
+    335000    5917/sec       55.2s     169ms
+    336000    6135/sec       55.4s     163ms
+    337000    5747/sec       55.5s     174ms
+    338000    5814/sec       55.7s     172ms
+    339000    5618/sec       55.9s     178ms
+    340000    5882/sec       56.1s     170ms
+    341000    5714/sec       56.2s     175ms
+    342000    5882/sec       56.4s     170ms
+    343000    5780/sec       56.6s     173ms
+    344000    5525/sec       56.8s     181ms
+    345000    5650/sec       56.9s     177ms
+    346000    6098/sec       57.1s     164ms
+    347000    5618/sec       57.3s     178ms
+    348000    5405/sec       57.5s     185ms
+    349000    5714/sec       57.6s     175ms
+    350000    5650/sec       57.8s     177ms
+    351000    5650/sec       58.0s     177ms
+    352000    5882/sec       58.2s     170ms
+    353000    5556/sec       58.3s     180ms
+    354000    5587/sec       58.5s     179ms
+    355000    5848/sec       58.7s     171ms
+    356000    5682/sec       58.9s     176ms
+    357000    5780/sec       59.0s     173ms
+    358000    5848/sec       59.2s     171ms
+    359000    5682/sec       59.4s     176ms
+    360000    5650/sec       59.6s     177ms
+    361000    5464/sec       59.7s     183ms
+    362000    5747/sec       59.9s     174ms
+    363000    5780/sec       60.1s     173ms
+    364000    5780/sec       60.3s     173ms
+    365000    5682/sec       60.4s     176ms
+    366000    5208/sec       60.6s     192ms
+    367000    5102/sec       60.8s     196ms
+    368000    5682/sec       61.0s     176ms
+    369000    5848/sec       61.2s     171ms
+    370000    5814/sec       61.3s     172ms
+    371000    5556/sec       61.5s     180ms
+    372000    5587/sec       61.7s     179ms
+    373000    5525/sec       61.9s     181ms
+    374000    5525/sec       62.1s     181ms
+    375000    5650/sec       62.2s     177ms
+    376000    5525/sec       62.4s     181ms
+    377000    5556/sec       62.6s     180ms
+    378000    5618/sec       62.8s     178ms
+    379000    5682/sec       63.0s     176ms
+    380000    5000/sec       63.2s     200ms
+    381000    5435/sec       63.3s     184ms
+    382000    5556/sec       63.5s     180ms
+    383000    5650/sec       63.7s     177ms
+    384000    5495/sec       63.9s     182ms
+    385000    5814/sec       64.1s     172ms
+    386000    5747/sec       64.2s     174ms
+    387000    4878/sec       64.4s     205ms
+    388000    5882/sec       64.6s     170ms
+    389000    5988/sec       64.8s     167ms
+    390000    5618/sec       65.0s     178ms
+    391000    5780/sec       65.1s     173ms
+    392000    5556/sec       65.3s     180ms
+    393000    5556/sec       65.5s     180ms
+    394000    5618/sec       65.7s     178ms
+    395000    5618/sec       65.8s     178ms
+    396000    5376/sec       66.0s     186ms
+    397000    5682/sec       66.2s     176ms
+    398000    5495/sec       66.4s     182ms
+    399000    5618/sec       66.6s     178ms
+    400000    5556/sec       66.7s     180ms
+    401000    5587/sec       66.9s     179ms
+    402000    5495/sec       67.1s     182ms
+    403000    5556/sec       67.3s     180ms
+    404000    5319/sec       67.5s     188ms
+    405000    5495/sec       67.7s     182ms
+    406000    5525/sec       67.8s     181ms
+    407000    5495/sec       68.0s     182ms
+    408000    5882/sec       68.2s     170ms
+    409000    5495/sec       68.4s     182ms
+    410000    5525/sec       68.6s     181ms
+    411000    5348/sec       68.7s     187ms
+    412000    5525/sec       68.9s     181ms
+    413000    5556/sec       69.1s     180ms
+    414000    5208/sec       69.3s     192ms
+    415000    5435/sec       69.5s     184ms
+    416000    5319/sec       69.7s     188ms
+    417000    5525/sec       69.8s     181ms
+    418000    5464/sec       70.0s     183ms
+    419000    5348/sec       70.2s     187ms
+    420000    3145/sec       70.5s     318ms
+    421000    4975/sec       70.7s     201ms
+    422000    5155/sec       70.9s     194ms
+    423000    5556/sec       71.1s     180ms
+    424000    5291/sec       71.3s     189ms
+    425000    5291/sec       71.5s     189ms
+    426000    5291/sec       71.7s     189ms
+    427000    5495/sec       71.9s     182ms
+    428000    5376/sec       72.0s     186ms
+    429000    5435/sec       72.2s     184ms
+    430000    5405/sec       72.4s     185ms
+    431000    5525/sec       72.6s     181ms
+    432000    5525/sec       72.8s     181ms
+    433000    5319/sec       73.0s     188ms
+    434000    5714/sec       73.1s     175ms
+    435000    5348/sec       73.3s     187ms
+    436000    5495/sec       73.5s     182ms
+    437000    5525/sec       73.7s     181ms
+    438000    5376/sec       73.9s     186ms
+    439000    5376/sec       74.1s     186ms
+    440000    5556/sec       74.2s     180ms
+    441000    5682/sec       74.4s     176ms
+    442000    5814/sec       74.6s     172ms
+    443000    5348/sec       74.8s     187ms
+    444000    5319/sec       75.0s     188ms
+    445000    5848/sec       75.1s     171ms
+    446000    5435/sec       75.3s     184ms
+    447000    5556/sec       75.5s     180ms
+    448000    5556/sec       75.7s     180ms
+    449000    5155/sec       75.9s     194ms
+    450000    5376/sec       76.1s     186ms
+    451000    5714/sec       76.2s     175ms
+    452000    5051/sec       76.4s     198ms
+    453000    5495/sec       76.6s     182ms
+    454000    5682/sec       76.8s     176ms
+    455000    5556/sec       77.0s     180ms
+    456000    5848/sec       77.1s     171ms
+    457000    4878/sec       77.3s     205ms
+    458000    5319/sec       77.5s     188ms
+    459000    5348/sec       77.7s     187ms
+    460000    5319/sec       77.9s     188ms
+    461000    5376/sec       78.1s     186ms
+    462000    5435/sec       78.3s     184ms
+    463000    5263/sec       78.5s     190ms
+    464000    5495/sec       78.6s     182ms
+    465000    5128/sec       78.8s     195ms
+    466000    5405/sec       79.0s     185ms
+    467000    5291/sec       79.2s     189ms
+    468000    5319/sec       79.4s     188ms
+    469000    5495/sec       79.6s     182ms
+    470000    5348/sec       79.8s     187ms
+    471000    5435/sec       80.0s     184ms
+    472000    5376/sec       80.1s     186ms
+    473000    5263/sec       80.3s     190ms
+    474000    5236/sec       80.5s     191ms
+    475000    5464/sec       80.7s     183ms
+    476000    5747/sec       80.9s     174ms
+    477000    5128/sec       81.1s     195ms
+    478000    5525/sec       81.3s     181ms
+    479000    5291/sec       81.4s     189ms
+    480000    4902/sec       81.7s     204ms
+    481000    5076/sec       81.8s     197ms
+    482000    4587/sec       82.1s     218ms
+    483000    5263/sec       82.3s     190ms
+    484000    5263/sec       82.4s     190ms
+    485000    5181/sec       82.6s     193ms
+    486000    5208/sec       82.8s     192ms
+    487000    5025/sec       83.0s     199ms
+    488000    5102/sec       83.2s     196ms
+    489000    4854/sec       83.4s     206ms
+    490000    5025/sec       83.6s     199ms
+    491000    5263/sec       83.8s     190ms
+    492000    4785/sec       84.0s     209ms
+    493000    5348/sec       84.2s     187ms
+    494000    4831/sec       84.4s     207ms
+    495000    5076/sec       84.6s     197ms
+    496000    5236/sec       84.8s     191ms
+    497000    4878/sec       85.0s     205ms
+    498000    5348/sec       85.2s     187ms
+    499000    5051/sec       85.4s     198ms
+    500000    5348/sec       85.6s     187ms
+    501000    5236/sec       85.8s     191ms
+    502000    5000/sec       86.0s     200ms
+    503000    5155/sec       86.2s     194ms
+    504000    4902/sec       86.4s     204ms
+    505000    4808/sec       86.6s     208ms
+    506000    5102/sec       86.8s     196ms
+    507000    4878/sec       87.0s     205ms
+    508000    4808/sec       87.2s     208ms
+    509000    4854/sec       87.4s     206ms
+    510000    5000/sec       87.6s     200ms
+    511000    5348/sec       87.8s     187ms
+    512000    5263/sec       88.0s     190ms
+    513000    5051/sec       88.2s     198ms
+    514000    4926/sec       88.4s     203ms
+    515000    5181/sec       88.6s     193ms
+    516000    4444/sec       88.8s     225ms
+    517000    4255/sec       89.0s     235ms
+    518000    5102/sec       89.2s     196ms
+    519000    4608/sec       89.4s     217ms
+    520000    5025/sec       89.6s     199ms
+    521000    4739/sec       89.9s     211ms
+    522000    4831/sec       90.1s     207ms
+    523000    5076/sec       90.3s     197ms
+    524000    4484/sec       90.5s     223ms
+    525000     720/sec       91.9s    1389ms
+    526000    5076/sec       92.1s     197ms
+    527000    5435/sec       92.3s     184ms
+    528000    5525/sec       92.4s     181ms
+    529000    5464/sec       92.6s     183ms
+    530000    5319/sec       92.8s     188ms
+    531000    5780/sec       93.0s     173ms
+    532000    5155/sec       93.2s     194ms
+    533000    5051/sec       93.4s     198ms
+    534000    5291/sec       93.6s     189ms
+    535000    5376/sec       93.7s     186ms
+    536000    5291/sec       93.9s     189ms
+    537000    5208/sec       94.1s     192ms
+    538000    5376/sec       94.3s     186ms
+    539000    5376/sec       94.5s     186ms
+    540000    5435/sec       94.7s     184ms
+    541000    5464/sec       94.9s     183ms
+    542000    5435/sec       95.0s     184ms
+    543000    5051/sec       95.2s     198ms
+    544000    5319/sec       95.4s     188ms
+    545000    5208/sec       95.6s     192ms
+    546000    5102/sec       95.8s     196ms
+    547000    5464/sec       96.0s     183ms
+    548000    5618/sec       96.2s     178ms
+    549000    5435/sec       96.4s     184ms
+    550000    5263/sec       96.6s     190ms
+    551000    5556/sec       96.7s     180ms
+    552000    5525/sec       96.9s     181ms
+    553000    5525/sec       97.1s     181ms
+    554000    5556/sec       97.3s     180ms
+    555000    5319/sec       97.5s     188ms
+    556000    5376/sec       97.7s     186ms
+    557000    5263/sec       97.8s     190ms
+    558000    5435/sec       98.0s     184ms
+    559000    5747/sec       98.2s     174ms
+    560000    5319/sec       98.4s     188ms
+    561000    5525/sec       98.6s     181ms
+    562000    5495/sec       98.8s     182ms
+    563000    5405/sec       98.9s     185ms
+    564000    5747/sec       99.1s     174ms
+    565000    5181/sec       99.3s     193ms
+    566000    5464/sec       99.5s     183ms
+    567000    5236/sec       99.7s     191ms
+    568000    5348/sec       99.9s     187ms
+    569000    5348/sec      100.1s     187ms
+    570000    5405/sec      100.2s     185ms
+    571000    5291/sec      100.4s     189ms
+    572000    5525/sec      100.6s     181ms
+    573000    5435/sec      100.8s     184ms
+    574000    5236/sec      101.0s     191ms
+    575000    5076/sec      101.2s     197ms
+    576000    5376/sec      101.4s     186ms
+    577000    5376/sec      101.6s     186ms
+    578000    5236/sec      101.7s     191ms
+    579000    5495/sec      101.9s     182ms
+    580000    4695/sec      102.1s     213ms
+    581000    5263/sec      102.3s     190ms
+    582000    5435/sec      102.5s     184ms
+    583000    4630/sec      102.7s     216ms
+    584000    5291/sec      102.9s     189ms
+    585000    5464/sec      103.1s     183ms
+    586000    5405/sec      103.3s     185ms
+    587000    5128/sec      103.5s     195ms
+    588000    5495/sec      103.7s     182ms
+    589000    5376/sec      103.8s     186ms
+    590000    5405/sec      104.0s     185ms
+    591000    5525/sec      104.2s     181ms
+    592000    5376/sec      104.4s     186ms
+    593000    5319/sec      104.6s     188ms
+    594000    5376/sec      104.8s     186ms
+    595000    5405/sec      105.0s     185ms
+    596000    5525/sec      105.1s     181ms
+    597000    5376/sec      105.3s     186ms
+    598000    5525/sec      105.5s     181ms
+    599000    2336/sec      105.9s     428ms
+    600000    3922/sec      106.2s     255ms
+    601000    4785/sec      106.4s     209ms
+    602000    4975/sec      106.6s     201ms
+    603000    4975/sec      106.8s     201ms
+    604000    5128/sec      107.0s     195ms
+    605000    5102/sec      107.2s     196ms
+    606000    5525/sec      107.4s     181ms
+    607000    5155/sec      107.6s     194ms
+    608000    5348/sec      107.8s     187ms
+    609000    5376/sec      107.9s     186ms
+    610000    5208/sec      108.1s     192ms
+    611000    5682/sec      108.3s     176ms
+    612000    5128/sec      108.5s     195ms
+    613000    5405/sec      108.7s     185ms
+    614000    5181/sec      108.9s     193ms
+    615000    5650/sec      109.1s     177ms
+    616000    5525/sec      109.2s     181ms
+    617000    5291/sec      109.4s     189ms
+    618000    5376/sec      109.6s     186ms
+    619000    5405/sec      109.8s     185ms
+    620000    5435/sec      110.0s     184ms
+    621000    5376/sec      110.2s     186ms
+    622000    5435/sec      110.4s     184ms
+    623000    5376/sec      110.5s     186ms
+    624000    5319/sec      110.7s     188ms
+    625000    5495/sec      110.9s     182ms
+    626000    5464/sec      111.1s     183ms
+    627000    5495/sec      111.3s     182ms
+    628000    5291/sec      111.5s     189ms
+    629000    5464/sec      111.6s     183ms
+    630000    5495/sec      111.8s     182ms
+    631000    5263/sec      112.0s     190ms
+    632000    5464/sec      112.2s     183ms
+    633000    5525/sec      112.4s     181ms
+    634000    5464/sec      112.6s     183ms
+    635000    5464/sec      112.7s     183ms
+    636000    5348/sec      112.9s     187ms
+    637000    5319/sec      113.1s     188ms
+    638000    5464/sec      113.3s     183ms
+    639000    5464/sec      113.5s     183ms
+    640000    3663/sec      113.8s     273ms
+    641000    2597/sec      114.1s     385ms
+    642000    3185/sec      114.5s     314ms
+    643000    4367/sec      114.7s     229ms
+    644000    4717/sec      114.9s     212ms
+    645000    4717/sec      115.1s     212ms
+    646000    5025/sec      115.3s     199ms
+    647000    4386/sec      115.5s     228ms
+    648000    3937/sec      115.8s     254ms
+    649000    4115/sec      116.0s     243ms
+    650000    4484/sec      116.3s     223ms
+    651000    4975/sec      116.5s     201ms
+    652000    4878/sec      116.7s     205ms
+    653000    5102/sec      116.9s     196ms
+    654000    4878/sec      117.1s     205ms
+    655000    4950/sec      117.3s     202ms
+    656000    5076/sec      117.5s     197ms
+    657000    5155/sec      117.7s     194ms
+    658000    5102/sec      117.9s     196ms
+    659000    5000/sec      118.1s     200ms
+    660000    5263/sec      118.2s     190ms
+    661000    5236/sec      118.4s     191ms
+    662000    5181/sec      118.6s     193ms
+    663000    5236/sec      118.8s     191ms
+    664000    4566/sec      119.0s     219ms
+    665000    4808/sec      119.3s     208ms
+    666000    4630/sec      119.5s     216ms
+    667000    4673/sec      119.7s     214ms
+    668000    4717/sec      119.9s     212ms
+    669000    4975/sec      120.1s     201ms
+    670000    4902/sec      120.3s     204ms
+    671000    4975/sec      120.5s     201ms
+    672000    4926/sec      120.7s     203ms
+    673000    5076/sec      120.9s     197ms
+    674000    4854/sec      121.1s     206ms
+    675000    4854/sec      121.3s     206ms
+    676000    5128/sec      121.5s     195ms
+    677000    5348/sec      121.7s     187ms
+    678000    5076/sec      121.9s     197ms
+    679000    5263/sec      122.1s     190ms
+    680000    5155/sec      122.3s     194ms
+    681000    4695/sec      122.5s     213ms
+    682000    5181/sec      122.7s     193ms
+    683000    4444/sec      122.9s     225ms
+    684000    4545/sec      123.1s     220ms
+    685000    4348/sec      123.4s     230ms
+    686000    4566/sec      123.6s     219ms
+    687000    4566/sec      123.8s     219ms
+    688000    4630/sec      124.0s     216ms
+    689000    4762/sec      124.2s     210ms
+    690000    4695/sec      124.4s     213ms
+    691000    4854/sec      124.6s     206ms
+    692000    5051/sec      124.8s     198ms
+    693000    4566/sec      125.1s     219ms
+    694000    4525/sec      125.3s     221ms
+    695000    4464/sec      125.5s     224ms
+    696000    4386/sec      125.7s     228ms
+    697000    4292/sec      126.0s     233ms
+    698000    4184/sec      126.2s     239ms
+    699000    4386/sec      126.4s     228ms
+    700000    4608/sec      126.6s     217ms
+    701000    4854/sec      126.9s     206ms
+    702000    4587/sec      127.1s     218ms
+    703000    4608/sec      127.3s     217ms
+    704000    4367/sec      127.5s     229ms
+    705000    4016/sec      127.8s     249ms
+    706000    3846/sec      128.0s     260ms
+    707000    4016/sec      128.3s     249ms
+    708000    4310/sec      128.5s     232ms
+    709000    4016/sec      128.8s     249ms
+    710000    4082/sec      129.0s     245ms
+    711000    4255/sec      129.2s     235ms
+    712000    4082/sec      129.5s     245ms
+    713000    3759/sec      129.7s     266ms
+    714000    3731/sec      130.0s     268ms
+    715000    3861/sec      130.3s     259ms
+    716000    4149/sec      130.5s     241ms
+    717000    4098/sec      130.8s     244ms
+    718000    4219/sec      131.0s     237ms
+    719000    3984/sec      131.2s     251ms
+    720000    4082/sec      131.5s     245ms
+    721000    3846/sec      131.8s     260ms
+    722000    3846/sec      132.0s     260ms
+    723000    4000/sec      132.3s     250ms
+    724000    4202/sec      132.5s     238ms
+    725000    4115/sec      132.7s     243ms
+    726000    4348/sec      133.0s     230ms
+    727000    4065/sec      133.2s     246ms
+    728000    4348/sec      133.4s     230ms
+    729000    4098/sec      133.7s     244ms
+    730000    3759/sec      134.0s     266ms
+    731000    3831/sec      134.2s     261ms
+    732000    3690/sec      134.5s     271ms
+    733000    3663/sec      134.8s     273ms
+    734000    4149/sec      135.0s     241ms
+    735000    3690/sec      135.3s     271ms
+    736000    4032/sec      135.5s     248ms
+    737000    3731/sec      135.8s     268ms
+    738000    3704/sec      136.1s     270ms
+    739000    3676/sec      136.3s     272ms
+    740000    3425/sec      136.6s     292ms
+    741000    3774/sec      136.9s     265ms
+    742000    3497/sec      137.2s     286ms
+    743000    3745/sec      137.4s     267ms
+    744000    3333/sec      137.7s     300ms
+    745000    3597/sec      138.0s     278ms
+    746000    3759/sec      138.3s     266ms
+    747000    3534/sec      138.6s     283ms
+    748000    3448/sec      138.9s     290ms
+    749000    3788/sec      139.1s     264ms
+    750000    2625/sec      139.5s     381ms
+    751000    3175/sec      139.8s     315ms
+    752000    3356/sec      140.1s     298ms
+    753000    3984/sec      140.4s     251ms
+    754000    4255/sec      140.6s     235ms
+    755000    4464/sec      140.8s     224ms
+    756000    3922/sec      141.1s     255ms
+    757000    3344/sec      141.4s     299ms
+    758000    3268/sec      141.7s     306ms
+    759000    3861/sec      141.9s     259ms
+    760000    3226/sec      142.3s     310ms
+    761000    3534/sec      142.5s     283ms
+    762000    3247/sec      142.8s     308ms
+    763000    3425/sec      143.1s     292ms
+    764000    3344/sec      143.4s     299ms
+    765000    3226/sec      143.8s     310ms
+    766000    3257/sec      144.1s     307ms
+    767000    3030/sec      144.4s     330ms
+    768000    3247/sec      144.7s     308ms
+    769000    3215/sec      145.0s     311ms
+    770000    3106/sec      145.3s     322ms
+    771000    3236/sec      145.6s     309ms
+    772000    3185/sec      146.0s     314ms
+    773000    3356/sec      146.3s     298ms
+    774000    3401/sec      146.5s     294ms
+    775000    3378/sec      146.8s     296ms
+    776000    3195/sec      147.2s     313ms
+    777000    3012/sec      147.5s     332ms
+    778000    3546/sec      147.8s     282ms
+    779000    3300/sec      148.1s     303ms
+    780000    3559/sec      148.4s     281ms
+    781000    3300/sec      148.7s     303ms
+    782000    3759/sec      148.9s     266ms
+    783000    3690/sec      149.2s     271ms
+    784000    3774/sec      149.5s     265ms
+    785000    3497/sec      149.7s     286ms
+    786000    3610/sec      150.0s     277ms
+    787000    3460/sec      150.3s     289ms
+    788000    3247/sec      150.6s     308ms
+    789000    3356/sec      150.9s     298ms
+    790000    3367/sec      151.2s     297ms
+    791000    3610/sec      151.5s     277ms
+    792000    3546/sec      151.8s     282ms
+    793000    3610/sec      152.0s     277ms
+    794000    3497/sec      152.3s     286ms
+    795000    3597/sec      152.6s     278ms
+    796000    3367/sec      152.9s     297ms
+    797000    3367/sec      153.2s     297ms
+    798000    3460/sec      153.5s     289ms
+    799000    3472/sec      153.8s     288ms
+    800000    3521/sec      154.1s     284ms
+    801000    3690/sec      154.3s     271ms
+    802000    3663/sec      154.6s     273ms
+    803000    3247/sec      154.9s     308ms
+    804000    2985/sec      155.3s     335ms
+    805000    3165/sec      155.6s     316ms
+    806000    3521/sec      155.9s     284ms
+    807000    3534/sec      156.1s     283ms
+    808000    3030/sec      156.5s     330ms
+    809000    3322/sec      156.8s     301ms
+    810000    3571/sec      157.0s     280ms
+    811000    3937/sec      157.3s     254ms
+    812000    3663/sec      157.6s     273ms
+    813000    3861/sec      157.8s     259ms
+    814000    3175/sec      158.1s     315ms
+    815000    3378/sec      158.4s     296ms
+    816000    3195/sec      158.8s     313ms
+    817000    3289/sec      159.1s     304ms
+    818000    2950/sec      159.4s     339ms
+    819000    3322/sec      159.7s     301ms
+    820000    3115/sec      160.0s     321ms
+    821000    3610/sec      160.3s     277ms
+    822000    3279/sec      160.6s     305ms
+    823000    3289/sec      160.9s     304ms
+    824000    3322/sec      161.2s     301ms
+    825000    3300/sec      161.5s     303ms
+    826000    3344/sec      161.8s     299ms
+    827000    3247/sec      162.1s     308ms
+    828000    3623/sec      162.4s     276ms
+    829000    3472/sec      162.7s     288ms
+    830000    3115/sec      163.0s     321ms
+    831000    3077/sec      163.3s     325ms
+    832000    3067/sec      163.7s     326ms
+    833000    3205/sec      164.0s     312ms
+    834000    3106/sec      164.3s     322ms
+    835000    3236/sec      164.6s     309ms
+    836000    3571/sec      164.9s     280ms
+    837000    3788/sec      165.1s     264ms
+    838000    3650/sec      165.4s     274ms
+    839000    1802/sec      166.0s     555ms
+    840000    3175/sec      166.3s     315ms
+    841000    3279/sec      166.6s     305ms
+    842000    3484/sec      166.9s     287ms
+    843000    3300/sec      167.2s     303ms
+    844000    3322/sec      167.5s     301ms
+    845000    3086/sec      167.8s     324ms
+    846000    3058/sec      168.1s     327ms
+    847000    2865/sec      168.5s     349ms
+    848000    2865/sec      168.8s     349ms
+    849000    2865/sec      169.2s     349ms
+    850000    3040/sec      169.5s     329ms
+    851000    3279/sec      169.8s     305ms
+    852000    3049/sec      170.1s     328ms
+    853000    2857/sec      170.5s     350ms
+    854000    3077/sec      170.8s     325ms
+    855000    2874/sec      171.2s     348ms
+    856000    2857/sec      171.5s     350ms
+    857000    2985/sec      171.9s     335ms
+    858000    2778/sec      172.2s     360ms
+    859000    2865/sec      172.6s     349ms
+    860000    3030/sec      172.9s     330ms
+    861000    2717/sec      173.3s     368ms
+    862000    3472/sec      173.5s     288ms
+    863000    2000/sec      174.0s     500ms
+    864000    2551/sec      174.4s     392ms
+    865000    3067/sec      174.8s     326ms
+    866000    3268/sec      175.1s     306ms
+    867000    3484/sec      175.4s     287ms
+    868000    3650/sec      175.6s     274ms
+    869000    3953/sec      175.9s     253ms
+    870000    1637/sec      176.5s     611ms
+    871000    1656/sec      177.1s     604ms
+    872000    2817/sec      177.5s     355ms
+    873000    3333/sec      177.8s     300ms
+    874000    3610/sec      178.0s     277ms
+    875000    3731/sec      178.3s     268ms
+    876000    4115/sec      178.5s     243ms
+    877000    4292/sec      178.8s     233ms
+    878000    4386/sec      179.0s     228ms
+    879000    4274/sec      179.2s     234ms
+    880000    4505/sec      179.5s     222ms
+    881000    4464/sec      179.7s     224ms
+    882000    4545/sec      179.9s     220ms
+    883000    4274/sec      180.1s     234ms
+    884000    4425/sec      180.4s     226ms
+    885000    4202/sec      180.6s     238ms
+    886000    3663/sec      180.9s     273ms
+    887000    3690/sec      181.1s     271ms
+    888000    3891/sec      181.4s     257ms
+    889000    4149/sec      181.6s     241ms
+    890000    3968/sec      181.9s     252ms
+    891000    3390/sec      182.2s     295ms
+    892000    3559/sec      182.5s     281ms
+    893000    3356/sec      182.8s     298ms
+    894000    3436/sec      183.1s     291ms
+    895000    3663/sec      183.3s     273ms
+    896000    3021/sec      183.7s     331ms
+    897000    2457/sec      184.1s     407ms
+    898000    1479/sec      184.7s     676ms
+    899000    2632/sec      185.1s     380ms
+    900000    3165/sec      185.4s     316ms
+    901000    3745/sec      185.7s     267ms
+    902000    3906/sec      186.0s     256ms
+    903000    4348/sec      186.2s     230ms
+    904000    4329/sec      186.4s     231ms
+    905000    4525/sec      186.6s     221ms
+    906000    4630/sec      186.9s     216ms
+    907000    4405/sec      187.1s     227ms
+    908000    4545/sec      187.3s     220ms
+    909000    4608/sec      187.5s     217ms
+    910000    4854/sec      187.7s     206ms
+    911000    4525/sec      188.0s     221ms
+    912000    4878/sec      188.2s     205ms
+    913000    4854/sec      188.4s     206ms
+    914000    4926/sec      188.6s     203ms
+    915000    3922/sec      188.8s     255ms
+    916000    4115/sec      189.1s     243ms
+    917000    3861/sec      189.3s     259ms
+    918000    3676/sec      189.6s     272ms
+    919000    3984/sec      189.8s     251ms
+    920000    3731/sec      190.1s     268ms
+    921000    3676/sec      190.4s     272ms
+    922000    3788/sec      190.7s     264ms
+    923000    3717/sec      190.9s     269ms
+    924000    3436/sec      191.2s     291ms
+    925000    3636/sec      191.5s     275ms
+    926000    3922/sec      191.7s     255ms
+    927000    3922/sec      192.0s     255ms
+    928000    3817/sec      192.3s     262ms
+    929000    3704/sec      192.5s     270ms
+    930000    3937/sec      192.8s     254ms
+    931000    3497/sec      193.1s     286ms
+    932000    3937/sec      193.3s     254ms
+    933000    4032/sec      193.6s     248ms
+    934000    3690/sec      193.8s     271ms
+    935000    3534/sec      194.1s     283ms
+    936000    3802/sec      194.4s     263ms
+    937000    1374/sec      195.1s     728ms
+    938000     608/sec      196.8s    1646ms
+    939000    4348/sec      197.0s     230ms
+    940000    4587/sec      197.2s     218ms
+    941000    4975/sec      197.4s     201ms
+    942000    4310/sec      197.6s     232ms
+    943000    4739/sec      197.9s     211ms
+    944000    4739/sec      198.1s     211ms
+    945000    4831/sec      198.3s     207ms
+    946000    4878/sec      198.5s     205ms
+    947000    4608/sec      198.7s     217ms
+    948000    4878/sec      198.9s     205ms
+    949000    4950/sec      199.1s     202ms
+    950000    4484/sec      199.3s     223ms
+    951000    4831/sec      199.5s     207ms
+    952000    4132/sec      199.8s     242ms
+    953000    4132/sec      200.0s     242ms
+    954000    4386/sec      200.2s     228ms
+    955000    3968/sec      200.5s     252ms
+    956000    4149/sec      200.7s     241ms
+    957000    4367/sec      201.0s     229ms
+    958000    4444/sec      201.2s     225ms
+    959000    4464/sec      201.4s     224ms
+    960000    3571/sec      201.7s     280ms
+    961000    3378/sec      202.0s     296ms
+    962000    3597/sec      202.3s     278ms
+    963000    3922/sec      202.5s     255ms
+    964000    3802/sec      202.8s     263ms
+    965000    4219/sec      203.0s     237ms
+    966000    4329/sec      203.3s     231ms
+    967000    4237/sec      203.5s     236ms
+    968000    3788/sec      203.8s     264ms
+    969000    3745/sec      204.0s     267ms
+    970000    3436/sec      204.3s     291ms
+    971000    3953/sec      204.6s     253ms
+    972000    3984/sec      204.8s     251ms
+    973000    3861/sec      205.1s     259ms
+    974000    4202/sec      205.3s     238ms
+    975000    4149/sec      205.6s     241ms
+    976000    3831/sec      205.8s     261ms
+    977000    4032/sec      206.1s     248ms
+    978000    3650/sec      206.3s     274ms
+    979000    3788/sec      206.6s     264ms
+    980000    3378/sec      206.9s     296ms
+    981000    3906/sec      207.2s     256ms
+    982000    3676/sec      207.4s     272ms
+    983000    3546/sec      207.7s     282ms
+    984000    3610/sec      208.0s     277ms
+    985000    3922/sec      208.2s     255ms
+    986000    4065/sec      208.5s     246ms
+    987000    3774/sec      208.8s     265ms
+    988000    3584/sec      209.0s     279ms
+    989000    3460/sec      209.3s     289ms
+    990000    3690/sec      209.6s     271ms
+    991000    3521/sec      209.9s     284ms
+    992000    4032/sec      210.1s     248ms
+    993000    2421/sec      210.5s     413ms
+    994000    2114/sec      211.0s     473ms
+    995000    2092/sec      211.5s     478ms
+    996000    2237/sec      211.9s     447ms
+    997000    2183/sec      212.4s     458ms
+    998000    2519/sec      212.8s     397ms
+    999000    2646/sec      213.2s     378ms
+   1000000    2469/sec      213.6s     405ms
+
+---
+
+## Executive Summary
+
+Successfully processed **1,000,000 voters** casting **5,000,000 encrypted answers** across 5 questions spanning 3 jurisdiction levels (Federal, State, County) with **100.00% success rate** in **3m 33s**.
+
+---
+
+## Test Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| Total Voters | 1,000,000 |
+| Questions per Ballot | 5 |
+| Total Encrypted Answers | 5,000,000 |
+| Jurisdiction Levels | 3 (Federal, State, County) |
+| Merkle Trees | 5 (one per question) |
+| Threshold Scheme | 3-of-5 Feldman VSS |
+| Merkle Algorithm | FastMerkleTree O(log n) |
+| Storage | VeilCloud (local filesystem) |
+
+### Jurisdiction Hierarchy
+
+```
+United States (Federal, Level 0)
+    └── California (State, Level 1)
+            └── Placer County (County, Level 2)
+```
+
+---
+
+## Performance Results
+
+| Metric | Value |
+|--------|-------|
+| **Total Time** | **3m 33s** |
+| Voting Phase | 213.6s |
+| Key Ceremony | 56ms |
+| Avg Throughput | 4682.3 voters/sec |
+| Peak Throughput | 4274 voters/sec |
+| Final Throughput | 2469 voters/sec |
+| Degradation | 42.2% |
+
+---
+
+## Success Metrics
+
+| Metric | Value |
+|--------|-------|
+| Voters Processed | 1,000,000 |
+| Answers Recorded | 5,000,000 |
+| Failed Submissions | 0 |
+| **Success Rate** | **100.00%** |
+
+---
+
+*Generated: December 27, 2025 at 09:17 PM PST*
+*Test Duration: 3m 33s*
+*Script: scripts/test-10k-placer-ballot.ts*
+
